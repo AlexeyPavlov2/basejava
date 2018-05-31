@@ -32,8 +32,11 @@ public class MainTestArrayStorage {
 
     static void printAll() {
         System.out.println("\nGet All");
-        for (Resume r : ARRAY_STORAGE.getAll()) {
-            System.out.println(r);
-        }
+        if (ARRAY_STORAGE.size()> 0) { //Added by AlexeyPavlov
+            for (Resume r : ARRAY_STORAGE.getAll()) {
+                System.out.println(r);
+            }
+        } else
+            System.out.println("Storage is empty");
     }
 }
