@@ -3,7 +3,6 @@
  */
 
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 
 public class ArrayStorage {
     private static final int MAX_CAPACITY = 10000;
@@ -11,7 +10,7 @@ public class ArrayStorage {
     private int size = 0;
 
     void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, size -1, null);
         size = 0;
     }
 
@@ -20,21 +19,21 @@ public class ArrayStorage {
             storage[size] = resume;
             size++;
         } else {
-            throw new IndexOutOfBoundsException();
+            System.out.println("Internal array is full");
         }
     }
 
     Resume get(String uuid) {
-        int idx = search(uuid);
-        return idx >= 0 ? storage[idx] : null;
+        int index = search(uuid);
+        return index >= 0 ? storage[index] : null;
     }
 
     void delete(String uuid) {
-        int idx = search(uuid);
-        if (idx < 0) {
-            throw new NoSuchElementException();
+        int index = search(uuid);
+        if (index < 0) {
+            System.out.println("Element with uuid = " + uuid + " not found");
         } else {
-            for (int i = idx; i < size; i++)
+            for (int i = index; i < size; i++)
                 storage[i] = storage[i + 1];
             storage[size] = null;
             size--;
@@ -45,11 +44,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        Resume[] result = {};
-        if (size != 0)
-            return Arrays.copyOfRange(storage, 0, size);
-        else
-            return result;
+        return Arrays.copyOfRange(storage, 0, size);
     }
 
     int size() {
@@ -67,25 +62,12 @@ public class ArrayStorage {
     private int search(String key) {
         int result = -1;
         for (int i = 0; i < size; i++) {
-            if (key.compareTo(storage[i].uuid) == 0) {
+            if (key.equals(storage[i].uuid)) {
                 result = i;
                 break;
             }
         }
         return result;
-    }
-
-    /**
-     * The method prints all elements of the array "storage"
-     */
-    public void printAll() {
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                System.out.println("[" + i + "] = " + storage[i].toString());
-            }
-        } else {
-            System.out.println("Storage is empty");
-        }
     }
 
 }
