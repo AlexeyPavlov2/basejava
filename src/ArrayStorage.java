@@ -34,7 +34,6 @@ public class ArrayStorage {
             System.out.println("Element with uuid = " + uuid + " not found");
         } else {
             System.arraycopy(storage, index + 1, storage, index, size - index);
-            storage[size] = null;
             size--;
         }
     }
