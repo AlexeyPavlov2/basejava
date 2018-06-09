@@ -1,10 +1,14 @@
+/**
+ * Test for com.basejava.webapp.storage.ArrayStorage
+ */
+
+import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.storage.ArrayStorage;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Test for com.urise.webapp.storage.ArrayStorage
- */
 public class MainArray {
     private final static ArrayStorage ARRAY_STORAGE = new ArrayStorage();
 
@@ -31,8 +35,14 @@ public class MainArray {
                     break;
                 case "save":
                     r = new Resume();
-                    r.uuid = uuid;
+                    r.setUuid(uuid);
                     ARRAY_STORAGE.save(r);
+                    printAll();
+                    break;
+                case "update":
+                    r = new Resume();
+                    r.setUuid(uuid);
+                    ARRAY_STORAGE.update(r);
                     printAll();
                     break;
                 case "delete":
@@ -55,7 +65,7 @@ public class MainArray {
         }
     }
 
-    static void printAll() {
+    public static void printAll() {
         Resume[] all = ARRAY_STORAGE.getAll();
         System.out.println("----------------------------");
         if (all.length == 0) {
