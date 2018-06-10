@@ -56,7 +56,8 @@ public class ArrayStorage {
         if (index < 0) {
             System.out.println("Resume with uuid = " + uuid + " not found");
         } else {
-            System.arraycopy(storage, index + 1, storage, index, size - index);
+            storage[index] = storage[size - 1];
+            storage[size - 1] = null;
             size--;
         }
     }
