@@ -10,17 +10,21 @@ import com.basejava.webapp.model.Resume;
 import java.util.Arrays;
 
 public abstract class AbstractArrayStorage implements Storage {
-    protected static final int STORAGE_LIMIT = 10000;
+    private static final int STORAGE_LIMIT = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
-    public void clear() {
-        Arrays.fill(storage, 0, size, null);
-        size = 0;
+    public Resume[] getAll() {
+        return Arrays.copyOfRange(storage, 0, size);
     }
 
     public int size() {
         return size;
+    }
+
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
     }
 
     public void save(Resume resume) {
@@ -37,16 +41,6 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            System.out.println("Resume with uuid " + uuid + " not exists.");
-            return null;
-        } else {
-            return storage[index];
-        }
-    }
-
     public void update(Resume resume) {
         int index = getIndex(resume.getUuid());
         if (index < 0) {
@@ -56,8 +50,25 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, size);
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index < 0) {
+            System.out.println("Resume with uuid = " + uuid + " not found");
+        } else {
+            fillHole(index);
+            storage[size - 1] = null;
+            size--;
+        }
+    }
+
+    public Resume get(String uuid) {
+        int index = getIndex(uuid);
+        if (index < 0) {
+            System.out.println("Resume with uuid " + uuid + " not exists.");
+            return null;
+        } else {
+            return storage[index];
+        }
     }
 
     /**
@@ -75,6 +86,8 @@ public abstract class AbstractArrayStorage implements Storage {
      * @param index  - position in array for inserting
      */
     protected abstract void insert(Resume resume, int index);
+
+    protected abstract void fillHole(int index);
 
 
 }

@@ -11,17 +11,6 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage  {
 
     @Override
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            System.out.println("Resume with uuid = " + uuid + " not found");
-        } else {
-            System.arraycopy(storage, index+ 1, storage, index, size - index - 1);
-            size--;
-        }
-    }
-
-    @Override
     protected int getIndex(String uuid) {
         Resume resume = new Resume();
         resume.setUuid(uuid);
@@ -35,6 +24,8 @@ public class SortedArrayStorage extends AbstractArrayStorage  {
         storage[index] = resume;
     }
 
-
-
+    @Override
+    protected void fillHole(int index) {
+        System.arraycopy(storage, index + 1, storage, index, size - index - 1);
+    }
 }
