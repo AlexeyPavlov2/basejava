@@ -25,7 +25,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void fillHole(int index) {
+    protected void remove(int index) {
         storage[index] = storage[size - 1];
     }
 }

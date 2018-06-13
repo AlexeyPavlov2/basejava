@@ -14,8 +14,7 @@ public class SortedArrayStorage extends AbstractArrayStorage  {
     protected int getIndex(String uuid) {
         Resume resume = new Resume();
         resume.setUuid(uuid);
-        int index = Arrays.binarySearch(storage, 0, size, resume);
-        return index;
+        return Arrays.binarySearch(storage, 0, size, resume);
     }
 
     @Override
@@ -25,7 +24,7 @@ public class SortedArrayStorage extends AbstractArrayStorage  {
     }
 
     @Override
-    protected void fillHole(int index) {
+    protected void remove(int index) {
         System.arraycopy(storage, index + 1, storage, index, size - index - 1);
     }
 }
