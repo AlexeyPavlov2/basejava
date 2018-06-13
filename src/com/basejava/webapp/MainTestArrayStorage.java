@@ -6,10 +6,11 @@ package com.basejava.webapp;
 
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.storage.ArrayStorage;
+import com.basejava.webapp.storage.SortedArrayStorage;
 import com.basejava.webapp.storage.Storage;
 
 public class MainTestArrayStorage {
-    static final Storage ARRAY_STORAGE = new ArrayStorage();
+    static final Storage ARRAY_STORAGE = new SortedArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume();
@@ -39,11 +40,8 @@ public class MainTestArrayStorage {
 
     static void printAll() {
         System.out.println("\nGet All");
-        if (ARRAY_STORAGE.size()> 0) { //Added by AlexeyPavlov
-            for (Resume r : ARRAY_STORAGE.getAll()) {
-                System.out.println(r);
-            }
-        } else
-            System.out.println("Storage is empty");
+        for (Resume r : ARRAY_STORAGE.getAll()) {
+            System.out.println(r);
+        }
     }
 }
