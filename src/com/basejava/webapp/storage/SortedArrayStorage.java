@@ -11,11 +11,17 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage  {
 
     @Override
+<<<<<<< HEAD
     protected void remove(int index) {
         int numMoved = size - index - 1;
         if (numMoved > 0) {
             System.arraycopy(storage, index + 1, storage, index, numMoved);
         }
+=======
+    protected int getIndex(String uuid) {
+        Resume resume = new Resume(uuid);
+        return Arrays.binarySearch(storage, 0, size, resume);
+>>>>>>> testsub
     }
 
     @Override

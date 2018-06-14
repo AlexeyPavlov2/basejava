@@ -20,6 +20,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
+<<<<<<< HEAD
     protected int getIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (uuid.equals(storage[i].getUuid())) {
@@ -27,5 +28,12 @@ public class ArrayStorage extends AbstractArrayStorage {
             }
         }
         return -1;
+=======
+    protected void remove(int index) {
+
+        storage[index] = storage[size - 1];
+>>>>>>> testsub
     }
+
+
 }
