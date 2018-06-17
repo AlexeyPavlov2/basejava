@@ -4,7 +4,7 @@ import com.basejava.webapp.model.Resume;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class SortedArrayStorageTest extends AbstractArrayStorageTest {
+public class SortedArrayStorageTest extends AbstractStorageTest {
     private static final String UUID_00 = "uuid00";
     private static final Resume RESUME00 = new Resume(UUID_00);
 

@@ -1,21 +1,61 @@
 /**
- * Absract array based storage for Resumes
+ * Abstract array based storage for Resumes
  */
-
 package com.basejava.webapp.storage;
 
-
-import com.basejava.webapp.exception.ExistStorageException;
-import com.basejava.webapp.exception.NotExistStorageException;
-import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
+
+    @Override
+    public void createElement(Resume resume) {
+        int index = getIndex(resume.getUuid());
+        insert(resume, -index - 1);
+        size++;
+    }
+
+    @Override
+    public Resume readElement(String uuid) {
+        return storage[getIndex(uuid)];
+    }
+
+    @Override
+    public void updateElement(Resume resume) {
+        storage[getIndex(resume.getUuid())] = resume;
+    }
+
+    @Override
+    public void deleteElement(String uuid) {
+        remove(getIndex(uuid));
+        storage[size - 1] = null;
+        size--;
+    }
+
+    @Override
+    public boolean isExist(String uuid) {
+        if (!isEmpty()) {
+            for (int i = 0; i < size(); i++) {
+                if (storage[i].getUuid().equals(uuid)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+    /**
+     * Method searches the specified array "storage" of com.basejava.webapp.model.Resume for the specified value of field "uuid"
+     *
+     * @param uuid - search string
+     * @return integer - -(insertion point) - 1 if not found, >=0 - position in the array for inserting
+     */
 
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
@@ -30,59 +70,10 @@ public abstract class AbstractArrayStorage implements Storage {
         size = 0;
     }
 
-    public void save(Resume resume) {
-        if (size < storage.length) {
-            int index = getIndex(resume.getUuid());
-            if (index >= 0) {
-                throw new ExistStorageException(resume.getUuid());
-            } else {
-                insert(resume, - index -1);
-                size++;
-            }
-        } else {
-            throw new StorageException("Internal array is full", resume.getUuid());
-        }
+    public boolean isFull() {
+        return size == AbstractArrayStorage.STORAGE_LIMIT;
     }
 
-    public void update(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        if (index < 0) {
-            throw new NotExistStorageException(resume.getUuid());
-        } else {
-            storage[index] = resume;
-        }
-    }
-
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            remove(index);
-            storage[size - 1] = null;
-            size--;
-        }
-    }
-
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            return storage[index];
-        }
-    }
-
-    public static int getSTORAGE_LIMIT() {
-        return STORAGE_LIMIT;
-    }
-
-    /**
-     * Method searches the specified array "storage" of com.basejava.webapp.model.Resume for the specified value of field "uuid"
-     *
-     * @param uuid - search string
-     * @return integer - -(insertion point) - 1 if not found, >=0 - position in the array for inserting
-     */
     protected abstract int getIndex(String uuid);
 
     /**
@@ -94,6 +85,5 @@ public abstract class AbstractArrayStorage implements Storage {
     protected abstract void insert(Resume resume, int index);
 
     protected abstract void remove(int index);
-
 
 }

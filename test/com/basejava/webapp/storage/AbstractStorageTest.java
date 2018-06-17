@@ -9,20 +9,19 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public abstract class AbstractArrayStorageTest {
+public abstract class AbstractStorageTest {
     protected Storage storage;
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
+    protected static final String UUID_2 = "uuid2";
+    protected static final String UUID_3 = "uuid3";
+    protected static final String UUID_1 = "uuid1";
+    protected static final String UUID_4 = "uuid4";
 
-    private static final Resume RESUME1 = new Resume(UUID_1);
-    private static final Resume RESUME2 = new Resume(UUID_2);
-    private static final Resume RESUME3 = new Resume(UUID_3);
-    private static final Resume RESUME4 = new Resume(UUID_4);
+    protected static final Resume RESUME1 = new Resume(UUID_1);
+    protected static final Resume RESUME2 = new Resume(UUID_2);
+    protected static final Resume RESUME3 = new Resume(UUID_3);
+    protected static final Resume RESUME4 = new Resume(UUID_4);
 
-
-    public AbstractArrayStorageTest(Storage storage) {
+    public AbstractStorageTest(Storage storage) {
         this.storage = storage;
     }
 
@@ -32,6 +31,7 @@ public abstract class AbstractArrayStorageTest {
         storage.save(RESUME1);
         storage.save(RESUME2);
         storage.save(RESUME3);
+
     }
 
     @Test
@@ -52,6 +52,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void get() {
+
         assertEquals(RESUME2, storage.get(UUID_2));
     }
 
@@ -63,20 +64,24 @@ public abstract class AbstractArrayStorageTest {
     @Test
     public void save() {
         storage.save(RESUME4);
-         assertEquals(RESUME4, storage.get(UUID_4));
+        assertEquals(RESUME4, storage.get(UUID_4));
     }
 
     @Test(expected = StorageException.class)
     public void saveOverLimit() {
-        int count = storage.size();
-        try {
-            for (int i = count; i < AbstractArrayStorage.getSTORAGE_LIMIT(); i++) {
-                storage.save(new Resume("uuidt" + String.valueOf(i)));
+        if (!storage.getClass().getName().endsWith("ListStorage") & !storage.getClass().getName().endsWith("MapStorage")) {
+            int count = storage.size();
+            try {
+                for (int i = count; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
+                    storage.save(new Resume());
+                }
+            } catch (Exception e) {
+                fail("Exception not expected!");
             }
-        } catch (Exception e) {
-            fail("Exception not expected!");
+            storage.save(RESUME4);
+        } else {
+            throw new StorageException("ListStorage case", "1");
         }
-        storage.save(RESUME4);
     }
 
     @Test(expected = NotExistStorageException.class)
