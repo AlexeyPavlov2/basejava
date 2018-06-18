@@ -3,40 +3,40 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.model.Resume;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class MapStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    public void createElement(Resume resume) {
+    public void createElement(Resume resume, Object searchKey) {
         storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    public Resume readElement(String uuid) {
-        return storage.get(uuid);
+    public Resume readElement(Object searchKey) {
+        return null;
     }
 
     @Override
-    public void updateElement(Resume resume) {
-        storage.computeIfPresent(resume.getUuid(), (k, v) -> resume);
+    public void updateElement(Resume resume, Object searchKey) {
+        storage.put(resume.getUuid(), resume);
+
     }
 
     @Override
-    public void deleteElement(String uuid) {
-        storage.remove(uuid);
+    public void deleteElement(Object searchKey) {
+
     }
 
     @Override
-    public boolean isFull() {
+    protected boolean isExist(Object searchKey) {
         return false;
     }
 
     @Override
-    public boolean isExist(String uuid) {
-        return storage.containsKey(uuid);
+    protected Object getSearchKey(String uuid) {
+        return null;
     }
 
     @Override
@@ -46,8 +46,7 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     public Resume[] getAll() {
-        System.out.println("SIZE: " + storage.size());
-        return storage.values().toArray(new Resume[storage.size()]);
+        return storage.values().toArray(new Resume[0]);
     }
 
     @Override

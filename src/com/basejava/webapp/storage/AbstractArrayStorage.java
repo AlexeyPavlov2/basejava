@@ -3,6 +3,7 @@
  */
 package com.basejava.webapp.storage;
 
+import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -13,75 +14,59 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int size = 0;
 
     @Override
-    public void createElement(Resume resume) {
-        int index = getIndex(resume.getUuid());
-        insert(resume, -index - 1);
-        size++;
+    public void createElement(Resume resume, Object index) {
+        if (isFull()) {
+            throw new StorageException("Internal storage is full", resume.getUuid());
+        } else {
+            insert(resume, (Integer) index);
+            size++;
+        }
     }
 
     @Override
-    public Resume readElement(String uuid) {
-        return storage[getIndex(uuid)];
+    public Resume readElement(Object index) {
+        return storage[(Integer) index];
     }
 
     @Override
-    public void updateElement(Resume resume) {
-        storage[getIndex(resume.getUuid())] = resume;
+    public void updateElement(Resume resume, Object index) {
+        storage[(Integer) index] = resume;
     }
 
     @Override
-    public void deleteElement(String uuid) {
-        remove(getIndex(uuid));
+    public void deleteElement(Object index) {
+        remove((Integer) index);
         storage[size - 1] = null;
         size--;
     }
 
     @Override
-    public boolean isExist(String uuid) {
-        if (!isEmpty()) {
-            for (int i = 0; i < size(); i++) {
-                if (storage[i].getUuid().equals(uuid)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-
-
-    /**
-     * Method searches the specified array "storage" of com.basejava.webapp.model.Resume for the specified value of field "uuid"
-     *
-     * @param uuid - search string
-     * @return integer - -(insertion point) - 1 if not found, >=0 - position in the array for inserting
-     */
-
     public Resume[] getAll() {
         return Arrays.copyOfRange(storage, 0, size);
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public boolean isFull() {
+    protected boolean isFull() {
         return size == AbstractArrayStorage.STORAGE_LIMIT;
     }
 
-    protected abstract int getIndex(String uuid);
+    @Override
+    protected boolean isExist(Object index) {
+        return (Integer) index >= 0;
+    }
 
-    /**
-     * Method insertes the specified resume in the specified position of array "storage"
-     *
-     * @param resume - object for inserting
-     * @param index  - position in array for inserting
-     */
+    protected abstract Integer getSearchKey(String uuid);
+
     protected abstract void insert(Resume resume, int index);
 
     protected abstract void remove(int index);
