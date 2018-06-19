@@ -5,7 +5,6 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
-import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
@@ -60,10 +59,6 @@ public abstract class AbstractStorage implements Storage {
     public abstract void deleteElement(Object searchKey);
 
     protected abstract boolean isExist(Object searchKey);
-
-    public boolean isEmpty() {
-        return size() == 0;
-    }
 
     protected abstract Object getSearchKey(String uuid);
 

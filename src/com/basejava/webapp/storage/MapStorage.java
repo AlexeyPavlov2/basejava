@@ -15,28 +15,28 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     public Resume readElement(Object searchKey) {
-        return null;
+        //System.out.println("KEY " + searchKey);
+        return storage.get(searchKey);
     }
 
     @Override
     public void updateElement(Resume resume, Object searchKey) {
         storage.put(resume.getUuid(), resume);
-
     }
 
     @Override
     public void deleteElement(Object searchKey) {
-
+        storage.remove(searchKey);
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return false;
+        return storage.containsKey((String) searchKey);
     }
 
     @Override
     protected Object getSearchKey(String uuid) {
-        return null;
+        return uuid;
     }
 
     @Override

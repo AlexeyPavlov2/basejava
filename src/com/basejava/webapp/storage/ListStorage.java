@@ -17,17 +17,17 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     public Resume readElement(Object searchKey) {
-        return storage.get((Integer) searchKey);
+        return storage.get((int) searchKey);
     }
 
     @Override
     public void updateElement(Resume resume, Object index) {
-        storage.set((Integer) index, resume);
+        storage.set((int) index, resume);
     }
 
     @Override
     public void deleteElement(Object index) {
-        storage.remove(((Integer) index).intValue());
+        storage.remove((int) index);
     }
 
     @Override
