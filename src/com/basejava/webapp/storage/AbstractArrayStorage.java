@@ -57,7 +57,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     protected boolean isFull() {
-        return size == AbstractArrayStorage.STORAGE_LIMIT;
+        return size == STORAGE_LIMIT;
     }
 
     @Override

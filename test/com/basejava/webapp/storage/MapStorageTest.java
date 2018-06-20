@@ -3,11 +3,12 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 public class MapStorageTest extends AbstractStorageTest {
     public MapStorageTest() {
