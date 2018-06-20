@@ -1,18 +1,13 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.exception.StorageException;
+
 import com.basejava.webapp.model.Resume;
-
-import org.junit.Assert;
 import org.junit.Test;
-
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-
 
 public class MapStorageTest extends AbstractStorageTest {
     public MapStorageTest() {

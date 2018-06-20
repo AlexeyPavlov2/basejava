@@ -2,7 +2,6 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
-import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +51,6 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void get() {
-
         assertEquals(RESUME2, storage.get(UUID_2));
     }
 
@@ -65,23 +63,6 @@ public abstract class AbstractStorageTest {
     public void save() {
         storage.save(RESUME4);
         assertEquals(RESUME4, storage.get(UUID_4));
-    }
-
-    @Test(expected = StorageException.class)
-    public void saveOverLimit() {
-        if (!storage.getClass().getName().endsWith("ListStorage") & !storage.getClass().getName().endsWith("MapStorage")) {
-            int count = storage.size();
-            try {
-                for (int i = count; i < AbstractArrayStorage.STORAGE_LIMIT; i++) {
-                    storage.save(new Resume());
-                }
-            } catch (Exception e) {
-                fail("Exception not expected!");
-            }
-            storage.save(RESUME4);
-        } else {
-            throw new StorageException("ListStorage case", "1");
-        }
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -111,6 +92,5 @@ public abstract class AbstractStorageTest {
         storage.clear();
         assertEquals(0, storage.size());
     }
-
 
 }
