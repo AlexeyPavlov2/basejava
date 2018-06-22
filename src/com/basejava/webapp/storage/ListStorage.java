@@ -6,7 +6,9 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListStorage extends AbstractStorage {
     protected List<Resume> storage = new ArrayList<>();
@@ -54,6 +56,13 @@ public class ListStorage extends AbstractStorage {
     @Override
     public Resume[] getAll() {
         return storage.toArray(new Resume[0]);
+    }
+
+    @Override
+    public List<Resume> getAllSorted() {
+        return storage.stream()
+                .sorted(Comparator.comparing(Resume::getFullName))
+                .collect(Collectors.toList());
     }
 
     @Override

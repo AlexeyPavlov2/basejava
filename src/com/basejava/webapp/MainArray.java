@@ -5,7 +5,7 @@
 package com.basejava.webapp;
 
 import com.basejava.webapp.model.Resume;
-import com.basejava.webapp.storage.MapStorage;
+import com.basejava.webapp.storage.MapUuidStorage;
 import com.basejava.webapp.storage.Storage;
 
 import java.io.BufferedReader;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class MainArray {
-    private final static Storage ARRAY_STORAGE = new MapStorage();
+    private final static Storage ARRAY_STORAGE = new MapUuidStorage();
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -37,12 +37,12 @@ public class MainArray {
                     System.out.println(ARRAY_STORAGE.size());
                     break;
                 case "save":
-                    r = new  Resume(uuid);
+                    r = new  Resume(uuid, "");
                     ARRAY_STORAGE.save(r);
                     printAll();
                     break;
                 case "update":
-                    r = new Resume(uuid);
+                    r = new Resume(uuid, "");
                     ARRAY_STORAGE.update(r);
                     printAll();
                     break;

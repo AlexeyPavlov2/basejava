@@ -6,6 +6,11 @@ import com.basejava.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -16,10 +21,10 @@ public abstract class AbstractStorageTest {
     protected static final String UUID_1 = "uuid1";
     protected static final String UUID_4 = "uuid4";
 
-    protected static final Resume RESUME1 = new Resume(UUID_1);
-    protected static final Resume RESUME2 = new Resume(UUID_2);
-    protected static final Resume RESUME3 = new Resume(UUID_3);
-    protected static final Resume RESUME4 = new Resume(UUID_4);
+    protected static final Resume RESUME1 = new Resume(UUID_1, "Сергеева Мария");
+    protected static final Resume RESUME2 = new Resume(UUID_2, "Петрова Ольга");
+    protected static final Resume RESUME3 = new Resume(UUID_3, "Иванов Сергей");
+    protected static final Resume RESUME4 = new Resume(UUID_4, "Сидоров Иван");
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -44,6 +49,13 @@ public abstract class AbstractStorageTest {
         Resume[] expected = new Resume[] {RESUME1, RESUME2, RESUME3};
         assertArrayEquals(expected, storage.getAll());
 
+    }
+
+    @Test
+    public void getAllSorted() {
+        List<Resume> expected = Arrays.asList(new Resume[] {RESUME1, RESUME2, RESUME3});
+        Collections.sort(expected, Comparator.comparing(Resume::getFullName));
+        assertEquals(expected, storage.getAllSorted());
     }
 
     @Test(expected = NotExistStorageException.class)

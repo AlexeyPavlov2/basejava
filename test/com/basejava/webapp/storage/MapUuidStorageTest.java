@@ -10,9 +10,9 @@ import java.util.Set;
 
 import static org.junit.Assert.assertArrayEquals;
 
-public class MapStorageTest extends AbstractStorageTest {
-    public MapStorageTest() {
-        super(new MapStorage());
+public class MapUuidStorageTest extends AbstractStorageTest {
+    public MapUuidStorageTest() {
+        super(new MapUuidStorage());
     }
 
     @Test
