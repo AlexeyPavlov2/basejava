@@ -21,14 +21,6 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Resume resume = (Resume) o;
-        return uuid.equals(resume.uuid);
-    }
-
     public String getFullName() {
         return fullName;
     }
@@ -37,16 +29,11 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
-    @Override
-    public int hashCode() {
-        return uuid.hashCode();
-    }
-
-    public String getUuid() {
+   public String getUuid() {
         return uuid;
     }
 
-    @Override
+   @Override
     public String toString() {
         return "Resume{" +
                 "uuid='" + uuid + '\'' +
@@ -56,6 +43,25 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public int compareTo(Resume resume) {
-        return uuid.compareToIgnoreCase(resume.getUuid());
+        int c = fullName.compareToIgnoreCase(resume.getFullName());
+        return  c != 0  ?  c : uuid.compareToIgnoreCase(resume.getUuid());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Resume)) return false;
+
+        Resume resume = (Resume) o;
+
+        if (!uuid.equals(resume.uuid)) return false;
+        return fullName != null ? fullName.equals(resume.fullName) : resume.fullName == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
+        return result;
     }
 }

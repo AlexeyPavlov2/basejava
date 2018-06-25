@@ -8,10 +8,8 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
@@ -45,16 +43,9 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() {
-        Resume[] expected = new Resume[] {RESUME1, RESUME2, RESUME3};
-        assertArrayEquals(expected, storage.getAll());
-
-    }
-
-    @Test
     public void getAllSorted() {
-        List<Resume> expected = Arrays.asList(new Resume[] {RESUME1, RESUME2, RESUME3});
-        Collections.sort(expected, Comparator.comparing(Resume::getFullName));
+        List<Resume> expected = Arrays.asList(RESUME1, RESUME2, RESUME3);
+        Collections.sort(expected);
         assertEquals(expected, storage.getAllSorted());
     }
 

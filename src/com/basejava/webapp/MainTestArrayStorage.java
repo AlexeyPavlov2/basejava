@@ -38,8 +38,8 @@ public class MainTestArrayStorage {
 
     static void printAll() {
         System.out.println("\nGet All");
-        if (ARRAY_STORAGE.size()> 0) { //Added by AlexeyPavlov
-            for (Resume r : ARRAY_STORAGE.getAll()) {
+        if (ARRAY_STORAGE.size()> 0) {
+            for (Resume r : ARRAY_STORAGE.getAllSorted()) {
                 System.out.println(r);
             }
         } else

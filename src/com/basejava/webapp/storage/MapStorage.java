@@ -2,6 +2,7 @@
  * Map<> based storage for Resumes
  */
 
+
 package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
@@ -11,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapUuidStorage extends AbstractStorage {
-    protected Map<String, Resume> storage = new HashMap<>();
+public class MapStorage extends AbstractStorage {
+    private Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public void createElement(Resume resume, Object searchKey) {
@@ -21,8 +22,7 @@ public class MapUuidStorage extends AbstractStorage {
 
     @Override
     public Resume readElement(Object searchKey) {
-        //System.out.println("KEY " + searchKey);
-        return storage.get((String) searchKey);
+        return (Resume) searchKey;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class MapUuidStorage extends AbstractStorage {
 
     @Override
     public void deleteElement(Object searchKey) {
-        storage.remove((String) searchKey);
+        storage.remove(((Resume) searchKey).getUuid());
     }
 
     @Override
@@ -42,12 +42,13 @@ public class MapUuidStorage extends AbstractStorage {
 
     @Override
     protected boolean isExist(Object searchKey) {
-        return storage.containsKey((String) searchKey);
+        return searchKey != null;
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
-        return uuid;
+    //
+    protected Resume getSearchKey(String uuid) {
+        return storage.get(uuid);
     }
 
     @Override
