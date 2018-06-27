@@ -7,18 +7,17 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.*;
 
 public abstract class AbstractArrayStorage extends AbstractStorage {
-    protected static final int STORAGE_LIMIT = 10;
+    protected static final int STORAGE_LIMIT = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
     @Override
-    public void createElement(Resume resume, Object index) {
+    public final void createElement(Object index, Resume resume) {
         if (isFull()) {
             throw new StorageException("Internal storage is full", resume.getUuid());
         } else {
@@ -28,44 +27,44 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume readElement(Object index) {
+    public final Resume readElement(Object index) {
         return storage[(int) index];
     }
 
     @Override
-    public void updateElement(Resume resume, Object index) {
+    public final void updateElement(Object index, Resume resume) {
         storage[(int) index] = resume;
     }
 
     @Override
-    public void deleteElement(Object index) {
+    public final void deleteElement(Object index) {
         remove((int) index);
         storage[size - 1] = null;
         size--;
     }
 
     @Override
-    public List<Resume> getAll() {
-        return new ArrayList<>(asList(copyOfRange(storage, 0, size)));
+    public final List<Resume> getAll() {
+        return asList(copyOfRange(storage, 0, size));
     }
 
     @Override
-    public int size() {
+    public final int size() {
         return size;
     }
 
     @Override
-    public void clear() {
+    public final void clear() {
         fill(storage, 0, size, null);
         size = 0;
     }
 
-    protected boolean isFull() {
+    protected final boolean isFull() {
         return size == STORAGE_LIMIT;
     }
 
     @Override
-    protected boolean isExist(Object index) {
+    protected final boolean isExist(Object index) {
         return (int) index >= 0;
     }
 

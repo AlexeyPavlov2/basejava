@@ -4,6 +4,7 @@
 
 package com.basejava.webapp.model;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Resume implements Comparable<Resume> {
@@ -51,17 +52,13 @@ public class Resume implements Comparable<Resume> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Resume)) return false;
-
         Resume resume = (Resume) o;
-
-        if (!uuid.equals(resume.uuid)) return false;
-        return fullName != null ? fullName.equals(resume.fullName) : resume.fullName == null;
+        return Objects.equals(uuid, resume.uuid) &&
+                Objects.equals(fullName, resume.fullName);
     }
 
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
-        return result;
+        return Objects.hash(uuid, fullName);
     }
 }

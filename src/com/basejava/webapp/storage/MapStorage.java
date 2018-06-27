@@ -2,7 +2,6 @@
  * Map<> based storage for Resumes
  */
 
-
 package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
@@ -16,7 +15,7 @@ public class MapStorage extends AbstractStorage {
     private Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    public void createElement(Resume resume, Object searchKey) {
+    public void createElement(Object searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
@@ -26,7 +25,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public void updateElement(Resume resume, Object searchKey) {
+    public void updateElement(Object searchKey, Resume resume) {
         storage.put(resume.getUuid(), resume);
     }
 
@@ -41,8 +40,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return searchKey != null;
+    protected boolean isExist(Object resume) {
+        return resume != null;
     }
 
     @Override

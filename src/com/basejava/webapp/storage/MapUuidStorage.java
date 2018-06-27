@@ -15,19 +15,18 @@ public class MapUuidStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
-    public void createElement(Resume resume, Object searchKey) {
-        storage.put(resume.getUuid(), resume);
+    public void createElement(Object searchKey, Resume resume) {
+        storage.put((String) searchKey, resume);
     }
 
     @Override
     public Resume readElement(Object searchKey) {
-        //System.out.println("KEY " + searchKey);
         return storage.get((String) searchKey);
     }
 
     @Override
-    public void updateElement(Resume resume, Object searchKey) {
-        storage.put(resume.getUuid(), resume);
+    public void updateElement(Object searchKey, Resume resume) {
+        storage.put((String) searchKey, resume);
     }
 
     @Override

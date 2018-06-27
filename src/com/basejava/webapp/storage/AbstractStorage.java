@@ -12,37 +12,37 @@ import java.util.List;
 public abstract class AbstractStorage implements Storage {
 
     @Override
-    public void save(Resume resume) {
+    public final void save(Resume resume) {
         Object searchKey = getNotExistedSearchKey(resume.getUuid());
-        createElement(resume, searchKey);
+        createElement(searchKey, resume);
     }
 
     @Override
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         Object searchKey = getExistedSearchKey(uuid);
         return readElement(searchKey);
     }
 
     @Override
-    public void update(Resume resume) {
+    public final void update(Resume resume) {
         Object searchKey = getExistedSearchKey(resume.getUuid());
-        updateElement(resume, searchKey);
+        updateElement(searchKey, resume);
     }
 
     @Override
-    public void delete(String uuid) {
+    public final void delete(String uuid) {
         Object searchKey = getExistedSearchKey(uuid);
         deleteElement(searchKey);
     }
 
     @Override
-    public List<Resume> getAllSorted() {
+    public final List<Resume> getAllSorted() {
         List<Resume> list = getAll();
         list.sort(Resume::compareTo);
         return list;
     }
 
-    private Object getExistedSearchKey(String uuid) {
+    private final Object getExistedSearchKey(String uuid) {
         Object searchKey = getSearchKey(uuid);
         if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
@@ -50,7 +50,7 @@ public abstract class AbstractStorage implements Storage {
         return searchKey;
     }
 
-    private Object getNotExistedSearchKey(String uuid) {
+    private final Object getNotExistedSearchKey(String uuid) {
         Object searchKey = getSearchKey(uuid);
         if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
@@ -59,11 +59,11 @@ public abstract class AbstractStorage implements Storage {
     }
 
 
-    public abstract void createElement(Resume resume, Object searchKey);
+    public abstract void createElement(Object searchKey, Resume resume);
 
     public abstract Resume readElement(Object searchKey);
 
-    public abstract void updateElement(Resume resume, Object searchKey);
+    public abstract void updateElement(Object searchKey, Resume resume);
 
     public abstract void deleteElement(Object searchKey);
 

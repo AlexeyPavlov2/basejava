@@ -13,7 +13,7 @@ public class ListStorage extends AbstractStorage {
     protected List<Resume> storage = new ArrayList<>();
 
     @Override
-    public void createElement(Resume resume, Object searchKey) {
+    public void createElement(Object searchKey, Resume resume) {
         storage.add(resume);
     }
 
@@ -23,7 +23,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void updateElement(Resume resume, Object index) {
+    public void updateElement(Object index, Resume resume) {
         storage.set((int) index, resume);
     }
 
