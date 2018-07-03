@@ -65,7 +65,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     protected final boolean isExist(Object index) {
-        return (int) index >= 0;
+        return (int) index > -1;
     }
 
     protected abstract Integer getSearchKey(String uuid);
