@@ -1,7 +1,3 @@
-/**
- * Abstract array based storage for Resumes
- */
-
 package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
@@ -21,7 +17,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (isFull()) {
             throw new StorageException("Internal storage is full", resume.getUuid());
         } else {
-            insert(resume, (int) index);
+            insert((int) index, resume);
             size++;
         }
     }
@@ -59,7 +55,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         size = 0;
     }
 
-    protected final boolean isFull() {
+    private boolean isFull() {
         return size == STORAGE_LIMIT;
     }
 
@@ -68,9 +64,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return (int) index > -1;
     }
 
-    protected abstract Integer getSearchKey(String uuid);
-
-    protected abstract void insert(Resume resume, int index);
+    protected abstract void insert(int index, Resume resume);
 
     protected abstract void remove(int index);
 

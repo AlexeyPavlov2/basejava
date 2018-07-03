@@ -1,6 +1,3 @@
-/**
- * Abstract class for storage of Resumes
- */
 package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.ExistStorageException;

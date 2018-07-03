@@ -1,7 +1,3 @@
-/**
- * Test for com.basejava.webapp.storage.ArrayStorage
- */
-
 package com.basejava.webapp;
 
 import com.basejava.webapp.model.Resume;
@@ -38,7 +34,7 @@ public class MainArray {
                     System.out.println(ARRAY_STORAGE.size());
                     break;
                 case "save":
-                    r = new  Resume(uuid, "");
+                    r = new Resume(uuid, "");
                     ARRAY_STORAGE.save(r);
                     printAll();
                     break;

@@ -1,7 +1,3 @@
-/**
- * com.basejava.webapp.model.Resume class
- */
-
 package com.basejava.webapp.model;
 
 import java.util.Objects;
@@ -13,14 +9,17 @@ public class Resume implements Comparable<Resume> {
     private final String uuid;
     private String fullName;
 
-    public Resume() {
+    public Resume(String fullName) {
         this(UUID.randomUUID().toString(), "Undefined");
+        this.fullName = fullName;
     }
 
     public Resume(String uuid, String fullName) {
         this.uuid = uuid;
         this.fullName = fullName;
     }
+
+
 
     public String getFullName() {
         return fullName;
@@ -30,11 +29,11 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
-   public String getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-   @Override
+    @Override
     public String toString() {
         return "Resume{" +
                 "uuid='" + uuid + '\'' +
@@ -45,7 +44,7 @@ public class Resume implements Comparable<Resume> {
     @Override
     public int compareTo(Resume resume) {
         int c = fullName.compareToIgnoreCase(resume.getFullName());
-        return  c != 0  ?  c : uuid.compareToIgnoreCase(resume.getUuid());
+        return c != 0 ? c : uuid.compareToIgnoreCase(resume.getUuid());
     }
 
     @Override
