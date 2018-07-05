@@ -4,69 +4,75 @@ import com.basejava.webapp.exception.ExistStorageException;
 import com.basejava.webapp.exception.NotExistStorageException;
 import com.basejava.webapp.model.Resume;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
-public abstract class AbstractStorage implements Storage {
+public abstract class AbstractStorage<SK> implements Storage {
+    //    protected final Logger LOG = Logger.getLogger(getClass().getName());
+    private static final Logger LOG = Logger.getLogger(AbstractStorage.class.getName());
 
-    @Override
-    public final void save(Resume resume) {
-        Object searchKey = getIfNotExist(resume.getUuid());
-        createElement(searchKey, resume);
+    protected abstract SK getSearchKey(String uuid);
+
+    protected abstract void doUpdate(Resume resume, SK searchKey);
+
+    protected abstract boolean isExist(SK searchKey);
+
+    protected abstract void doSave(Resume resume, SK searchKey);
+
+    protected abstract Resume doGet(SK searchKey);
+
+    protected abstract void doDelete(SK searchKey);
+
+    protected abstract List<Resume> doCopyAll();
+
+    public void update(Resume resume) {
+        LOG.info("Update " + resume);
+        SK searchKey = getExistedSearchKey(resume.getUuid());
+        doUpdate(resume, searchKey);
     }
 
-    @Override
-    public final Resume get(String uuid) {
-        Object searchKey = getIfExist(uuid);
-        return readElement(searchKey);
+    public void save(Resume resume) {
+        LOG.info("Save " + resume);
+        SK searchKey = getNotExistedSearchKey(resume.getUuid());
+        doSave(resume, searchKey);
     }
 
-    @Override
-    public final void update(Resume resume) {
-        Object searchKey = getIfExist(resume.getUuid());
-        updateElement(searchKey, resume);
+    public void delete(String uuid) {
+        LOG.info("Delete " + uuid);
+        SK searchKey = getExistedSearchKey(uuid);
+        doDelete(searchKey);
     }
 
-    @Override
-    public final void delete(String uuid) {
-        Object searchKey = getIfExist(uuid);
-        deleteElement(searchKey);
+    public Resume get(String uuid) {
+        LOG.info("Get " + uuid);
+        SK searchKey = getExistedSearchKey(uuid);
+        return doGet(searchKey);
     }
 
-    @Override
-    public final List<Resume> getAllSorted() {
-        List<Resume> list = getAll();
-        list.sort(Resume::compareTo);
-        return list;
-    }
-
-    private Object getIfExist(String uuid) {
-        Object searchKey = getSearchKey(uuid);
+    private SK getExistedSearchKey(String uuid) {
+        SK searchKey = getSearchKey(uuid);
         if (!isExist(searchKey)) {
+            LOG.warning("Resume " + uuid + " not exist");
             throw new NotExistStorageException(uuid);
         }
         return searchKey;
     }
 
-    private Object getIfNotExist(String uuid) {
-        Object searchKey = getSearchKey(uuid);
+    private SK getNotExistedSearchKey(String uuid) {
+        SK searchKey = getSearchKey(uuid);
         if (isExist(searchKey)) {
+            LOG.warning("Resume " + uuid + " already exist");
             throw new ExistStorageException(uuid);
         }
         return searchKey;
     }
 
-    public abstract void createElement(Object searchKey, Resume resume);
-
-    public abstract Resume readElement(Object searchKey);
-
-    public abstract void updateElement(Object searchKey, Resume resume);
-
-    public abstract void deleteElement(Object searchKey);
-
-    protected abstract boolean isExist(Object searchKey);
-
-    protected abstract List<Resume> getAll();
-
-    protected abstract Object getSearchKey(String uuid);
-
+    @Override
+    public List<Resume> getAllSorted() {
+        LOG.info("getAllSorted");
+        List<Resume> list = doCopyAll();
+        Collections.sort(list);
+        return list;
+    }
 }

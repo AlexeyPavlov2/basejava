@@ -3,69 +3,69 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
+import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.*;
-
-public abstract class AbstractArrayStorage extends AbstractStorage {
+/**
+ * Array based storage for Resumes
+ */
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
-    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
+
+    protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
 
+    public int size() {
+        return size;
+    }
+
+    public void clear() {
+        Arrays.fill(storage, 0, size, null);
+        size = 0;
+    }
+
     @Override
-    public final void createElement(Object index, Resume resume) {
-        if (isFull()) {
-            throw new StorageException("Internal storage is full", resume.getUuid());
+    protected void doUpdate(Resume resume, Integer index) {
+        storage[index] = resume;
+    }
+
+    /**
+     * @return array, contains only Resumes in storage (without null)
+     */
+    @Override
+    public List<Resume> doCopyAll() {
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
+    }
+
+    @Override
+    protected void doSave(Resume resume, Integer index) {
+        if (size == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", resume.getUuid());
         } else {
-            insert((int) index, resume);
+            insertElement(resume, index);
             size++;
         }
     }
 
     @Override
-    public final Resume readElement(Object index) {
-        return storage[(int) index];
-    }
-
-    @Override
-    public final void updateElement(Object index, Resume resume) {
-        storage[(int) index] = resume;
-    }
-
-    @Override
-    public final void deleteElement(Object index) {
-        remove((int) index);
+    public void doDelete(Integer index) {
+        fillDeletedElement(index);
         storage[size - 1] = null;
         size--;
     }
 
-    @Override
-    public final List<Resume> getAll() {
-        return asList(copyOfRange(storage, 0, size));
+    public Resume doGet(Integer index) {
+        return storage[index];
     }
 
     @Override
-    public final int size() {
-        return size;
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
 
-    @Override
-    public final void clear() {
-        fill(storage, 0, size, null);
-        size = 0;
-    }
+    protected abstract void fillDeletedElement(int index);
 
-    private boolean isFull() {
-        return size == STORAGE_LIMIT;
-    }
+    protected abstract void insertElement(Resume r, int index);
 
-    @Override
-    protected final boolean isExist(Object index) {
-        return (int) index > -1;
-    }
-
-    protected abstract void insert(int index, Resume resume);
-
-    protected abstract void remove(int index);
-
+    protected abstract Integer getSearchKey(String uuid);
 }
