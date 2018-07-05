@@ -39,7 +39,7 @@ public abstract class AbstractStorage implements Storage {
         return list;
     }
 
-    private final Object getIfExist(String uuid) {
+    private Object getIfExist(String uuid) {
         Object searchKey = getSearchKey(uuid);
         if (!isExist(searchKey)) {
             throw new NotExistStorageException(uuid);
@@ -47,14 +47,13 @@ public abstract class AbstractStorage implements Storage {
         return searchKey;
     }
 
-    private final Object getIfNotExist(String uuid) {
+    private Object getIfNotExist(String uuid) {
         Object searchKey = getSearchKey(uuid);
         if (isExist(searchKey)) {
             throw new ExistStorageException(uuid);
         }
         return searchKey;
     }
-
 
     public abstract void createElement(Object searchKey, Resume resume);
 
@@ -69,6 +68,5 @@ public abstract class AbstractStorage implements Storage {
     protected abstract List<Resume> getAll();
 
     protected abstract Object getSearchKey(String uuid);
-
 
 }
