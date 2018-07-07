@@ -89,10 +89,12 @@ public class Resume implements Comparable<Resume> {
         contacts.printHTML();
 
         infoStorage.forEach((k,v) -> {
-            System.out.println("<br>" + "<span style=\"color: black; font-weight: bold; font-size: 18px\">" +
-                    k.getTitle() + "</span><br>");
-            v.printHTML();
-            System.out.println("<br>");
+            if (v != null) {
+                System.out.println("<br>" + "<span style=\"color: black; font-weight: bold; font-size: 18px\">" +
+                        k.getTitle() + "</span><br>");
+                v.printHTML();
+                System.out.println("<br>");
+            }
         });
 
     }
@@ -102,8 +104,10 @@ public class Resume implements Comparable<Resume> {
         phones.print();
         contacts.print();
         infoStorage.forEach((k, v) -> {
-            System.out.println(k.getTitle());
-            v.print();
+            if (v != null) {
+                System.out.println(k.getTitle());
+                v.print();
+            }
         });
     }
 

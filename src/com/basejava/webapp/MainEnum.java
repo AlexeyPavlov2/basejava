@@ -68,8 +68,8 @@ public class MainEnum {
         resume.putSection(SectionType.EXPERIENCE, experiences);
         resume.putSection(SectionType.EDUCATION, educations);
 
-        //resume.printHTML();
-        resume.print();
+        resume.printHTML();
+        //resume.print();
 
 
 
