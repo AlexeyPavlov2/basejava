@@ -1,6 +1,7 @@
 package com.basejava.webapp.model;
 
 public class HyperLink {
+
     private String title;
     private String link;
 

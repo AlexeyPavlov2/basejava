@@ -1,16 +1,16 @@
 package com.basejava.webapp.model;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Resume implements Comparable<Resume> {
+
     private final String uuid;
     private final String fullName;
-    private Phones phones;
-    private Contacts contacts;
-    Map<SectionType, Section> infoStorage = new HashMap<>();
+    private Map<ContactType, String> contacts = new EnumMap<ContactType, String>(ContactType.class);
+    private Map<SectionType, Section> sections = new EnumMap<SectionType, Section>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -23,24 +23,20 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
-    public void setPhones(Phones phones) {
-        this.phones = phones;
-    }
-
-    public Contacts getContacts() {
+    public Map<ContactType, String> getContacts() {
         return contacts;
     }
 
-    public void setContacts(Contacts contacts) {
+    public void setContacts(Map<ContactType, String> contacts) {
         this.contacts = contacts;
     }
 
     public void putSection(SectionType sectionType, Section section) {
-        infoStorage.put(sectionType, section);
+        sections.put(sectionType, section);
     }
 
     public Section getSection(SectionType sectionType) {
-        return infoStorage.get(sectionType);
+        return sections.get(sectionType);
     }
 
     public String getUuid() {
@@ -63,8 +59,8 @@ public class Resume implements Comparable<Resume> {
         return fullName;
     }
 
-    public Map<SectionType, Section> getInfoStorage() {
-        return infoStorage;
+    public Map<SectionType, Section> getSections() {
+        return sections;
     }
 
     @Override
@@ -81,29 +77,12 @@ public class Resume implements Comparable<Resume> {
         return cmp != 0 ? cmp : uuid.compareTo(o.uuid);
     }
 
-    public void printHTML() {
-        System.out.print("<span style=\"color: black; font-weight: bold; font-size: 20px\">" +
-                fullName + "</span><br><br>");
-
-        phones.printHTML();
-        contacts.printHTML();
-
-        infoStorage.forEach((k,v) -> {
-            if (v != null) {
-                System.out.println("<br>" + "<span style=\"color: black; font-weight: bold; font-size: 18px\">" +
-                        k.getTitle() + "</span><br>");
-                v.printHTML();
-                System.out.println("<br>");
-            }
-        });
-
-    }
-
     public void print() {
         System.out.println(fullName);
-        phones.print();
-        contacts.print();
-        infoStorage.forEach((k, v) -> {
+        System.out.println("Контакты");
+        contacts.forEach((k, v) -> System.out.println(k.getTitle() + " " + v));
+
+        sections.forEach((k, v) -> {
             if (v != null) {
                 System.out.println(k.getTitle());
                 v.print();

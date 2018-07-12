@@ -1,29 +1,13 @@
 package com.basejava.webapp.model;
 
-public class Personal extends Section {
-    private String personal;
+public class Personal extends AbstractOneObjectSection<String> {
 
-    public Personal(String qualities) {
-        this.personal = qualities;
-    }
-
-    public String getPersonal() {
-        return personal;
-    }
-
-    public void setPersonal(String personal) {
-        this.personal = personal;
-    }
-
-
-    @Override
-    public void printHTML() {
-        System.out.println(personal);
-
+    public Personal(String item) {
+        super(item);
     }
 
     @Override
     public void print() {
-        System.out.println(personal);
+        System.out.println(item);
     }
 }
