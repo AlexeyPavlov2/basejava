@@ -4,9 +4,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Companies extends ListSection<Company> {
+public class CompanySection extends ListSection<Company> {
 
-    public Companies(List<Company> items) {
+    public CompanySection(List<Company> items) {
         super(items);
     }
 

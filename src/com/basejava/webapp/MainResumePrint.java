@@ -36,7 +36,7 @@ public class MainResumePrint {
                 "Version control: Subversion, Git, Mercury, ClearCase, Perforce", "DB: PostgreSQL(наследование, pgplsql, PL/Python), Redis (Jedis), H2, Oracle, MySQL, SQLite, MS SQL, HSQLDB",
                 "Languages: Java, Scala, Python/Jython/PL-Python, JavaScript, Groovy, XML/XSD/XSLT, SQL, C/C++, Unix shell scripts"));
 
-        Companies companiesEducation = new Companies(Arrays.asList(
+        CompanySection companiesEducation = new CompanySection(Arrays.asList(
                 new Company(new HyperLink("Coursera", "https://www.coursera.org/course/progfun"), LocalDate.of(2013, 03, 01), LocalDate.of(2013, 05, 01),
                         "Functional Programming Principles in Scala\" by Martin Odersky", ""),
                 new Company(new HyperLink("Luxoft", "http://www.luxoft-training.ru/training/catalog/course.html?ID=22366"), LocalDate.of(2011, 03, 01), LocalDate.of(2011, 04, 01),
@@ -46,7 +46,7 @@ public class MainResumePrint {
 
         ));
 
-        Companies companiesExperiens = new Companies(Arrays.asList(
+        CompanySection companiesExperiens = new CompanySection(Arrays.asList(
                 new Company(new HyperLink("Java Online Project", "http://javaops.ru/"), LocalDate.of(2013, 10, 01),
                         null, "Автор проекта.", "Создание, организация и проведение Java онлайн проектов и стажировок."),
                 new Company(new HyperLink("Wrike", "https://www.wrike.com/"), LocalDate.of(2014, 10, 1), LocalDate.of(2016, 01, 01),
