@@ -1,13 +1,12 @@
 package com.basejava.webapp.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractObjectListSection<T> extends Section {
+public class ListSection<T> extends Section {
 
-    protected List<T> items = new ArrayList<>();
+    protected List<T> items;
 
-    public AbstractObjectListSection(List<T> items) {
+    public ListSection(List<T> items) {
         this.items = items;
     }
 
@@ -18,5 +17,10 @@ public abstract class AbstractObjectListSection<T> extends Section {
 
     public void setItems(List<T> items) {
         this.items = items;
+    }
+
+    @Override
+    public void print() {
+        items.forEach(System.out::println);
     }
 }

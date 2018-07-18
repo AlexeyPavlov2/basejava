@@ -4,7 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Companies extends AbstractObjectListSection<Company> {
+public class Companies extends ListSection<Company> {
 
     public Companies(List<Company> items) {
         super(items);
