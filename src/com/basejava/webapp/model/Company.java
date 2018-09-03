@@ -1,21 +1,29 @@
 package com.basejava.webapp.model;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Company {
 
     private HyperLink link;
-    private LocalDate start;
-    private LocalDate end;
-    private String text;
-    private String description;
+    private List<CompanyPersonalInfo> companyPersonalInfoList = new ArrayList<>();
 
-    public Company(HyperLink link, LocalDate start, LocalDate end, String text, String description) {
+    public Company(HyperLink link) {
         this.link = link;
-        this.start = start;
-        this.end = end;
-        this.text = text;
-        this.description = description;
+    }
+
+    public Company(String title, String link) {
+        this(new HyperLink(title, link));
+    }
+
+    public Company(HyperLink link, List<CompanyPersonalInfo> companyPersonalInfoList) {
+        this(link);
+        this.companyPersonalInfoList = companyPersonalInfoList;
+    }
+
+    public Company(String title, String link, List<CompanyPersonalInfo> companyPersonalInfoList) {
+        this(new HyperLink(title, link), companyPersonalInfoList);
     }
 
     public HyperLink getLink() {
@@ -26,48 +34,36 @@ public class Company {
         this.link = link;
     }
 
-    public LocalDate getStart() {
-        return start;
+    public List<CompanyPersonalInfo> getCompanyPersonalInfoList() {
+        return companyPersonalInfoList;
     }
 
-    public void setStart(LocalDate start) {
-        this.start = start;
+    public void setCompanyPersonalInfoList(List<CompanyPersonalInfo> companyPersonalInfoList) {
+        this.companyPersonalInfoList = companyPersonalInfoList;
     }
 
-    public LocalDate getEnd() {
-        return end;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Company)) return false;
+        Company company = (Company) o;
+        return Objects.equals(link, company.link) &&
+                Objects.equals(companyPersonalInfoList, company.companyPersonalInfoList);
     }
 
-    public void setEnd(LocalDate end) {
-        this.end = end;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public int hashCode() {
+        return Objects.hash(link, companyPersonalInfoList);
     }
 
     @Override
     public String toString() {
         return "Company{" +
                 "link=" + link +
-                ", start=" + start +
-                ", end=" + end +
-                ", text='" + text + '\'' +
-                ", description='" + description + '\'' +
+                ", companyPersonalInfoList=" + companyPersonalInfoList +
                 '}';
     }
+
 
 
 

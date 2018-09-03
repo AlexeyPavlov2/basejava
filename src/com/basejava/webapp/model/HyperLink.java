@@ -35,11 +35,13 @@ public class HyperLink {
     }
 
     public void print() {
-        System.out.println(title + " : " + link);
+        String ref = link == null ? "Ссылка отсутствует" : link;
+        System.out.println(title + "  :   " + ref);
     }
 
     @Override
     public String toString() {
+
         return "title='" + title + '\'' + ", link='" + link + '\'';
     }
 }

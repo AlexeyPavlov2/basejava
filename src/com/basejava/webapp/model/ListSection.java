@@ -1,6 +1,7 @@
 package com.basejava.webapp.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ListSection<T> extends Section {
 
@@ -19,8 +20,30 @@ public class ListSection<T> extends Section {
         this.items = items;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ListSection)) return false;
+        ListSection<?> that = (ListSection<?>) o;
+        return Objects.equals(items, that.items);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(items);
+    }
+
     @Override
     public void print() {
         items.forEach(System.out::println);
+    }
+
+    @Override
+    public String toString() {
+        return "ListSection{" +
+                "items=" + items +
+                '}';
     }
 }
