@@ -1,29 +1,16 @@
 package com.basejava.webapp.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Company {
 
     private HyperLink link;
-    private List<CompanyPersonalInfo> companyPersonalInfoList = new ArrayList<>();
-
-    public Company(HyperLink link) {
-        this.link = link;
-    }
-
-    public Company(String title, String link) {
-        this(new HyperLink(title, link));
-    }
+    private List<CompanyPersonalInfo> companyPersonalInfoList;
 
     public Company(HyperLink link, List<CompanyPersonalInfo> companyPersonalInfoList) {
-        this(link);
+        this.link = link;
         this.companyPersonalInfoList = companyPersonalInfoList;
-    }
-
-    public Company(String title, String link, List<CompanyPersonalInfo> companyPersonalInfoList) {
-        this(new HyperLink(title, link), companyPersonalInfoList);
     }
 
     public HyperLink getLink() {
@@ -63,9 +50,4 @@ public class Company {
                 ", companyPersonalInfoList=" + companyPersonalInfoList +
                 '}';
     }
-
-
-
-
-
 }
