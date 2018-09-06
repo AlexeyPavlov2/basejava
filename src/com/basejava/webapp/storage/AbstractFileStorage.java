@@ -26,12 +26,22 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-            Arrays.stream(directory.listFiles()).filter(el -> el != null & el.isFile()).forEach(el -> el.delete());
+        File[] files = directory.listFiles();
+        if (files != null) {
+            Arrays.stream(files).forEach(el -> doDelete(el));
+        } else {
+            throw new StorageException("List of files is empty", directory.getAbsolutePath());
+        }
     }
 
     @Override
     public int size() {
-        return (int) Arrays.stream(directory.listFiles()).filter(el -> el.isFile()).count();
+        File[] files = directory.listFiles();
+        if (files != null) {
+            return files.length;
+        } else {
+            throw new StorageException("List of files is empty", directory.getAbsolutePath());
+        }
     }
 
     @Override
@@ -57,7 +67,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(Resume resume, File file) {
         try {
             file.createNewFile();
-            doWrite(resume, file);
+            doUpdate(resume, file);
         } catch (IOException e) {
             throw new StorageException("Can't save resume " + resume.getUuid(), file.getName(), e);
         }
@@ -74,17 +84,22 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doDelete(File file) {
-        if(file != null && !file.delete()) {
+        if(!file.delete()) {
             throw new StorageException("Can't delete file " + file.getName(), file.getName());
-        };
+        }
     }
 
     @Override
     protected List<Resume> doCopyAll() {
-        return Arrays.asList(directory.listFiles())
-                .stream()
-                .map(el -> doGet(el))
-                .collect(Collectors.toList());
+        File[] files = directory.listFiles();
+        if (files != null) {
+            return Arrays.asList(files)
+                    .stream()
+                    .map(el -> doGet(el))
+                    .collect(Collectors.toList());
+        } else {
+            throw new StorageException("List of files is empty", directory.getAbsolutePath());
+        }
     }
 
     protected abstract void doWrite(Resume resume, File file) throws IOException;
