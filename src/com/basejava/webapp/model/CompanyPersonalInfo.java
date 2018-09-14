@@ -1,9 +1,11 @@
 package com.basejava.webapp.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class CompanyPersonalInfo {
+public class CompanyPersonalInfo implements Serializable {
+    private static final long serialVersionUID = -4723745829327959451L;
     private LocalDate start;
     private LocalDate end;
     private String text;

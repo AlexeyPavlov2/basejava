@@ -1,7 +1,9 @@
 package com.basejava.webapp.model;
 
-public class HyperLink {
+import java.io.Serializable;
 
+public class HyperLink implements Serializable {
+    private static final long serialVersionUID = 6133482848281438648L;
     private String title;
     private String link;
 

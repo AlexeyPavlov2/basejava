@@ -6,6 +6,7 @@ import java.util.List;
 import static com.basejava.webapp.model.CompanyPersonalInfo.FUTURE_DATE;
 
 public class CompanySection extends ListSection<Company> {
+    private static final long serialVersionUID = 2920665298325462887L;
 
     public CompanySection(List<Company> items) {
         super(items);
@@ -26,6 +27,10 @@ public class CompanySection extends ListSection<Company> {
         );
 
     }
+
+
+
+
 
     @Override
     public String toString() {

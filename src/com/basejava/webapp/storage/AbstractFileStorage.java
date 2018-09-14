@@ -3,14 +3,13 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public abstract class AbstractFileStorage extends AbstractStorage<File> implements FileSystemDriver {
     private File directory;
 
     protected AbstractFileStorage(File directory) {
@@ -28,9 +27,10 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     public void clear() {
         File[] files = directory.listFiles();
         if (files != null) {
-            Arrays.stream(files).forEach(el -> doDelete(el));
+            Arrays.stream(files)
+                    .forEach(this::doDelete);
         } else {
-            throw new StorageException("List of files is empty", directory.getAbsolutePath());
+            throw new StorageException("List of files is empty");
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (files != null) {
             return files.length;
         } else {
-            throw new StorageException("List of files is empty", directory.getAbsolutePath());
+            throw new StorageException("Can't read directory");
         }
     }
 
@@ -52,7 +52,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doUpdate(Resume resume, File file) {
         try {
-            doWrite(resume, file);
+            doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Can't update resume " + resume.getUuid(), resume.getUuid(), e);
         }
@@ -76,7 +76,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(file);
+            return doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Can't read file " + file.getName(), file.getName(), e);
         }
@@ -85,7 +85,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void doDelete(File file) {
         if(!file.delete()) {
-            throw new StorageException("Can't delete file " + file.getName(), file.getName());
+            throw new StorageException("Can't delete file " + file.getName());
         }
     }
 
@@ -93,15 +93,13 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected List<Resume> doCopyAll() {
         File[] files = directory.listFiles();
         if (files != null) {
-            return Arrays.asList(files)
-                    .stream()
-                    .map(el -> doGet(el))
+            return Arrays.stream(files)
+                    .map(this::doGet)
                     .collect(Collectors.toList());
         } else {
-            throw new StorageException("List of files is empty", directory.getAbsolutePath());
+            throw new StorageException("List of files is empty");
         }
     }
 
-    protected abstract void doWrite(Resume resume, File file) throws IOException;
-    protected abstract Resume doRead(File file) throws IOException;
+
 }

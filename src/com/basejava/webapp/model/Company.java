@@ -1,16 +1,22 @@
 package com.basejava.webapp.model;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Company {
-
+public class Company implements Serializable {
+    private static final long serialVersionUID = 4271811637027252063L;
     private HyperLink link;
     private List<CompanyPersonalInfo> companyPersonalInfoList;
 
     public Company(HyperLink link, List<CompanyPersonalInfo> companyPersonalInfoList) {
         this.link = link;
         this.companyPersonalInfoList = companyPersonalInfoList;
+    }
+
+    public Company(String title, String link, CompanyPersonalInfo... companyPersonalInfos) {
+        this(new HyperLink(title, link), Arrays.asList(companyPersonalInfos));
     }
 
     public HyperLink getLink() {
@@ -28,6 +34,7 @@ public class Company {
     public void setCompanyPersonalInfoList(List<CompanyPersonalInfo> companyPersonalInfoList) {
         this.companyPersonalInfoList = companyPersonalInfoList;
     }
+
 
     @Override
     public boolean equals(Object o) {
