@@ -22,7 +22,7 @@ public class HyperLink implements Serializable {
 
     public void printHTML(boolean lineBreak) {
         String forPrint = "";
-        if (title.indexOf("Skype")!= -1) {
+        if (title.indexOf("Skype") != -1) {
             forPrint = title + "<a href=\"skype:" + link + "\">" + link + "</a>";
         } else if (link.indexOf("@") != -1) {
             forPrint = title + "<a href=\"mailto:" + link + "\">" + link + "</a>";

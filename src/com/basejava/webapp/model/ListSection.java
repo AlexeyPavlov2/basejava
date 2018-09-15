@@ -4,13 +4,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class ListSection<T> extends Section {
-
     protected List<T> items;
 
     public ListSection(List<T> items) {
         this.items = items;
     }
-
 
     public List<T> getItems() {
         return items;
@@ -19,7 +17,6 @@ public class ListSection<T> extends Section {
     public void setItems(List<T> items) {
         this.items = items;
     }
-
 
     @Override
     public boolean equals(Object o) {

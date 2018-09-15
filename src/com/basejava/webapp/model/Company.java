@@ -35,7 +35,6 @@ public class Company implements Serializable {
         this.companyPersonalInfoList = companyPersonalInfoList;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

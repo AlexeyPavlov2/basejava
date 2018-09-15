@@ -1,7 +1,6 @@
 package com.basejava.webapp.model;
 
 public enum ContactType {
-
     PHONE("Тел. :"),
     SKYPE("Skype:"),
     MAIL("Почта :"),
@@ -19,6 +18,5 @@ public enum ContactType {
     public String getTitle() {
         return title;
     }
-
 }
 

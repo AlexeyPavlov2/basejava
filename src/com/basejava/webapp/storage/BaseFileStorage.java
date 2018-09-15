@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> implements FileSystemDriver {
+public class BaseFileStorage extends AbstractStorage<File>  {
     private File directory;
+    private FileSystemDriver fileSystemDriver;
 
-    protected AbstractFileStorage(File directory) {
+    protected BaseFileStorage(File directory, FileSystemDriver driver) {
         Objects.requireNonNull(directory, "directory must not be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not directory");
@@ -21,6 +22,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
             throw new IllegalArgumentException(directory.getAbsolutePath() + " is not readable/writable");
         }
         this.directory = directory;
+        this.fileSystemDriver = driver;
     }
 
     @Override
@@ -52,7 +54,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
     @Override
     protected void doUpdate(Resume resume, File file) {
         try {
-            doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
+            fileSystemDriver.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Can't update resume " + resume.getUuid(), resume.getUuid(), e);
         }
@@ -76,7 +78,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
     @Override
     protected Resume doGet(File file) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return fileSystemDriver.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("Can't read file " + file.getName(), file.getName(), e);
         }
@@ -84,7 +86,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
 
     @Override
     protected void doDelete(File file) {
-        if(!file.delete()) {
+        if (!file.delete()) {
             throw new StorageException("Can't delete file " + file.getName());
         }
     }
@@ -100,6 +102,4 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> implemen
             throw new StorageException("List of files is empty");
         }
     }
-
-
 }

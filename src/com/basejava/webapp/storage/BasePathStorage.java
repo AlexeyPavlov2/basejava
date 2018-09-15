@@ -3,7 +3,9 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,15 +13,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public abstract class AbstractPathStorage extends AbstractStorage<Path> implements FileSystemDriver {
+public class BasePathStorage extends AbstractStorage<Path> {
     private Path directory;
+    private FileSystemDriver fileSystemDriver;
 
-    protected AbstractPathStorage(String dir) {
-        directory = Paths.get(dir);
-        Objects.requireNonNull(directory, "directory must not be null");
+    protected BasePathStorage(String dir, FileSystemDriver driver) {
+        Objects.requireNonNull(dir, "directory must not be null");
+        this.directory = Paths.get(dir);
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + " is not directory or is not writable");
         }
+        Objects.requireNonNull(driver, "Driver cannot be null");
+        this.fileSystemDriver = driver;
     }
 
     @Override
@@ -48,7 +53,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> implemen
     @Override
     protected void doUpdate(Resume resume, Path path) {
         try {
-            doWrite(resume, new BufferedOutputStream(new FileOutputStream(path.toFile())));
+            fileSystemDriver.doWrite(resume, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path write error", resume.getUuid(), e);
         }
@@ -72,7 +77,7 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> implemen
     @Override
     protected Resume doGet(Path path) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(path.toFile())));
+            return fileSystemDriver.doRead(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Path read error " + path, e);
         }
@@ -85,7 +90,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> implemen
         } catch (IOException e) {
             throw new StorageException("Path delete error " + path, e);
         }
-
     }
 
     @Override
@@ -98,8 +102,6 @@ public abstract class AbstractPathStorage extends AbstractStorage<Path> implemen
         } catch (IOException e) {
             throw new StorageException("Can't read directory", e);
         }
-
     }
-
 
 }
