@@ -1,7 +1,6 @@
 package com.basejava.webapp.model;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.basejava.webapp.model.CompanyPersonalInfo.FUTURE_DATE;
@@ -12,18 +11,6 @@ public class CompanySection extends ListSection<Company> {
     public CompanySection(List<Company> items) {
         super(items);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CompanySection)) return false;
-        CompanySection cs = (CompanySection) o;
-        ArrayList<Company> listA = new ArrayList<>(cs.items);
-        ArrayList<Company> listB = new ArrayList<>(this.items);
-        return listA.containsAll(listB) && listB.containsAll(listA);
-    }
-
-
 
     @Override
     public void print() {
