@@ -1,6 +1,7 @@
 package com.basejava.webapp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -40,8 +41,10 @@ public class Company implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Company)) return false;
         Company company = (Company) o;
+        List<CompanyPersonalInfo> listA = new ArrayList<>(((Company) o).companyPersonalInfoList);
+        List<CompanyPersonalInfo> listB = new ArrayList<>(this.companyPersonalInfoList);
         return Objects.equals(link, company.link) &&
-                Objects.equals(companyPersonalInfoList, company.companyPersonalInfoList);
+                (listA.containsAll(listB) && listB.containsAll(listA));
     }
 
     @Override

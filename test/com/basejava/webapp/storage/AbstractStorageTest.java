@@ -88,7 +88,24 @@ public abstract class AbstractStorageTest {
     @Test
     public void update() {
         storage.update(RESUME3);
+        Resume R3 = storage.get(UUID_3);
+        System.out.println("PERSONAL  " + RESUME3.getSection(SectionType.PERSONAL)
+                .equals(R3.getSection(SectionType.PERSONAL)) );
+        System.out.println("OBJECTIVE  " + RESUME3.getSection(SectionType.OBJECTIVE)
+                .equals(R3.getSection(SectionType.OBJECTIVE)) );
+        System.out.println("ACHIEVEMENT  " + RESUME3.getSection(SectionType.ACHIEVEMENT)
+                .equals(R3.getSection(SectionType.ACHIEVEMENT)) );
+        System.out.println("QUALIFICATIONS  " + RESUME3.getSection(SectionType.QUALIFICATIONS)
+                .equals(R3.getSection(SectionType.QUALIFICATIONS)) );
+        System.out.println("EXPERIENCE  " + RESUME3.getSection(SectionType.EXPERIENCE)
+                .equals(R3.getSection(SectionType.EXPERIENCE)) );
+        System.out.println("EDUCATION  " + RESUME3.getSection(SectionType.EDUCATION)
+                .equals(R3.getSection(SectionType.EDUCATION)) );
+
+
+
         assertEquals(RESUME3, storage.get(UUID_3));
+
     }
 
     @Test(expected = NotExistStorageException.class)

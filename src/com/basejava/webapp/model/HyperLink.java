@@ -1,6 +1,7 @@
 package com.basejava.webapp.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class HyperLink implements Serializable {
     private static final long serialVersionUID = 6133482848281438648L;
@@ -34,6 +35,21 @@ public class HyperLink implements Serializable {
             forPrint += "<br>";
         }
         System.out.println(forPrint);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof HyperLink)) return false;
+        HyperLink hyperLink = (HyperLink) o;
+        return Objects.equals(title, hyperLink.title) &&
+                Objects.equals(link, hyperLink.link);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(title, link);
     }
 
     public void print() {
