@@ -1,4 +1,4 @@
-package com.basejava.webapp.storage;
+package com.basejava.webapp.storage.fsdriver;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;

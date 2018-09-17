@@ -1,7 +1,9 @@
 package com.basejava.webapp.storage;
 
+import com.basejava.webapp.storage.fsdriver.ObjectStreamFSDriver;
+
 public class ObjectStreamFileStorageTest extends AbstractStorageTest {
     public ObjectStreamFileStorageTest() {
-        super(new ObjectStreamFileStorage(STORAGE_DIR));
+        super(new BaseFileStorage(STORAGE_DIR, new ObjectStreamFSDriver()));
     }
 }
