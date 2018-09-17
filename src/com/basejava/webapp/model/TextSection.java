@@ -6,6 +6,9 @@ public class TextSection extends Section {
     private static final long serialVersionUID = -2700503340512386762L;
     private String text;
 
+    public TextSection() {
+    }
+
     public TextSection(String text) {
         this.text = text;
     }

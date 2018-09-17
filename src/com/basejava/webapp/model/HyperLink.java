@@ -1,12 +1,18 @@
 package com.basejava.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class HyperLink implements Serializable {
     private static final long serialVersionUID = 6133482848281438648L;
     private String title;
     private String link;
+
+    public HyperLink() {
+    }
 
     public HyperLink(String title, String link) {
         this.title = title;

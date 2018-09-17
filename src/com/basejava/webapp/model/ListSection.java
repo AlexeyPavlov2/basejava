@@ -6,6 +6,9 @@ import java.util.Objects;
 public class ListSection<T> extends Section {
     protected List<T> items;
 
+    public ListSection() {
+    }
+
     public ListSection(List<T> items) {
         this.items = items;
     }

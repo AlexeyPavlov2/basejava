@@ -1,17 +1,28 @@
 package com.basejava.webapp.model;
 
+import com.basejava.webapp.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CompanyPersonalInfo implements Serializable {
     private static final long serialVersionUID = -4723745829327959451L;
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate start;
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate end;
     private String text;
     private String description;
 
     public static final LocalDate FUTURE_DATE = LocalDate.of(2050, 12, 31);
+
+    public CompanyPersonalInfo() {
+    }
 
     public CompanyPersonalInfo(LocalDate start, LocalDate end, String text, String description) {
         this.start = start;
