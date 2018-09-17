@@ -1,11 +1,11 @@
-package com.basejava.webapp.storage.fsdriver;
+package com.basejava.webapp.storage.serializer;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.io.*;
 
-public class ObjectStreamFSDriver implements FileSystemDriver {
+public class ObjectStreamSerializer implements StreamSerializer {
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(os)) {

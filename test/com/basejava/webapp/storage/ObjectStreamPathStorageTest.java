@@ -1,9 +1,9 @@
 package com.basejava.webapp.storage;
 
-import com.basejava.webapp.storage.fsdriver.ObjectStreamFSDriver;
+import com.basejava.webapp.storage.serializer.ObjectStreamSerializer;
 
 public class ObjectStreamPathStorageTest extends AbstractStorageTest {
     public ObjectStreamPathStorageTest() {
-        super(new BasePathStorage(STORAGE_DIR.getAbsolutePath(), new ObjectStreamFSDriver()));
+        super(new PathStorage(STORAGE_DIR.getAbsolutePath(), new ObjectStreamSerializer()));
     }
 }
