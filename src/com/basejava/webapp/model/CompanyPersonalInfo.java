@@ -19,7 +19,7 @@ public class CompanyPersonalInfo implements Serializable {
     private String text;
     private String description;
 
-    public static final LocalDate FUTURE_DATE = LocalDate.of(2050, 12, 31);
+    public static final LocalDate FUTURE_DATE = LocalDate.of(2050, 12, 01);
 
     public CompanyPersonalInfo() {
     }
