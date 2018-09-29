@@ -1,0 +1,25 @@
+Code review
+
+#1
+- в данной реализации как-то используется version? - +++
+- `dos.flush()` для чего добавил? у нас же try-with-resources - +++
+- читать / писать лучше через switch (со сквозными case) в зависимости от SectionType - +++
+- writeStringListSection/writeCompanySection декларативный forEach не подходит,
+т.к. IOException надо прокидывать, а не обрабатывать - +++
+- см. коммиты,  HyperLink.Link  и CompanyPersonalInfo.description могут быть нул
+- стр.127 переменная не используется - +++
+- readStringListSection, ListSection - это типизированный класс,
+соотв при создании надо тип указывать - +++
+- стр.163 не забывай <> - +++
+- стр167 и 169 - неудачное  решение, сохраняй отд месяц и год - +++ решил по-другому
+
+- попробуй зарефакторить запись /чтение коллекций через функциональный интерфейс
+посмотри на реализацию forEach
+default void forEach(Consumer<? super T> action) {
+    Objects.requireNonNull(action);
+    for (T t : this) {
+        action.accept(t);
+    }
+}
+ни сам метод ни Consumer исключения не прокидывают, а нам надо такое же ~но с перламутровыми пуговицами~
+но с прокидыванием исключения

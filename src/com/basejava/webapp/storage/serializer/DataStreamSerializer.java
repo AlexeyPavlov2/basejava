@@ -11,30 +11,25 @@ import java.util.List;
 import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
-    private static final int version = 1;
 
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
-            dos.writeInt(version);
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             Map<ContactType, String> contacts = resume.getContacts();
             dos.writeInt(contacts.size());
+
             for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
             }
-            dos.flush();
-            // TODO implements sections
-            /*if (resume.getSections().entrySet().size() == 0) {
-                throw new StorageException("Current resume does not have any sections");
-            }*/
+
             dos.writeInt(resume.getSections().entrySet().size()); // Запишем количество секций
-            dos.flush();
-            for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {
+            for (Map.Entry<SectionType, Section> entry : resume.getSections().entrySet()) {  // пишем секции
                 dos.writeUTF(entry.getKey().toString()); // имя секции
-                switch (entry.getValue().getClass().getSimpleName()) {
+                String className = entry.getValue().getClass().getSimpleName();
+                switch (className) {
                     case "TextSection":
                         writeTextSection((TextSection) entry.getValue(), dos);
                         break;
@@ -44,61 +39,49 @@ public class DataStreamSerializer implements StreamSerializer {
                     case "CompanySection":
                         writeCompanySection((CompanySection) entry.getValue(), dos);
                         break;
+                    default:
+                        throw new StorageException("Unknown SectionType name " + className);
                 }
             }
         }
     }
 
     private void writeTextSection(TextSection section, DataOutputStream dos) throws IOException {
-        dos.writeUTF(section.getClass().getName()); // имя класса
-        dos.writeUTF(section.getText()); // текст секции
-        dos.flush();
+        dos.writeUTF(section.getClass().getName());
+        dos.writeUTF(section.getText());
     }
 
     private void writeStringListSection(ListSection section, DataOutputStream dos) throws IOException {
         dos.writeUTF(section.getClass().getName());
         dos.writeUTF("String");
         dos.writeInt(section.getItems().size());
-        section.getItems().stream().forEach(el -> {
-            try {
-                dos.writeUTF(el.toString());
-            } catch (IOException e) {
-                throw new StorageException("Can't write ListSection", e);
-            }
-        });
-        dos.flush();
+        for (int i = 0; i < section.getItems().size(); i++) {
+            dos.writeUTF((String) section.getItems().get(i));
+        }
     }
 
     private void writeCompanySection(CompanySection section, DataOutputStream dos) throws IOException {
         dos.writeUTF(section.getClass().getName());
         dos.writeUTF("CompanySection");
         dos.writeInt(section.getItems().size());
-        section.getItems().forEach(el -> {
-            try {
-                dos.writeUTF(el.getLink().getTitle());
-                dos.writeUTF(el.getLink().getLink());
-                dos.writeInt(el.getCompanyPersonalInfoList().size());
-                for (CompanyPersonalInfo info : el.getCompanyPersonalInfoList()) {
-                    DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/yyyy");
-                    dos.writeUTF(info.getStart().format(format));
-                    dos.writeUTF(info.getEnd().format(format));
-                    dos.writeUTF(info.getText());
-                    dos.writeUTF(info.getDescription());
-                }
-                dos.flush();
-            } catch (IOException e) {
-                throw new StorageException("Can't write CompanySection", e);
+        for (int i = 0; i < section.getItems().size(); i++) {
+            dos.writeUTF(section.getItems().get(i).getLink().getTitle());
+            dos.writeUTF(section.getItems().get(i).getLink().getLink());
+            dos.writeInt(section.getItems().get(i).getCompanyPersonalInfoList().size());
+            for (CompanyPersonalInfo info : section.getItems().get(i).getCompanyPersonalInfoList()) {
+                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                dos.writeUTF(info.getStart().format(format));
+                dos.writeUTF(info.getEnd().format(format));
+                dos.writeUTF(info.getText());
+                dos.writeUTF(info.getDescription());
             }
-        });
-    }
+        }
 
+    }
 
     @Override
     public Resume doRead(InputStream is) throws IOException {
         try (DataInputStream dis = new DataInputStream(is)) {
-            if (dis.readInt() != version) {
-                throw new StorageException("Can't read file. Incorrect version");
-            }
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
@@ -106,29 +89,31 @@ public class DataStreamSerializer implements StreamSerializer {
             for (int i = 0; i < size; i++) {
                 resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
-            // TODO implements sections
-            int countSection = dis.readInt();
-            for (int i = 0; i < countSection; i++) {
+
+            int countSection = dis.readInt();  //  количество секций
+            for (int i = 0; i < countSection; i++) {  // читаем секции
                 String sectionName = dis.readUTF(); // имя секции
                 String className = dis.readUTF();  // имя класса
-                if (className.endsWith("TextSection")) {
-                    resume.getSections().put(SectionType.valueOf(sectionName), readTextSection(dis));
+                className = className.substring(className.lastIndexOf(".") + 1);
+                switch (className) {
+                    case "TextSection":
+                        resume.getSections().put(SectionType.valueOf(sectionName), readTextSection(dis));
+                        break;
+                    case "ListSection":
+                        String itemsClassName = dis.readUTF();
+                        if (itemsClassName.equals("String")) {
+                            resume.getSections().put(SectionType.valueOf(sectionName), readStringListSection(dis));
+                        }
+                        break;
+                    case "CompanySection":
+                        dis.readUTF();
+                        resume.getSections().put(SectionType.valueOf(sectionName),
+                                readCompanySection(dis));
+                        break;
+                    default:
+                        throw new StorageException("Unknown SectionType name " + className);
                 }
-
-                String itemsClassName;
-                if (className.endsWith("ListSection")) {
-                     itemsClassName = dis.readUTF();
-                    if (itemsClassName.equals("String")) {
-                        resume.getSections().put(SectionType.valueOf(sectionName), readStringListSection(dis));
-                    }
-                }
-
-                if (className.endsWith("CompanySection")) {
-                    itemsClassName = dis.readUTF();
-                    resume.getSections().put(SectionType.valueOf(sectionName),
-                            readCompanySection(dis));
-                }
-            } //for
+            }
             return resume;
         }
     }
@@ -140,7 +125,7 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     private ListSection readStringListSection(DataInputStream dis) throws IOException {
-        ListSection listSection = new ListSection();
+        ListSection<String> listSection = new ListSection<>();
         List<String> stringList = new ArrayList<>();
         int count = dis.readInt();
         for (int i = 0; i < count; i++) {
@@ -160,14 +145,12 @@ public class DataStreamSerializer implements StreamSerializer {
             String link = dis.readUTF();
             company.setLink(new HyperLink(title, link));
             int count = dis.readInt();
-            List<CompanyPersonalInfo> infoList = new ArrayList();
+            List<CompanyPersonalInfo> infoList = new ArrayList<>();
             for (int j = 0; j < count; j++) {
                 CompanyPersonalInfo info = new CompanyPersonalInfo();
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                LocalDate startDate = LocalDate.parse("01/" + dis.readUTF(), format);
-                info.setStart(startDate);
-                LocalDate endDate = LocalDate.parse("01/" + dis.readUTF(), format);
-                info.setEnd(endDate);
+                info.setStart(LocalDate.parse(dis.readUTF(), format));
+                info.setEnd(LocalDate.parse(dis.readUTF(), format));
                 info.setText(dis.readUTF());
                 info.setDescription(dis.readUTF());
                 infoList.add(info);
@@ -179,4 +162,45 @@ public class DataStreamSerializer implements StreamSerializer {
         return companySection;
     }
 
+    interface ItemReaderWriter<T> {
+        void write(DataOutputStream out, T item) throws IOException;
+
+        T read(DataInputStream in) throws IOException;
+    }
+
+    private static class StringReaderWriter implements ItemReaderWriter<String> {
+
+        @Override
+        public void write(DataOutputStream out, String item) throws IOException {
+            out.writeUTF(item);
+        }
+
+        @Override
+        public String read(DataInputStream in) throws IOException {
+            return in.readUTF();
+        }
+    }
+
+    private static class CompanyPersonalInfoReaderWriter implements ItemReaderWriter<CompanyPersonalInfo> {
+
+        @Override
+        public void write(DataOutputStream out, CompanyPersonalInfo item) throws IOException {
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            out.writeUTF(item.getStart().format(format));
+            out.writeUTF(item.getEnd().format(format));
+            out.writeUTF(item.getText());
+            out.writeUTF(item.getDescription());
+        }
+
+        @Override
+        public CompanyPersonalInfo read(DataInputStream in) throws IOException {
+            CompanyPersonalInfo info = new CompanyPersonalInfo();
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            info.setStart(LocalDate.parse(in.readUTF(), format));
+            info.setEnd(LocalDate.parse(in.readUTF(), format));
+            info.setText(in.readUTF());
+            info.setDescription(in.readUTF());
+            return info;
+        }
+    }
 }
