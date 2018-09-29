@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class DataStreamSerializer implements StreamSerializer {
 
@@ -51,13 +52,11 @@ public class DataStreamSerializer implements StreamSerializer {
         dos.writeUTF(section.getText());
     }
 
-    private void writeStringListSection(ListSection section, DataOutputStream dos) throws IOException {
+    private void writeStringListSection(ListSection<String> section, DataOutputStream dos) throws IOException {
         dos.writeUTF(section.getClass().getName());
         dos.writeUTF("String");
         dos.writeInt(section.getItems().size());
-        for (int i = 0; i < section.getItems().size(); i++) {
-            dos.writeUTF((String) section.getItems().get(i));
-        }
+        writeList(dos, section.getItems(), new StringReaderWriter());
     }
 
     private void writeCompanySection(CompanySection section, DataOutputStream dos) throws IOException {
@@ -66,17 +65,11 @@ public class DataStreamSerializer implements StreamSerializer {
         dos.writeInt(section.getItems().size());
         for (int i = 0; i < section.getItems().size(); i++) {
             dos.writeUTF(section.getItems().get(i).getLink().getTitle());
-            dos.writeUTF(section.getItems().get(i).getLink().getLink());
+            dos.writeUTF(section.getItems().get(i).getLink().getLink() == null ?
+                    "" : section.getItems().get(i).getLink().getLink());
             dos.writeInt(section.getItems().get(i).getCompanyPersonalInfoList().size());
-            for (CompanyPersonalInfo info : section.getItems().get(i).getCompanyPersonalInfoList()) {
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                dos.writeUTF(info.getStart().format(format));
-                dos.writeUTF(info.getEnd().format(format));
-                dos.writeUTF(info.getText());
-                dos.writeUTF(info.getDescription());
-            }
+            writeList(dos, section.getItems().get(i).getCompanyPersonalInfoList(), new CompanyPersonalInfoReaderWriter());
         }
-
     }
 
     @Override
@@ -124,13 +117,10 @@ public class DataStreamSerializer implements StreamSerializer {
         return textSection;
     }
 
-    private ListSection readStringListSection(DataInputStream dis) throws IOException {
+    private ListSection<String> readStringListSection(DataInputStream dis) throws IOException {
         ListSection<String> listSection = new ListSection<>();
-        List<String> stringList = new ArrayList<>();
         int count = dis.readInt();
-        for (int i = 0; i < count; i++) {
-            stringList.add(dis.readUTF());
-        }
+        List<String> stringList = readList(dis, new StringReaderWriter(), count);
         listSection.setItems(stringList);
         return listSection;
     }
@@ -145,16 +135,7 @@ public class DataStreamSerializer implements StreamSerializer {
             String link = dis.readUTF();
             company.setLink(new HyperLink(title, link));
             int count = dis.readInt();
-            List<CompanyPersonalInfo> infoList = new ArrayList<>();
-            for (int j = 0; j < count; j++) {
-                CompanyPersonalInfo info = new CompanyPersonalInfo();
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                info.setStart(LocalDate.parse(dis.readUTF(), format));
-                info.setEnd(LocalDate.parse(dis.readUTF(), format));
-                info.setText(dis.readUTF());
-                info.setDescription(dis.readUTF());
-                infoList.add(info);
-            }
+            List<CompanyPersonalInfo> infoList = readList(dis, new CompanyPersonalInfoReaderWriter(), count);
             company.setCompanyPersonalInfoList(infoList);
             companyList.add(company);
         }
@@ -169,7 +150,6 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     private static class StringReaderWriter implements ItemReaderWriter<String> {
-
         @Override
         public void write(DataOutputStream out, String item) throws IOException {
             out.writeUTF(item);
@@ -182,14 +162,13 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     private static class CompanyPersonalInfoReaderWriter implements ItemReaderWriter<CompanyPersonalInfo> {
-
         @Override
         public void write(DataOutputStream out, CompanyPersonalInfo item) throws IOException {
             DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             out.writeUTF(item.getStart().format(format));
             out.writeUTF(item.getEnd().format(format));
             out.writeUTF(item.getText());
-            out.writeUTF(item.getDescription());
+            out.writeUTF(item.getDescription() == null ? "" : item.getDescription());
         }
 
         @Override
@@ -203,4 +182,20 @@ public class DataStreamSerializer implements StreamSerializer {
             return info;
         }
     }
+
+    private <T> void writeList(DataOutputStream out, List<T> collection, ItemReaderWriter<T> writer) throws IOException {
+        Objects.requireNonNull(writer);
+        for (T t : collection) {
+            writer.write(out, t);
+        }
+    }
+
+    private <T> List<T> readList(DataInputStream in, ItemReaderWriter reader, int size) throws IOException {
+        List<T> list = new ArrayList<T>();
+        for(int i = 0; i < size; i++) {
+            list.add((T) reader.read(in));
+        }
+        return list;
+    }
+
 }
