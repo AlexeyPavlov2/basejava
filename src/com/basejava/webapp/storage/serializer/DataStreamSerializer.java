@@ -6,7 +6,10 @@ import com.basejava.webapp.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class DataStreamSerializer implements StreamSerializer {
 
@@ -180,13 +183,6 @@ public class DataStreamSerializer implements StreamSerializer {
             info.setText(in.readUTF());
             info.setDescription(in.readUTF());
             return info;
-        }
-    }
-
-    private <T> void writeList(DataOutputStream out, List<T> collection, ItemReaderWriter<T> writer) throws IOException {
-        Objects.requireNonNull(writer);
-        for (T t : collection) {
-            writer.write(out, t);
         }
     }
 
