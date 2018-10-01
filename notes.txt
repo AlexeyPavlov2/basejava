@@ -45,3 +45,24 @@ writeCollection - метод, который прокидывает исключ
 
 см. на степике курс по функциональному интерфейсу
 https://stepik.org/course/1595/syllabus (edited)
+
+#3
+привет
+- читать / писать лучше через switch (со сквозными case) *в зависимости от SectionType*.
+Не класс, а SectionType +++
+
+*doWrite*
+- стр.26-27 - это тоже запись коллекции +++
+- writeTextSection нет смысла выносить в отд метод +++
+- стр.37, ListSection - типизированный класс, поэтому кастить с типом надо
+`writeCollection(dos, (( ListSection<String> ) entry.getValue()).getItems(), dos::writeUTF);`+++
+- стр.46 переменная не используется +++
+
+*doRead*
+- readList, перенеси сюда чтение размера коллекции. Используй типизированный ItemReader +++
+- readStringListSection, сразу делай return new ListSection... +++ убрал метод
+- readCompanySection, стр124-126 это тоже чтение списка +++
+
+удали все лишнее CompanyPersonalInfoReaderWriter, StringReaderWriter, ItemReaderWriter +++
+
+потом еще поправим (edited)
