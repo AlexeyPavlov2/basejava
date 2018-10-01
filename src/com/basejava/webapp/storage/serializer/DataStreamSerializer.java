@@ -94,16 +94,12 @@ public class DataStreamSerializer implements StreamSerializer {
 
     private CompanySection readCompanySection(DataInputStream dis) throws IOException {
         return new CompanySection(readList(dis, () ->
-            new Company(new HyperLink(dis.readUTF(), dis.readUTF()),
-            readList(dis, () -> {
-                CompanyPersonalInfo info = new CompanyPersonalInfo();
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                info.setStart(LocalDate.parse(dis.readUTF(), format));
-                info.setEnd(LocalDate.parse(dis.readUTF(), format));
-                info.setText(dis.readUTF());
-                info.setDescription(dis.readUTF());
-                return info;
-            }))
+                new Company(new HyperLink(dis.readUTF(), dis.readUTF()),
+                        readList(dis, () ->
+                                new CompanyPersonalInfo(LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                        LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                        dis.readUTF(), dis.readUTF())
+                        ))
         ));
     }
 
