@@ -93,10 +93,9 @@ public class DataStreamSerializer implements StreamSerializer {
     }
 
     private CompanySection readCompanySection(DataInputStream dis) throws IOException {
-        return new CompanySection(readList(dis, () -> {
-            Company company = new Company();
-            company.setLink(new HyperLink(dis.readUTF(), dis.readUTF()));
-            List<CompanyPersonalInfo> infoList = readList(dis, () -> {
+        return new CompanySection(readList(dis, () ->
+            new Company(new HyperLink(dis.readUTF(), dis.readUTF()),
+            readList(dis, () -> {
                 CompanyPersonalInfo info = new CompanyPersonalInfo();
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 info.setStart(LocalDate.parse(dis.readUTF(), format));
@@ -104,10 +103,8 @@ public class DataStreamSerializer implements StreamSerializer {
                 info.setText(dis.readUTF());
                 info.setDescription(dis.readUTF());
                 return info;
-            });
-            company.setCompanyPersonalInfoList(infoList);
-            return company;
-        }));
+            }))
+        ));
     }
 
     interface ItemReader<T> {
