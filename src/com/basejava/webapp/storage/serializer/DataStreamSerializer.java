@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class DataStreamSerializer implements StreamSerializer {
+    private static DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(os)) {
@@ -39,7 +40,6 @@ public class DataStreamSerializer implements StreamSerializer {
                                     dos.writeUTF(company.getLink().getTitle());
                                     dos.writeUTF(company.getLink().getLink());
                                     writeCollection(dos, company.getCompanyPersonalInfoList(), info -> {
-                                        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                                         dos.writeUTF(info.getStart().format(format));
                                         dos.writeUTF(info.getEnd().format(format));
                                         dos.writeUTF(info.getText());
@@ -96,8 +96,8 @@ public class DataStreamSerializer implements StreamSerializer {
         return new CompanySection(readList(dis, () ->
                 new Company(new HyperLink(dis.readUTF(), dis.readUTF()),
                         readList(dis, () ->
-                                new CompanyPersonalInfo(LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                                        LocalDate.parse(dis.readUTF(), DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                new CompanyPersonalInfo(LocalDate.parse(dis.readUTF(), format),
+                                        LocalDate.parse(dis.readUTF(), format),
                                         dis.readUTF(), dis.readUTF())
                         ))
         ));
