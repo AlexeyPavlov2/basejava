@@ -6,9 +6,7 @@ import com.basejava.webapp.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class DataStreamSerializer implements StreamSerializer {
     private static DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -61,13 +59,9 @@ public class DataStreamSerializer implements StreamSerializer {
             String uuid = dis.readUTF();
             String fullName = dis.readUTF();
             Resume resume = new Resume(uuid, fullName);
-            int size = dis.readInt();
-            for (int i = 0; i < size; i++) {
-                resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
-            }
+            resume.setContacts(readContacts(dis));
 
-            int countSection = dis.readInt();  //  количество секций
-            for (int i = 0; i < countSection; i++) {  // читаем секции
+            readCustomCollection(dis, () -> {
                 String sectionName = dis.readUTF(); // имя секции
                 switch (sectionName) {
                     case "PERSONAL":
@@ -87,9 +81,15 @@ public class DataStreamSerializer implements StreamSerializer {
                     default:
                         throw new StorageException("Unknown SectionType name " + sectionName);
                 }
-            }
+            });
             return resume;
         }
+    }
+
+    private Map<ContactType, String> readContacts(DataInputStream in) throws IOException {
+        Map<ContactType, String> map = new HashMap<>();
+        readCustomCollection(in, () -> map.put(ContactType.valueOf(in.readUTF()), in.readUTF()));
+        return map;
     }
 
     private CompanySection readCompanySection(DataInputStream dis) throws IOException {
@@ -101,6 +101,10 @@ public class DataStreamSerializer implements StreamSerializer {
                                         dis.readUTF(), dis.readUTF())
                         ))
         ));
+    }
+
+    interface ItemCustomReader<T> {
+        void read() throws IOException;
     }
 
     interface ItemReader<T> {
@@ -126,5 +130,13 @@ public class DataStreamSerializer implements StreamSerializer {
             writer.write(item);
         }
     }
+
+    private void readCustomCollection(DataInputStream in, ItemCustomReader reader) throws IOException {
+        int count = in.readInt();
+        for (int i = 0; i < count; i++) {
+            reader.read();
+        }
+    }
+
 
 }

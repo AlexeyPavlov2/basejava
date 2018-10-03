@@ -66,3 +66,10 @@ https://stepik.org/course/1595/syllabus (edited)
 удали все лишнее CompanyPersonalInfoReaderWriter, StringReaderWriter, ItemReaderWriter +++
 
 потом еще поправим (edited)
+
+#4
+*doRead*
+- чтение всех циклов сделай через функциональный интерфейс
+можно через один универсальный, можно отдельно
+с возвращением списка и отдельно добавление в сущ коллекцию (edited) +++
+
