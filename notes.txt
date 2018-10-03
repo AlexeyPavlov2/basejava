@@ -73,3 +73,7 @@ https://stepik.org/course/1595/syllabus (edited)
 можно через один универсальный, можно отдельно
 с возвращением списка и отдельно добавление в сущ коллекцию (edited) +++
 
+#5
+ItemCustomReader  -дженерик не нужен
+
+в остальном ок :slightly_smiling_face:

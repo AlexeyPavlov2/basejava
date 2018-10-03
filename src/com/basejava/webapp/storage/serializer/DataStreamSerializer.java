@@ -103,7 +103,7 @@ public class DataStreamSerializer implements StreamSerializer {
         ));
     }
 
-    interface ItemCustomReader<T> {
+    interface ItemCustomReader {
         void read() throws IOException;
     }
 
