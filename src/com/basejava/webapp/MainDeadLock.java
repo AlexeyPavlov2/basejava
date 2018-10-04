@@ -5,45 +5,28 @@ public class MainDeadLock {
         final Object objectA = new Object();
         final Object objectB = new Object();
 
-        Thread threadA = new Thread(() -> {
+        doLock(objectA, objectB, "NumberOne");
+        doLock(objectB, objectA, "NumberTwo");
+
+    }
+
+    public static void doLock(Object object1, Object object2, String threadName) {
+        new Thread(() -> {
             try {
-                String threadName = Thread.currentThread().getName();
-                System.out.println("Thread " + threadName + " try to lock objectA");
-                synchronized (objectA) {
-                    System.out.println("Thread " + threadName + " locked objectA");
+                Thread.currentThread().setName(threadName);
+                System.out.println("Thread " + threadName + " try to lock object: " + object1);
+                synchronized (object1) {
+                    System.out.println("Thread " + threadName + " locked object: " + object1);
                     Thread.sleep(100);
-                    System.out.println("Thread " + threadName + " try to lock objectB");
-                    synchronized (objectB) {
-                        System.out.println("Thread " + threadName + " locked objectA & objectB");
+                    System.out.println("Thread " + threadName + " try to lock object: " + object2);
+                    synchronized (object2) {
+                        System.out.println("Thread " + threadName + " locked: "  + object1 + " & " +object2);
                     }
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        });
-
-        Thread threadB = new Thread(() -> {
-            try {
-                String threadName = Thread.currentThread().getName();
-                System.out.println("Thread " + threadName + " try to lock objectB");
-                synchronized (objectB) {
-                    System.out.println("Thread " + threadName + " locked objectB");
-                    Thread.sleep(50);
-                    System.out.println("Thread " + threadName + " try to lock objectA");
-                    synchronized (objectA) {
-                        System.out.println("Thread " + threadName + " lockead objectA & objectB");
-                    }
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        threadA.setName("ThreadA");
-        threadB.setName("ThreadB");
-
-        threadA.start();
-        threadB.start();
+        }).start();
 
     }
 }
