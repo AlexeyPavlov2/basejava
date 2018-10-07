@@ -44,7 +44,7 @@ public class MainLambdaExamples {
             return true;
         }).collect(toList()).stream()
                 .filter(el ->
-                    isEven.test(sum[0]) ? !isEven.test(el) : isEven.test(el))
+                        isEven.test(sum[0]) != isEven.test(el))
                 .collect(toList());
     }
 
