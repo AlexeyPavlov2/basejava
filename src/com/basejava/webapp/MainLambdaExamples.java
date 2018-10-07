@@ -43,11 +43,8 @@ public class MainLambdaExamples {
             sum[0] = sum[0] + el;
             return true;
         }).collect(toList()).stream()
-                .filter(el -> {
-                    if (isEven.test(sum[0])) {
-                        return !isEven.test(el);
-                    } else return isEven.test(el);
-                })
+                .filter(el ->
+                    isEven.test(sum[0]) ? !isEven.test(el) : isEven.test(el))
                 .collect(toList());
     }
 
