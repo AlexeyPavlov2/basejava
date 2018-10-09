@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
-    //"D:\\git\\basejava\\storage"
+
     protected Storage storage;
 
     protected static final String UUID_1 = "uuid1";
@@ -38,7 +38,7 @@ public abstract class AbstractStorageTest {
 
     @BeforeClass
     public static void initClass() {
-        fillTestData();
+        //fillTestData();
     }
 
     @Before
@@ -89,8 +89,6 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        /*storage.update(RESUME3);
-        assertEquals(RESUME3, storage.get(UUID_3));*/
         Resume newResume = new Resume(UUID_1, "New Name");
         storage.update(newResume);
         assertEquals(newResume, storage.get(UUID_1));
