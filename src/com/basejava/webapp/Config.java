@@ -1,5 +1,8 @@
 package com.basejava.webapp;
 
+import com.basejava.webapp.storage.SqlStorage;
+import com.basejava.webapp.storage.Storage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,6 +18,22 @@ public class Config {
     private String dbUrl;
     private String dbUser;
     private String dbPassword;
+    private Storage storage;
+
+    private Config() {
+        try (InputStream is = new FileInputStream(PROPS)) {
+            props.load(is);
+            storageDir = new File(props.getProperty("storage.dir"));
+            dbUrl = props.getProperty("db.url");
+            dbUser = props.getProperty("db.user");
+            dbPassword = props.getProperty("db.password");
+            storage = new SqlStorage(dbUrl, dbUser, dbPassword);
+        } catch (IOException e) {
+            throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
+        }
+    }
+
+
 
     public String getDbUrl() {
         return dbUrl;
@@ -28,20 +47,12 @@ public class Config {
         return dbPassword;
     }
 
-    public static Config get() {
-        return INSTANCE;
+    public Storage getStorage() {
+        return storage;
     }
 
-    private Config() {
-        try (InputStream is = new FileInputStream(PROPS)) {
-            props.load(is);
-            storageDir = new File(props.getProperty("storage.dir"));
-            dbUrl = props.getProperty("db.url");
-            dbUser = props.getProperty("db.user");
-            dbPassword = props.getProperty("db.password");
-        } catch (IOException e) {
-            throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
-        }
+    public static Config get() {
+        return INSTANCE;
     }
 
     public File getStorageDir() {

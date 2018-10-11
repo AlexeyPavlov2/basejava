@@ -3,21 +3,29 @@ package com.basejava.webapp.storage;
 import com.basejava.webapp.sql.ConnectionFactory;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SqlHelper {
-    private ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
 
-    public SqlHelper(String dbUrl, String dbUser, String dbPassword) {
-        connectionFactory = () -> DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    public SqlHelper(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 
-
-    public Connection getConnection() throws SQLException {
-        return connectionFactory.getConnection();
+    public void execute(String statement) {
+        execute(statement, (ps) -> ps.execute());
     }
 
+    public <T> T execute(String sql, BlockOfCode<T> executor) {
+        try (Connection conn = connectionFactory.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql/*, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY*/)) {
+            return executor.execute(ps);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 
