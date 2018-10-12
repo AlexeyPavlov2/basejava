@@ -1,31 +1,29 @@
 Code review
 
+HW13
 #1
-оба решения хотелось бы в один стрим
+обычно в разных скриптах инициализация и популирование БД
+SqlStorageTest должен наследоваться от AbstractStorageTest, и должен быть
+конструктор без параметров, в котором будет вызов super с нужными параметрами +++
+fillTestData можно в утилиты вынести в отд класс +++
 
-*minValue*
-- не объявляй переменные через запятую, так можно, но нечитабельно
-- см. IntStream
-- подумай как преобразовать массив чисел в число в цикле, только без степени,
-и как тут применить reduce
+tanya [11:44 PM]
+- BlockOfCode и SqlHelper перенеси в папку sql +++
 
-*oddOrEven*
-- в целом решение хорошее, но подумай как сделать в один стрим, см
-https://www.javacodegeeks.com/2015/11/java-8-streams-api-grouping-partitioning-stream.html (edited)
-
-Решение от Татьяны
-у меня такой вариант
-1)
-
-AtomicInteger sum = new AtomicInteger();
-return integers.stream()
-                .collect(Collectors.partitioningBy(i -> {
-                    sum.addAndGet(i);
-                    return i % 2 == 0;
-                }))
-                .get(sum.get() % 2 != 0);
-
-2) в одну строку
-```return integers.stream()
-                .collect(Collectors.partitioningBy(i -> i % 2 == 0))
-                .get(integers.stream().mapToInt(Integer::intValue).sum() % 2 != 0);
+*SqlStorage*
+- не надо SqlHelper инициализировать null, геттер/сеттер лишнее +++
+- mapResultSetToList, не надо в отд метод, тут всего 3 строки +++
+- должно быть один метод == один запрос к БД +++
+поправь методы с учетом нижеизложенного +++
+есть три основных метода выполнения PreparedStatement
+-- executeQuery()
+-- executeUpdate()
+-- execute()
+для методов с SELECT - нужен  executeQuery(), т. к. нужно получить
+объект/объекты
+для clear достаточно execute() +++ т.к. нам без разницы сколько удалилось
+записей
+а вот для остальных нужен executeUpdate т.к. вернется кол-во строк на
+которые повлиял sql-запрос
+не все исключения одинаково полезны,
+PSQLException не обязательно означает - ExistStorageException +++

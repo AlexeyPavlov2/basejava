@@ -5,6 +5,7 @@ import com.basejava.webapp.model.Resume;
 import org.junit.Test;
 
 import static com.basejava.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
+import static com.basejava.webapp.util.TestData.RESUME4;
 import static org.junit.Assert.fail;
 
 public abstract class AbstractArrayStorageTest extends AbstractStorageTest {
