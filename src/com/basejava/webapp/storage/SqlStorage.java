@@ -2,7 +2,6 @@ package com.basejava.webapp.storage;
 
 
 import com.basejava.webapp.exception.NotExistStorageException;
-import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.sql.SqlHelper;
 
@@ -20,10 +19,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void clear() {
-        sqlHelper.execute("DELETE FROM resume", (ps) -> {
-            ps.execute();
-            return null;
-        });
+        sqlHelper.execute("DELETE FROM resume");
     }
 
     @Override
@@ -51,9 +47,6 @@ public class SqlStorage implements Storage {
             if (count == 0) {
                 throw new NotExistStorageException(resume.getUuid());
             }
-            if (ps.executeUpdate() != 1) {
-                throw new StorageException("Error during UPDATE operation");
-            }
             return null;
         });
 
@@ -64,9 +57,7 @@ public class SqlStorage implements Storage {
         sqlHelper.execute("INSERT INTO resume (uuid, full_name) VALUES (?, ?)", (ps) -> {
             ps.setString(1, resume.getUuid());
             ps.setString(2, resume.getFullName());
-            if (ps.executeUpdate() != 1) {
-                throw new StorageException("Error during SAVE operation");
-            }
+            ps.execute();
             return null;
         });
     }
@@ -76,7 +67,7 @@ public class SqlStorage implements Storage {
         sqlHelper.execute("DELETE FROM resume WHERE uuid = ?",
                 (ps) -> {
                     ps.setString(1, uuid);
-                    if (ps.executeUpdate() != 1) {
+                    if (ps.executeUpdate() == 0) {
                         throw new NotExistStorageException(uuid);
                     }
                     return null;
@@ -105,14 +96,4 @@ public class SqlStorage implements Storage {
                     return rs.getInt("count");
                 });
     }
-
-    private boolean isResumeExist(String uuid) {
-        return sqlHelper.execute("SELECT COUNT(*) AS count FROM resume WHERE uuid = ? ", (ps) -> {
-            ps.setString(1, uuid);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            return rs.getInt("count") > 0;
-        });
-    }
-
 }

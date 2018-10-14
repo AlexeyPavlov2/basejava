@@ -1,6 +1,7 @@
 package com.basejava.webapp.sql;
 
 import com.basejava.webapp.exception.ExistStorageException;
+import com.basejava.webapp.exception.StorageException;
 import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
@@ -27,7 +28,7 @@ public class SqlHelper {
                 throw new ExistStorageException("");
             };
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new StorageException("Error during database operation", e);
         }
         return null;
     }

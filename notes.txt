@@ -27,3 +27,16 @@ tanya [11:44 PM]
 которые повлиял sql-запрос
 не все исключения одинаково полезны,
 PSQLException не обязательно означает - ExistStorageException +++
+
+#2
+оставляй просто new ExistStorageException("") +++
+*SqlHelper*
+- если ловим любое другое SQLException то прокидывай StorageException,
+вместо e.printStackTrace() +++
+
+*SqlStorage*
+- clear, см упрощенный вариант sqlHelper.execute +++
+- save, нет необходимости в executeUpdate и проверки кол-ва строк +++
+- сделай как-то однообразно, например в апдейт проверка и на 0 и на !=1,
+а в остальных метода по-другому +++
+- isResumeExist - лишнее +++
