@@ -1,9 +1,5 @@
 package com.basejava.webapp.sql;
 
-import com.basejava.webapp.exception.ExistStorageException;
-import com.basejava.webapp.exception.StorageException;
-import org.postgresql.util.PSQLException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -16,21 +12,16 @@ public class SqlHelper {
     }
 
     public void execute(String statement) {
-        execute(statement, (ps) -> ps.execute());
+        execute(statement, PreparedStatement::execute);
     }
 
-    public <T> T execute(String sql, BlockOfCode<T> executor) {
+    public <T> T execute(String sql, SqlExecutor<T> executor) {
         try (Connection conn = connectionFactory.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql/*, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY*/)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             return executor.execute(ps);
-        } catch (PSQLException e) {
-            if (Integer.valueOf(e.getSQLState()) == 23505) {
-                throw new ExistStorageException("");
-            };
         } catch (SQLException e) {
-            throw new StorageException("Error during database operation", e);
+            throw ExceptionUtil.convertException(e);
         }
-        return null;
     }
 
 

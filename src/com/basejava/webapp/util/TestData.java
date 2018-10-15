@@ -5,13 +5,18 @@ import com.basejava.webapp.model.*;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class TestData {
 
-    public static final String UUID_1 = "uuid1";
+    /*public static final String UUID_1 = "uuid1";
     public static final String UUID_2 = "uuid2";
     public static final String UUID_3 = "uuid3";
-    public static final String UUID_4 = "uuid4";
+    public static final String UUID_4 = "uuid4";*/
+    public static final String UUID_1 = UUID.randomUUID().toString();
+    public static final String UUID_2 = UUID.randomUUID().toString();
+    public static final String UUID_3 = UUID.randomUUID().toString();
+    public static final String UUID_4 = UUID.randomUUID().toString();
 
     public static final Resume RESUME1 = new Resume(UUID_1, "Сергеева Мария");
     public static final Resume RESUME2 = new Resume(UUID_2, "Петрова Ольга");
