@@ -27,7 +27,7 @@ public abstract class AbstractStorageTest {
 
     @BeforeClass
     public static void initClass() {
-        //fillTestData();
+        fillTestData();
     }
 
     @Before
@@ -73,7 +73,7 @@ public abstract class AbstractStorageTest {
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() {
-        storage.update(RESUME4);
+        storage.update(new Resume("uuid123", "New Name"));
     }
 
     @Test

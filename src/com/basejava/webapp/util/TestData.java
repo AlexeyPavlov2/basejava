@@ -1,9 +1,8 @@
 package com.basejava.webapp.util;
 
-import com.basejava.webapp.model.*;
+import com.basejava.webapp.model.ContactType;
+import com.basejava.webapp.model.Resume;
 
-import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -30,7 +29,7 @@ public class TestData {
                     put(ContactType.SKYPE, RESUME1.getFullName());
                     put(ContactType.MAIL, RESUME1.getFullName() + "@gmail.com");
                 }});
-        RESUME1.putSection(SectionType.PERSONAL, new TextSection(RESUME1.getFullName() + " Personal"));
+        /*RESUME1.putSection(SectionType.PERSONAL, new TextSection(RESUME1.getFullName() + " Personal"));
         RESUME1.putSection(SectionType.OBJECTIVE, new TextSection("Junior Java Developer"));
         RESUME1.putSection(SectionType.ACHIEVEMENT, new ListSection<>(Arrays.asList(
                 RESUME1.getFullName() + " Achievement1", RESUME1.getFullName() + " Achievement2"
@@ -55,14 +54,14 @@ public class TestData {
                         Arrays.asList(new CompanyPersonalInfo(LocalDate.of(2013, 9, 01), LocalDate.of(2018, 05, 01),
                                 "R1 Shcool Edu", "")))
         )));
-
+*/
 
         RESUME2.setContacts(
                 new HashMap<ContactType, String>() {{
                     put(ContactType.PHONE, "+7(912) 456-234");
                     put(ContactType.MAIL, RESUME2.getFullName() + "@gmail.com");
                 }});
-        RESUME2.putSection(SectionType.PERSONAL, new TextSection(RESUME2.getFullName() + " Personal"));
+        /*RESUME2.putSection(SectionType.PERSONAL, new TextSection(RESUME2.getFullName() + " Personal"));
         RESUME2.putSection(SectionType.OBJECTIVE, new TextSection("Java Developer"));
         RESUME2.putSection(SectionType.ACHIEVEMENT, new ListSection<>(Arrays.asList(
                 RESUME2.getFullName() + " Achievement1", RESUME2.getFullName() + " Achievement2"
@@ -89,14 +88,14 @@ public class TestData {
                                 new CompanyPersonalInfo(LocalDate.of(2011, 02, 01), LocalDate.of(2013, 04, 01),
                                         "R2 Shcool Edu2", "")))
         )));
-
-        RESUME3.setContacts(
+*/
+        /*RESUME3.setContacts(
                 new HashMap<ContactType, String>() {{
                     put(ContactType.PHONE, "+7(912) 456-234");
                     put(ContactType.MAIL, RESUME3.getFullName() + "@gmail.com");
                     put(ContactType.GITHUB, "http://github.com/" + RESUME3.getFullName());
-                }});
-        RESUME3.putSection(SectionType.PERSONAL, new TextSection(RESUME3.getFullName() + " Personal"));
+                }});*/
+        /*RESUME3.putSection(SectionType.PERSONAL, new TextSection(RESUME3.getFullName() + " Personal"));
         RESUME3.putSection(SectionType.OBJECTIVE, new TextSection("C# Developer"));
         RESUME3.putSection(SectionType.ACHIEVEMENT, new ListSection<>(Arrays.asList(
                 RESUME3.getFullName() + " Achievement1", RESUME3.getFullName() + " Achievement2"
@@ -121,7 +120,7 @@ public class TestData {
                         Arrays.asList(new CompanyPersonalInfo(LocalDate.of(2013, 9, 01), LocalDate.of(2018, 05, 01),
                                 "R2 Shcool Edu1", "")))
         )));
-
+*/
 
         RESUME4.setContacts(
                 new HashMap<ContactType, String>() {{
@@ -129,6 +128,7 @@ public class TestData {
                     put(ContactType.MAIL, RESUME4.getFullName() + "@gmail.com");
                     put(ContactType.LINKEDIN, RESUME4.getFullName());
                 }});
+        /*
         RESUME4.putSection(SectionType.PERSONAL, new TextSection(RESUME4.getFullName() + " Personal"));
         RESUME4.putSection(SectionType.OBJECTIVE, new TextSection("C# Developer"));
         RESUME4.putSection(SectionType.ACHIEVEMENT, new ListSection<>(Arrays.asList(
@@ -148,7 +148,7 @@ public class TestData {
                 new Company(new HyperLink("R4 School1", "https://r4shcool1.com"),
                         Arrays.asList(new CompanyPersonalInfo(LocalDate.of(2013, 9, 01), LocalDate.of(2018, 05, 01),
                                 "R4 Shcool Edu1", "")))
-        )));
+        )));*/
     }
 
 }
