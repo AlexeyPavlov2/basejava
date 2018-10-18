@@ -11,8 +11,13 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SqlStorage implements Storage {
+    private final String CLASS_NAME = getClass().getName();
+    private final Logger LOG = Logger.getLogger(CLASS_NAME);
+
     public final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
@@ -21,11 +26,13 @@ public class SqlStorage implements Storage {
 
     @Override
     public void clear() {
+        LOG.info(CLASS_NAME +": " + " clear");
         sqlHelper.execute("DELETE FROM resume");
     }
 
     @Override
     public Resume get(String uuid) {
+        LOG.log(Level.INFO, CLASS_NAME +": " + " get, uuid = {0}", uuid);
         return sqlHelper.execute("" +
                         "    SELECT * FROM resume r " +
                         " LEFT JOIN contact c " +
@@ -51,6 +58,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
+        LOG.log(Level.INFO, CLASS_NAME +": " + " update, uuid = {0}", resume.getUuid());
         sqlHelper.transactionalExecute(conn -> {
                     try (PreparedStatement ps = conn.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")) {
                         ps.setString(2, resume.getUuid());
@@ -73,6 +81,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
+        LOG.log(Level.INFO, CLASS_NAME +": " + " save, uuid = {0}", resume.getUuid());
         sqlHelper.transactionalExecute(conn -> {
                     try (PreparedStatement ps = conn.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
                         ps.setString(1, resume.getUuid());
@@ -87,6 +96,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
+        LOG.log(Level.INFO, CLASS_NAME +": " + " delete, uuid = {0}", uuid);
         sqlHelper.execute("DELETE FROM resume WHERE uuid=?", ps -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
@@ -98,6 +108,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
+        LOG.info(CLASS_NAME +": " + " getAllSorted");
         return sqlHelper.execute("SELECT r.uuid,r.full_name, c.type, c.value FROM resume r LEFT JOIN contact c on r.uuid = c.resume_uuid ORDER BY full_name,uuid",
         (ps) -> {
                 ResultSet rs = ps.executeQuery();
