@@ -7,8 +7,8 @@ import com.basejava.webapp.model.Resume;
 import com.basejava.webapp.sql.SqlHelper;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -114,16 +114,12 @@ public class SqlStorage implements Storage {
                 ResultSet rs = ps.executeQuery();
                 Map<String, Resume> resumes = new LinkedHashMap<>();
                 while (rs.next()) {
-                    Resume resume = resumes.get(rs.getString(1));
-                    if (resume != null) {
-                        addContact(resume, rs);
-                    } else {
-                        resume = new Resume(rs.getString(1), rs.getString(2));
-                        addContact(resume, rs);
-                        resumes.put(resume.getUuid(), resume);
-                    }
+                    String uuid = rs.getString("uuid");
+                    String name = rs.getString("full_name");
+                    resumes.computeIfAbsent(uuid, key -> new Resume(key, name));
+                    addContact(resumes.get(uuid), rs);
                 }
-                return  new LinkedList<>(resumes.values());
+                return  new ArrayList<>(resumes.values());
             });
         }
 
@@ -152,9 +148,9 @@ public class SqlStorage implements Storage {
     }
 
     private void addContact(Resume resume, ResultSet resultSet) throws SQLException {
-        if (resultSet.getString(3) != null & resultSet.getString(4) != null) {
-            resume.addContact(ContactType.valueOf(resultSet.getString(3)),
-                    resultSet.getString(4));
+        if (resultSet.getString("type") != null & resultSet.getString("value") != null) {
+            resume.addContact(ContactType.valueOf(resultSet.getString("type")),
+                    resultSet.getString("value"));
         }
     }
 
