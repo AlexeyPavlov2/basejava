@@ -98,49 +98,23 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        List<Resume> resumes = new LinkedList<>();
-        sqlHelper.transactionalExecute(conn -> {
-            try (PreparedStatement ps = conn.prepareStatement("SELECT r.uuid,r.full_name, c.type, c.value FROM resume r\n" +
-                    "LEFT JOIN contact c on r.uuid = c.resume_uuid\n" +
-                    "ORDER BY full_name,uuid")) {
+        return sqlHelper.execute("SELECT r.uuid,r.full_name, c.type, c.value FROM resume r LEFT JOIN contact c on r.uuid = c.resume_uuid ORDER BY full_name,uuid",
+        (ps) -> {
                 ResultSet rs = ps.executeQuery();
-                // Create ResultSet List
-                List<List<Object>> list = new LinkedList<>();
+                Map<String, Resume> resumes = new LinkedHashMap<>();
                 while (rs.next()) {
-                    List<Object> objects = new LinkedList<>();
-                    int count = rs.getMetaData().getColumnCount();
-                    for (int i = 0; i < count; i++) {
-                        objects.add(rs.getObject(i + 1));
+                    Resume resume = resumes.get(rs.getString(1));
+                    if (resume != null) {
+                        addContact(resume, rs);
+                    } else {
+                        resume = new Resume(rs.getString(1), rs.getString(2));
+                        addContact(resume, rs);
+                        resumes.put(resume.getUuid(), resume);
                     }
-                    list.add(objects);
                 }
-                // Make Map with uuid as key
-                Map<String, List<List<Object>>> map = new LinkedHashMap<>();
-                list.forEach(el -> {
-                    map.merge((String) el.get(0), new LinkedList<List<Object>>() {{
-                                add(el);
-                            }},
-                            (a, b) -> new LinkedList<List<Object>>(a) {{
-                                addAll((b));
-                            }});
-                });
-                // Create resumes and add to result list
-                map.forEach((key, value) -> {
-                    Resume resume = new Resume(key, (String) value.get(0).get(1));
-                    resumes.add(resume);
-                    value.forEach(el -> {
-                            if (el != null && !el.isEmpty()) {
-                              if (el.get(2) != null && el.get(3) != null) {
-                        resume.addContact(ContactType.valueOf((String) el.get(2)), (String) el.get(3));
-                            }
-                        }
-                    });
-                });
-                return resumes;
-            }
-        });
-        return resumes;
-    }
+                return  new LinkedList<>(resumes.values());
+            });
+        }
 
     @Override
     public int size() {
@@ -165,4 +139,12 @@ public class SqlStorage implements Storage {
         }
 
     }
+
+    private void addContact(Resume resume, ResultSet resultSet) throws SQLException {
+        if (resultSet.getString(3) != null & resultSet.getString(4) != null) {
+            resume.addContact(ContactType.valueOf(resultSet.getString(3)),
+                    resultSet.getString(4));
+        }
+    }
+
 }
