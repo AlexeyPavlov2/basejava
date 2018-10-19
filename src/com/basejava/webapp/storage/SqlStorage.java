@@ -46,11 +46,7 @@ public class SqlStorage implements Storage {
                     }
                     Resume resume = new Resume(uuid, rs.getString("full_name"));
                     do {
-                        String value = rs.getString("value");
-                        if (value != null) {
-                            ContactType type = ContactType.valueOf(rs.getString("type"));
-                            resume.addContact(type, value);
-                        }
+                        addContact(resume, rs);
                     } while (rs.next());
                     return resume;
                 });
@@ -68,11 +64,7 @@ public class SqlStorage implements Storage {
                         };
                     }
 
-                    try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact c WHERE c.resume_uuid = ?")) {
-                        ps.setString(1, resume.getUuid());
-                        ps.execute();
-                    }
-
+                    deleteContacts(resume, conn);
                     insertContact(resume, conn);
                     return null;
                 }
@@ -152,6 +144,14 @@ public class SqlStorage implements Storage {
             resume.addContact(ContactType.valueOf(resultSet.getString("type")),
                     resultSet.getString("value"));
         }
+    }
+
+    private void deleteContacts(Resume resume, Connection connection) {
+        sqlHelper.execute("DELETE  FROM contact WHERE resume_uuid=?", ps -> {
+            ps.setString(1, resume.getUuid());
+            ps.execute();
+            return null;
+        });
     }
 
 }
