@@ -21,18 +21,26 @@ public class SqlStorage implements Storage {
     public final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
-        sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
+        sqlHelper = new SqlHelper(() -> {
+            try {
+                Class.forName("org.postgresql.Driver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        }
+        );
     }
 
     @Override
     public void clear() {
-        LOG.info(CLASS_NAME +": " + " clear");
+        LOG.info(CLASS_NAME + ": " + " clear");
         sqlHelper.execute("DELETE FROM resume");
     }
 
     @Override
     public Resume get(String uuid) {
-        LOG.log(Level.INFO, CLASS_NAME +": " + " get, uuid = {0}", uuid);
+        LOG.log(Level.INFO, CLASS_NAME + ": " + " get, uuid = {0}", uuid);
         return sqlHelper.execute("" +
                         "    SELECT * FROM resume r " +
                         " LEFT JOIN contact c " +
@@ -54,14 +62,15 @@ public class SqlStorage implements Storage {
 
     @Override
     public void update(Resume resume) {
-        LOG.log(Level.INFO, CLASS_NAME +": " + " update, uuid = {0}", resume.getUuid());
+        LOG.log(Level.INFO, CLASS_NAME + ": " + " update, uuid = {0}", resume.getUuid());
         sqlHelper.transactionalExecute(conn -> {
                     try (PreparedStatement ps = conn.prepareStatement("UPDATE resume SET full_name = ? WHERE uuid = ?")) {
                         ps.setString(2, resume.getUuid());
                         ps.setString(1, resume.getFullName());
                         if (ps.executeUpdate() != 1) {
                             throw new NotExistStorageException(resume.getUuid());
-                        };
+                        }
+                        ;
                     }
 
                     deleteContacts(resume, conn);
@@ -73,7 +82,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void save(Resume resume) {
-        LOG.log(Level.INFO, CLASS_NAME +": " + " save, uuid = {0}", resume.getUuid());
+        LOG.log(Level.INFO, CLASS_NAME + ": " + " save, uuid = {0}", resume.getUuid());
         sqlHelper.transactionalExecute(conn -> {
                     try (PreparedStatement ps = conn.prepareStatement("INSERT INTO resume (uuid, full_name) VALUES (?,?)")) {
                         ps.setString(1, resume.getUuid());
@@ -88,7 +97,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public void delete(String uuid) {
-        LOG.log(Level.INFO, CLASS_NAME +": " + " delete, uuid = {0}", uuid);
+        LOG.log(Level.INFO, CLASS_NAME + ": " + " delete, uuid = {0}", uuid);
         sqlHelper.execute("DELETE FROM resume WHERE uuid=?", ps -> {
             ps.setString(1, uuid);
             if (ps.executeUpdate() == 0) {
@@ -100,20 +109,26 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        LOG.info(CLASS_NAME +": " + " getAllSorted");
+        LOG.info(CLASS_NAME + ": " + " getAllSorted");
         return sqlHelper.execute("SELECT r.uuid,r.full_name, c.type, c.value FROM resume r LEFT JOIN contact c on r.uuid = c.resume_uuid ORDER BY full_name,uuid",
-        (ps) -> {
-                ResultSet rs = ps.executeQuery();
-                Map<String, Resume> resumes = new LinkedHashMap<>();
-                while (rs.next()) {
-                    String uuid = rs.getString("uuid");
-                    String name = rs.getString("full_name");
-                    resumes.computeIfAbsent(uuid, key -> new Resume(key, name));
-                    addContact(resumes.get(uuid), rs);
-                }
-                return  new ArrayList<>(resumes.values());
-            });
-        }
+                (ps) -> {
+                    ResultSet rs = ps.executeQuery();
+                    Map<String, Resume> resumes = new LinkedHashMap<>();
+                    while (rs.next()) {
+                        String uuid = rs.getString("uuid");
+                        String name = rs.getString("full_name");
+                        resumes.computeIfAbsent(uuid, key -> new Resume(key, name));
+                        addContact(resumes.get(uuid), rs);
+                    }
+                    return new ArrayList<>(resumes.values());
+                });
+    }
+
+
+    public List<Resume> getAll() {
+        LOG.info(CLASS_NAME + ": " + " getAll");
+        return null;
+    }
 
     @Override
     public int size() {
