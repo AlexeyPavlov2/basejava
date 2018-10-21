@@ -22,3 +22,13 @@ insert into contact (resume_uuid, type, value) VALUES ('s323c1b6-8fcf-4639-a0b5-
 insert into contact (resume_uuid, type, value) VALUES ('s323c1b6-8fcf-4639-a0b5-433b0cd55b00', 'MAIL', 'sidorov@gmail.com');
 insert into contact (resume_uuid, type, value) VALUES ('s323c1b6-8fcf-4639-a0b5-433b0cd55b00', 'LINKEDIN', 'sidorov');
 
+insert into section (resume_uuid, type, value) VALUES ('58f157fd-6864-42cc-a015-8a8bde5a577c', 'PERSONAL', 'Сергеева Мария Personal');
+insert into section (resume_uuid, type, value) VALUES ('58f157fd-6864-42cc-a015-8a8bde5a577c', 'OBJECTIVE', 'Junior Java Developer');
+insert into section (resume_uuid, type, value) VALUES ('58f157fd-6864-42cc-a015-8a8bde5a577c', 'ACHIEVEMENT', 'Сергеева Мария Achievement1\nСергеева Мария Achievement2');
+insert into section (resume_uuid, type, value) VALUES ('58f157fd-6864-42cc-a015-8a8bde5a577c', 'QUALIFICATIONS', 'Сергеева Мария Qualification1\nСергеева Мария Qualification12');
+
+insert into section (resume_uuid, type, value) VALUES ('d90d97ce-6410-4f6f-8700-5e728f74376a', 'PERSONAL', 'Петрова Ольга Personal');
+insert into section (resume_uuid, type, value) VALUES ('d90d97ce-6410-4f6f-8700-5e728f74376a', 'OBJECTIVE', 'Java Developer');
+insert into section (resume_uuid, type, value) VALUES ('d90d97ce-6410-4f6f-8700-5e728f74376a', 'ACHIEVEMENT', 'Петрова Ольга Achievement1\nПетрова Ольга Achievement2');
+insert into section (resume_uuid, type, value) VALUES ('d90d97ce-6410-4f6f-8700-5e728f74376a', 'QUALIFICATIONS', 'Петрова Ольга Qualification1\nПетрова Ольга Qualification2');
+

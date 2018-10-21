@@ -1,7 +1,9 @@
 package com.basejava.webapp.web;
 
 import com.basejava.webapp.Config;
+import com.basejava.webapp.model.ListSection;
 import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.model.TextSection;
 import com.basejava.webapp.storage.Storage;
 
 import javax.servlet.ServletConfig;
@@ -37,8 +39,9 @@ public class ResumeServlet extends HttpServlet {
         responseHTML.append(getPageHeader()).append("<body>");
         responseHTML.append(getTableHeader());
         if (uuid == null) {
-            storage.getAllSorted().forEach(el ->
-                    responseHTML.append(getResumeRow(el)));
+            storage.getAllSorted().forEach(el -> {
+                responseHTML.append(getResumeRow(el));
+            });
 
         } else {
             responseHTML.append(getResumeRow(storage.get(uuid)));
@@ -80,6 +83,10 @@ public class ResumeServlet extends HttpServlet {
                 "<th>Идентификатор</td>" + "\n" +
                 "<th>Полное имя</td>" + "\n" +
                 "<th>Контакты</td>" + "\n" +
+                "<th>Личные качества</td>" + "\n" +
+                "<th>Позиция</td>" + "\n" +
+                "<th>Достижения</td>" + "\n" +
+                "<th>Квалификация</td>" + "\n" +
                 "</tr>" + "\n";
     }
 
@@ -95,6 +102,30 @@ public class ResumeServlet extends HttpServlet {
                 .append(getTableColumn(resume.getFullName()));
         sb.append(getTableColumn(resume.getContacts().entrySet().stream()
                 .map(e -> "<p>" + e.getKey().getTitle() + e.getValue() + "</p>").collect(Collectors.joining(""))));
+
+        resume.getSections().forEach((key, value) -> {
+            switch (key) {
+                case OBJECTIVE:
+                case PERSONAL:
+                    sb.append(getTableColumn(((TextSection) resume.getSection(key)).getText()));
+                    break;
+                case ACHIEVEMENT:
+                case QUALIFICATIONS:
+                    sb.append(getTableColumn(((ListSection<String>) value).getItems().stream()
+                            .map(e -> "<p>" + e + "</p>").collect(Collectors.joining("\n"))));
+                    break;
+                case EDUCATION:
+                case EXPERIENCE:
+                    break;
+
+            }
+
+        });
+
+
+        //System.out.println("section " + resume.
+        //String sss = ((TextSection) section).getText();
+        /*sb.append(getTableColumn(sss));*/
         sb.append("</tr>\n");
         return sb.toString();
     }

@@ -2,15 +2,12 @@ package com.basejava.webapp.storage;
 
 
 import com.basejava.webapp.exception.NotExistStorageException;
-import com.basejava.webapp.model.ContactType;
-import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.exception.StorageException;
+import com.basejava.webapp.model.*;
 import com.basejava.webapp.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,12 +39,20 @@ public class SqlStorage implements Storage {
     public Resume get(String uuid) {
         LOG.log(Level.INFO, CLASS_NAME + ": " + " get, uuid = {0}", uuid);
         return sqlHelper.execute("" +
-                        "    SELECT * FROM resume r " +
+                        "    SELECT *, 'contact' as type_value FROM resume r " +
                         " LEFT JOIN contact c " +
                         "        ON r.uuid = c.resume_uuid " +
-                        "     WHERE r.uuid =? ",
+                        "     WHERE r.uuid =? " +
+                        "UNION" +
+                        "    SELECT *, 'section' as type_value FROM resume r " +
+                        " LEFT JOIN section s " +
+                        "        ON r.uuid = s.resume_uuid " +
+                        "     WHERE r.uuid =? "
+
+                ,
                 ps -> {
                     ps.setString(1, uuid);
+                    ps.setString(2, uuid);
                     ResultSet rs = ps.executeQuery();
                     if (!rs.next()) {
                         throw new NotExistStorageException(uuid);
@@ -55,6 +60,7 @@ public class SqlStorage implements Storage {
                     Resume resume = new Resume(uuid, rs.getString("full_name"));
                     do {
                         addContact(resume, rs);
+                        addSection(resume, rs);
                     } while (rs.next());
                     return resume;
                 });
@@ -70,10 +76,10 @@ public class SqlStorage implements Storage {
                         if (ps.executeUpdate() != 1) {
                             throw new NotExistStorageException(resume.getUuid());
                         }
-                        ;
                     }
-
                     deleteContacts(resume, conn);
+                    insertContact(resume, conn);
+                    deleteSections(resume, conn);
                     insertContact(resume, conn);
                     return null;
                 }
@@ -90,6 +96,7 @@ public class SqlStorage implements Storage {
                         ps.execute();
                     }
                     insertContact(resume, conn);
+                    insertSection(resume, conn);
                     return null;
                 }
         );
@@ -110,7 +117,9 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         LOG.info(CLASS_NAME + ": " + " getAllSorted");
-        return sqlHelper.execute("SELECT r.uuid,r.full_name, c.type, c.value FROM resume r LEFT JOIN contact c on r.uuid = c.resume_uuid ORDER BY full_name,uuid",
+        return sqlHelper.execute("SELECT r.uuid,r.full_name, c.type, c.value, 'contact' as type_value FROM resume r LEFT JOIN contact c on r.uuid = c.resume_uuid\n" +
+                        "UNION\n" +
+                        "SELECT r.uuid,r.full_name, s.type, s.value, 'section' as type_value FROM resume r LEFT JOIN section s on r.uuid = s.resume_uuid ORDER BY full_name,uuid",
                 (ps) -> {
                     ResultSet rs = ps.executeQuery();
                     Map<String, Resume> resumes = new LinkedHashMap<>();
@@ -119,6 +128,7 @@ public class SqlStorage implements Storage {
                         String name = rs.getString("full_name");
                         resumes.computeIfAbsent(uuid, key -> new Resume(key, name));
                         addContact(resumes.get(uuid), rs);
+                        addSection(resumes.get(uuid), rs);
                     }
                     return new ArrayList<>(resumes.values());
                 });
@@ -140,7 +150,6 @@ public class SqlStorage implements Storage {
                 });
     }
 
-
     private void insertContact(Resume resume, Connection connection) throws SQLException {
         try (PreparedStatement ps = connection.prepareStatement("INSERT INTO contact (resume_uuid, type, value) VALUES (?,?,?)")) {
             for (Map.Entry<ContactType, String> e : resume.getContacts().entrySet()) {
@@ -151,11 +160,11 @@ public class SqlStorage implements Storage {
             }
             ps.executeBatch();
         }
-
     }
 
     private void addContact(Resume resume, ResultSet resultSet) throws SQLException {
-        if (resultSet.getString("type") != null & resultSet.getString("value") != null) {
+        if (resultSet.getString("type_value").equals("contact") & resultSet.getString("type") != null
+                & resultSet.getString("value") != null) {
             resume.addContact(ContactType.valueOf(resultSet.getString("type")),
                     resultSet.getString("value"));
         }
@@ -167,6 +176,72 @@ public class SqlStorage implements Storage {
             ps.execute();
             return null;
         });
+    }
+
+    private void insertSection(Resume resume, Connection connection) throws SQLException {
+        String sqlTemplate = "INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(sqlTemplate)) {
+            for (Map.Entry<SectionType, Section> e : resume.getSections().entrySet()) {
+                SectionType key = e.getKey();
+                Section value = e.getValue();
+                switch (key) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        ps.setString(1, resume.getUuid());
+                        ps.setString(2, e.getKey().name());
+                        ps.setString(3, ((TextSection) value).getText());
+                        ps.addBatch();
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS:
+                        ps.setString(1, resume.getUuid());
+                        ps.setString(2, e.getKey().name());
+                        ps.setString(3,
+                                String.join("\n", ((ListSection<String>) value)
+                                        .getItems()));
+                        ps.addBatch();
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        break;
+                    default:
+                        throw new StorageException("Unknown SectionType name <" + key + ">");
+                }
+            }
+            ps.executeBatch();
+        }
+    }
+
+    private void deleteSections(Resume resume, Connection connection) {
+        sqlHelper.execute("DELETE  FROM section WHERE resume_uuid=?", ps -> {
+            ps.setString(1, resume.getUuid());
+            ps.execute();
+            return null;
+        });
+    }
+
+    private void addSection(Resume resume, ResultSet resultSet) throws SQLException {
+        String type = resultSet.getString("type");
+        String type_value = resultSet.getString("type_value");
+        String value = resultSet.getString("value");
+        if (type_value.equals("section") & type != null & value != null) {
+            switch (type) {
+                case "PERSONAL":
+                case "OBJECTIVE":
+                    resume.putSection(SectionType.valueOf(type), new TextSection(value));
+                    break;
+                case "ACHIEVEMENT":
+                case "QUALIFICATIONS":
+                    resume.putSection(SectionType.valueOf(type),
+                            new ListSection<String>(Arrays.asList(value.split("\n"))));
+                    break;
+                case "EXPERIENCE":
+                case "EDUCATION":
+                    break;
+                default:
+                    throw new StorageException("Unknown SectionType name <" + type + ">");
+            }
+        }
     }
 
 }

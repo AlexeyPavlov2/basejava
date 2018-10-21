@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS contact;
-DROP TABLE IF EXISTS resume;
 DROP TABLE  IF EXISTS section;
+DROP TABLE IF EXISTS resume;
 
 
 CREATE TABLE resume (
