@@ -40,30 +40,29 @@ public class SqlStorage implements Storage {
         LOG.log(Level.INFO, CLASS_NAME + ": " + " get, uuid = {0}", uuid);
         return sqlHelper.transactionalExecute(conn -> {
             Resume resume;
-            try {
-                PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume WHERE uuid = ?");
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume WHERE uuid = ?")) {
                 ps.setString(1, uuid);
                 ResultSet rs = ps.executeQuery();
                 if (!rs.next()) {
                     throw new NotExistStorageException(uuid);
                 }
                 resume = new Resume(uuid, rs.getString("full_name"));
+            }
 
-                ps = conn.prepareStatement("SELECT * FROM contact WHERE resume_uuid = ?");
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact WHERE resume_uuid = ?")) {
                 ps.setString(1, uuid);
-                rs = ps.executeQuery();
+                ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     addContact(resume, rs);
                 }
+            }
 
-                ps = conn.prepareStatement("SELECT * FROM section WHERE resume_uuid = ?");
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM section WHERE resume_uuid = ?")) {
                 ps.setString(1, uuid);
-                rs = ps.executeQuery();
+                ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     addSection(resume, rs);
                 }
-            } catch (SQLException e) {
-                throw new StorageException(e);
             }
             return resume;
         });
@@ -122,29 +121,28 @@ public class SqlStorage implements Storage {
         LOG.info(CLASS_NAME + ": " + " getAllSorted");
         return sqlHelper.transactionalExecute(conn -> {
             Map<String, Resume> resumes = new LinkedHashMap<>();
-            try {
-                PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid");
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     String uuid = rs.getString("uuid");
                     resumes.put(uuid, new Resume(uuid, rs.getString("full_name")));
                 }
+            }
 
-                ps = conn.prepareStatement("SELECT * FROM contact");
-                rs = ps.executeQuery();
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM contact")) {
+                ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     Resume resume = resumes.get(rs.getString("resume_uuid"));
                     addContact(resume, rs);
                 }
+            }
 
-                ps = conn.prepareStatement("SELECT * FROM section");
-                rs = ps.executeQuery();
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM section")) {
+                ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     Resume resume = resumes.get(rs.getString("resume_uuid"));
                     addSection(resume, rs);
                 }
-            } catch (SQLException e) {
-                throw new StorageException(e);
             }
             return new ArrayList<>(resumes.values());
         });
