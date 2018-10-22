@@ -17,12 +17,14 @@ public class Config {
 
     private final File storageDir;
     private final Storage storage;
+    private String dbDriver;
 
     private Config() {
         try ( InputStream is = new FileInputStream(ABS_PATH_FILE)) {
             Properties props = new Properties();
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
+            dbDriver = props.getProperty("db.driver");
             storage = new SqlStorage(props.getProperty("db.url"),
                     props.getProperty("db.user"), props.getProperty("db.password"));
         } catch (IOException e) {
@@ -40,5 +42,9 @@ public class Config {
 
     public File getStorageDir() {
         return storageDir;
+    }
+
+    public String getDbDriver() {
+        return dbDriver;
     }
 }
