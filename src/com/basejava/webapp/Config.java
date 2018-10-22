@@ -10,38 +10,44 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
-    private static final String PROPERTIES_FILE= "config\\resumes.properties";
-    private static final String ABS_PATH_FILE = "D:\\git\\basejava\\config\\resumes.properties";
-    private static final File PROPS = new File(PROPERTIES_FILE);
+    private static final File PROPS = new File(getHomeDir(), "config\\resumes.properties");
     private static final Config INSTANCE = new Config();
 
     private final File storageDir;
     private final Storage storage;
     private String dbDriver;
 
+    public static Config get() {
+        return INSTANCE;
+    }
+
     private Config() {
-        try ( InputStream is = new FileInputStream(ABS_PATH_FILE)) {
+        try (InputStream is = new FileInputStream(PROPS)) {
             Properties props = new Properties();
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
             dbDriver = props.getProperty("db.driver");
-            storage = new SqlStorage(props.getProperty("db.url"),
-                    props.getProperty("db.user"), props.getProperty("db.password"));
+            storage = new SqlStorage(props.getProperty("db.url"), props.getProperty("db.user"), props.getProperty("db.password"));
         } catch (IOException e) {
             throw new IllegalStateException("Invalid config file " + PROPS.getAbsolutePath());
         }
+    }
+
+    public File getStorageDir() {
+        return storageDir;
     }
 
     public Storage getStorage() {
         return storage;
     }
 
-    public static Config get() {
-        return INSTANCE;
-    }
-
-    public File getStorageDir() {
-        return storageDir;
+    private static File getHomeDir() {
+        String prop = System.getProperty("homeDir");
+        File homeDir = new File(prop == null ? "." : prop);
+        if (!homeDir.isDirectory()) {
+            throw new IllegalStateException(homeDir + " is not directory");
+        }
+        return homeDir;
     }
 
     public String getDbDriver() {

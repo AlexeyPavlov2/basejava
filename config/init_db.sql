@@ -2,7 +2,6 @@ DROP TABLE IF EXISTS contact;
 DROP TABLE  IF EXISTS section;
 DROP TABLE IF EXISTS resume;
 
-
 CREATE TABLE resume (
   uuid      CHAR(36) PRIMARY KEY NOT NULL,
   full_name TEXT                 NOT NULL
@@ -17,17 +16,11 @@ CREATE TABLE contact (
 CREATE UNIQUE INDEX contact_uuid_type_index
   ON contact (resume_uuid, type);
 
-create table section
-(
-  id serial not null
-    constraint table_name_pkey
-    primary key,
-  resume_uuid char(36) not null
-    constraint section_resume_uuid_fk
-    references resume
-    on delete cascade,
-  type text not null,
-  value text not null
+CREATE TABLE section (
+  id          SERIAL PRIMARY KEY,
+  resume_uuid CHAR(36) NOT NULL REFERENCES resume (uuid) ON DELETE CASCADE,
+  type        TEXT     NOT NULL,
+  value     TEXT     NOT NULL
 );
-CREATE UNIQUE INDEX section_uuid_type_index
+CREATE UNIQUE INDEX section_idx
   ON section (resume_uuid, type);
