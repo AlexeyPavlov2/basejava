@@ -4,6 +4,8 @@ header {
     color: #2E6E9E;
     font-size: 20px;
     padding: 5px 20px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 footer {
@@ -15,26 +17,70 @@ footer {
     margin: 20px 0;
 }
 
-table {
-    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif, serif;
-    font-size: 14px;
-    border-collapse: collapse;
-    text-align: center;
+
+.icon_red {
+    color: red;
 }
-th, td:first-child {
-    background: #AFCDE7;
-    color: white;
-    padding: 10px 20px;
+
+.icon_color {
+    color: darkgreen;
 }
-th, td {
-    border-style: solid;
-    border-width: 0 1px 1px 0;
-    border-color: white;
-    padding: 10px 20px;
+
+.view_table_name_td {
+    padding-right: 25px;
+
 }
-td {
-    background: #D8E6F3;
+
+.view_table_conact_td {
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-bottom: 3px;
+    padding-top: 3px;
 }
-th:first-child, td:first-child {
-    text-align: left;
+
+.company_title {
+    color: navy;
 }
+
+.company_personal_info {
+    border-spacing: 3px 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.company_position_bold {
+    font-weight: bold;
+}
+
+.company_personal_info_date {
+    width: 9%;
+}
+
+.company_personal_info_descr {
+    width:78%;
+}
+
+.company_personal_info_comma {
+    width: 2%;
+}
+
+dl {
+    background: none repeat scroll 0 0 #FAFAFA;
+    margin: 8px 0;
+    padding: 0;
+}
+
+dt {
+    display: inline-block;
+    width: 170px;
+}
+
+dd {
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: top;
+}
+
+

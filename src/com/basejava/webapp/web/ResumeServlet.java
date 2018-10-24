@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
+    private static final long serialVersionUID = 995497791471805151L;
     private final String CLASS_NAME = getClass().getName();
     private final Logger LOG = Logger.getLogger(CLASS_NAME);
     private Storage storage;
@@ -29,28 +29,33 @@ public class ResumeServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         LOG.info(CLASS_NAME + ": " + " doGet");
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html; charset=UTF-8");
         String uuid = request.getParameter("uuid");
-        PrintWriter out = response.getWriter();
-
-        StringBuffer responseHTML = new StringBuffer(getPageHead());
-        responseHTML.append(getPageHeader()).append("<body>");
-        responseHTML.append(getTableHeader());
-        if (uuid == null) {
-            storage.getAllSorted().forEach(el -> {
-                responseHTML.append(getResumeRow(el));
-            });
-
-        } else {
-            responseHTML.append(getResumeRow(storage.get(uuid)));
+        String action = request.getParameter("action");
+        if (action == null) {
+            request.setAttribute("resumes", storage.getAllSorted());
+            request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
+            return;
         }
-
-        responseHTML.append("</table>\n");
-        responseHTML.append("</body>").append(getPageFooter()).append("</html>");
-        out.write(responseHTML.toString());
+        Resume r;
+        switch (action) {
+            case "delete":
+                storage.delete(uuid);
+                response.sendRedirect("resume");
+                return;
+            case "view":
+            case "edit":
+                r = storage.get(uuid);
+                //System.out.println(r);
+                break;
+            default:
+                throw new IllegalArgumentException("Action " + action + " is illegal");
+        }
+        request.setAttribute("resume", r);
+        request.getRequestDispatcher(
+                ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
+        ).forward(request, response);
     }
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
 

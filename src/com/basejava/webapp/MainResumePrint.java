@@ -18,7 +18,7 @@ public class MainResumePrint {
             put(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
             put(ContactType.GITHUB, "https://github.com/gkislin");
             put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473");
-            put(ContactType.HOMESITE, "http://gkislin.ru/");
+            put(ContactType.HOME_PAGE, "http://gkislin.ru/");
         }};
 
         Section achievements = new ListSection<>(Arrays.asList(
