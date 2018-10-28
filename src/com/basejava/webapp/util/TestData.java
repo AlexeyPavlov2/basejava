@@ -93,8 +93,12 @@ public class TestData {
                         Arrays.asList(new CompanyPersonalInfo(LocalDate.of(2017, 10, 01),
                                 CompanyPersonalInfo.FUTURE_DATE, "Java Development",
                                 "Занималась разработкой Web - приложений для различных систем учета данных(участие более чем в 15-ти проектах).\n" +
-                                        "Использовались : Java(6,7,8), Javascript(базовый + библиотеки dojo, jQuery), HTML, CSS, Spring, Vaadin, iBatis, MyBatis, Hibernate, Apache Tomcat , Аpache fop(.pdf, .rtf), Аpache poi(.xls)"))),
-                new Company(new HyperLink("Рога и Копыта", "http://roga_i_kopita.ru/"),
+                                        "Использовались : Java(6,7,8), Javascript(базовый + библиотеки dojo, jQuery), HTML, CSS, Spring, Vaadin, iBatis, MyBatis, Hibernate, Apache Tomcat , Аpache fop(.pdf, .rtf), Аpache poi(.xls)"),
+                                new CompanyPersonalInfo(LocalDate.of(2017, 3, 02),
+                                        LocalDate.of(2017, 4, 12), "Java Development Sinior",
+                                        "Занималась разработкой Web")
+                                )),
+                new Company(new HyperLink("Рога и Копыта", "https://roga_i_lopita.com"),
                         Arrays.asList(new CompanyPersonalInfo(LocalDate.of(2017, 8, 02),
                                 LocalDate.of(2017, 9, 17), "Java программист",
                                 "Ничо не делал"))),

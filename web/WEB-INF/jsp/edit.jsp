@@ -109,7 +109,6 @@
 
         <div class="form-group">
             <c:forEach var="sectionEntry" items="${resume.sections}">
-
                 <jsp:useBean id="sectionEntry"
                              type="java.util.Map.Entry<com.basejava.webapp.model.SectionType,
                  com.basejava.webapp.model.Section>"/>
@@ -164,7 +163,7 @@
                                         <label for="${'company_title'.concat(count1.count)}" class="col-form-label">Название
                                             компании:</label>
                                         <input name="company_title" class="form-control"
-                                               value="${itemLink.title}" id="${'company_title'.concat(count1.count)}"/>
+                                               value="${itemLink.title}" id="${'company_title'.concat(count1.count)}" required/>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="${'company_url'.concat(count1.count)}" class="col-form-label">Сайт:</label>
@@ -189,21 +188,21 @@
                                                    class="col-form-label">Дата начала:</label>
                                             <input name="startDate" class="form-control"
                                                    value="${personalInfo.start}"
-                                                   id="${'startDate'.concat(count1.count).concat('_'.concat(count2.count))}"/>
+                                                   id="${'startDate'.concat(count1.count).concat('_'.concat(count2.count))}" required/>
                                         </div>
                                         <div class="col-md-2">
                                             <label for="${'startDate'.concat(count1.count).concat('_'.concat(count2.count))}"
                                                    class="col-form-label">Дата окончания:</label>
                                             <input name="endDate" class="form-control"
                                                    value="${personalInfo.end}"
-                                                   id="${'endDate'.concat(count1.count).concat('_'.concat(count2.count))}"/>
+                                                   id="${'endDate'.concat(count1.count).concat('_'.concat(count2.count))}" required/>
                                         </div>
                                         <div class="col-md-4">
                                             <label for="${'position'.concat(count1.count).concat('_'.concat(count2.count))}"
                                                    class="col-form-label">Позиция:</label>
                                             <input name="position" class="form-control"
                                                    value="${personalInfo.text}"
-                                                   id="${'position'.concat(count1.count).concat('_'.concat(count2.count))}"/>
+                                                   id="${'position'.concat(count1.count).concat('_'.concat(count2.count))}" required/>
                                         </div>
                                     </div>
                                     <div class="form row">
@@ -211,7 +210,7 @@
                                             <label for="${'description'.concat(count1.count).concat('_'.concat(count2.count))}"
                                                    class="col-form-label">Обязанности:</label>
                                             <textarea name="description" class="form-control" rows="5"
-                                                      id="${'description'.concat(count1.count).concat('_'.concat(count2.count))}">${personalInfo.description}
+                                                      id="${'description'.concat(count1.count).concat('_'.concat(count2.count))}" required>${personalInfo.description}
                                             </textarea>
                                         </div>
                                     </div>

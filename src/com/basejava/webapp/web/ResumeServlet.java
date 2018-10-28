@@ -94,7 +94,7 @@ public class ResumeServlet extends HttpServlet {
             switch (type.name()) {
                 case "OBJECTIVE":
                 case "PERSONAL":
-                    if (value !=null) {
+                    if (value != null) {
                         TextSection section = (TextSection) resume.getSection(type);
                         section.setText(value);
                         resume.putSection(type, section);
@@ -102,29 +102,36 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case "ACHIEVEMENT":
                 case "QUALIFICATIONS":
-                    if (value !=null) {
+                    if (value != null) {
                         List<String> list = new ArrayList<>(Arrays.asList(value.split("\n")));
                         ListSection<String> section = (ListSection<String>) resume.getSection(type);
-                        section.setItems(new ArrayList<>(list.stream().filter(el  -> el != null && !el.isEmpty() && el.trim().length() !=0 ).collect(Collectors.toList())));
+                        section.setItems(new ArrayList<>(list.stream().filter(el -> el != null && !el.isEmpty() && el.trim().length() != 0).collect(Collectors.toList())));
                         resume.putSection(type, section);
                     }
                     break;
                 default:
                     break;
             }  // on SectionType
-
-            Map<String, String[]> parameterMap = request.getParameterMap();
-            parameterMap.entrySet().stream().forEach(el -> {
-                System.out.println("Key: " + el.getKey());
-                System.out.println("Value: ");
-                Arrays.stream(el.getValue()).forEach(obj -> System.out.print(obj + " "));
-                System.out.println();
-
-            });
-
-
-
         }
+
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        Map<String, String[]> paraMap = new LinkedHashMap<>();
+
+
+        parameterMap.forEach((key, value) -> {
+            if (key.equals("company_title") || key.equals("company_url") ||
+                    key.equals("startDate") || key.equals("endDate") || key.equals("position") ||
+                    key.equals("description")) {
+                paraMap.put(key, value);
+            }
+        });
+
+        paraMap.forEach((key, value) -> {
+            System.out.println("Key: " + key);
+            System.out.println("Value: ");
+            Arrays.stream(value).forEach(obj -> System.out.println(obj));
+            System.out.println();
+        });
 
 
         // Save data
