@@ -2,10 +2,13 @@
 <%@ page import="com.basejava.webapp.model.ListSection" %>
 <%@ page import="com.basejava.webapp.model.TextSection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="img/favicon.png" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -18,7 +21,7 @@
 <div class="container">
     <div class="row">
         <div class="col-1"></div>
-        <div class="col-11">
+        <div class="col-10">
             <table>
                 <tr>
                     <%--Display name and contacts--%>
@@ -31,12 +34,12 @@
                                 class="icon_color fa fa-pencil"></i></a></h3>
                     </td>
                     <td class="align-bottom  view_table_name_td">
-                        <h3><a href="resume?uuid=${resume.uuid}&action=download" title="Скачать PDF"><i
+                        <h3><a href="resume?uuid=${resume.uuid}&action=download" title="Скачать PDF - it's not supported yet"><i
                                 class="icon_red fa fa-file-pdf-o"></i></a></h3>
                     </td>
 
                     <td class="align-bottom">
-                        <h3><a href="resume?uuid=${resume.uuid}&action=send" title="Отправить по электронной почте"><i
+                        <h3><a href="resume?uuid=${resume.uuid}&action=send" title="Отправить по электронной почте  - it's not supported yet"><i
                                 class="icon_color fa fa-share"></i></a></h3>
                     </td>
                 </tr>
@@ -47,7 +50,7 @@
                 <jsp:useBean id="contactEntry"
                              type="java.util.Map.Entry<com.basejava.webapp.model.ContactType, java.lang.String>"/>
                 <tr>
-                        <c:set var="contact_type" value="<%=contactEntry.getKey()%>"></c:set>
+                        <c:set var="contact_type" value="<%=contactEntry.getKey()%>"/>
                     <td class="view_table_conact_td">
                         <c:choose>
                             <c:when test="${contact_type eq 'PHONE'}">
@@ -90,16 +93,16 @@
                 <jsp:useBean id="sectionEntry"
                              type="java.util.Map.Entry<com.basejava.webapp.model.SectionType,
                  com.basejava.webapp.model.Section>"/>
-                <c:set var="sectionType" value="<%=sectionEntry.getKey().name()%>"></c:set>
-                <c:set var="sectionTitle" value="<%=sectionEntry.getKey().getTitle()%>"></c:set>
+                <c:set var="sectionType" value="<%=sectionEntry.getKey().name()%>"/>
+                <c:set var="sectionTitle" value="<%=sectionEntry.getKey().getTitle()%>"/>
                 <h4>${sectionTitle}:</h4>
 
                 <%--Switch on a SectionType--%>
                 <c:choose>
                     <c:when test="${(sectionType eq 'PERSONAL') || (sectionType eq 'OBJECTIVE')}">
-                        <c:set var="text" value="<%=((TextSection) sectionEntry.getValue()).getText()%>"></c:set>
+                        <c:set var="text" value="<%=((TextSection) sectionEntry.getValue()).getText()%>"/>
                         <p>${text}</p>
-                        <c:remove var="text"></c:remove>
+                        <c:remove var="text"/>
                     </c:when>
                     <c:when test="${(sectionType eq 'ACHIEVEMENT') || (sectionType eq 'QUALIFICATIONS')}">
                         <ul>
@@ -108,14 +111,16 @@
                                 <li>${listItem}</li>
                             </c:forEach>
                         </ul>
-                        <c:remove var="listItem"></c:remove>
+                        <c:remove var="listItem"/>
                     </c:when>
                     <c:when test="${(sectionType eq 'EXPERIENCE') || (sectionType eq 'EDUCATION')}">
                         <c:forEach var="company" items="<%=((CompanySection) sectionEntry.getValue()).getItems()%>">
-                            <jsp:useBean id="company" type="com.basejava.webapp.model.Company"></jsp:useBean>
-                            <c:set var="itemLink" value="${company.link}"></c:set>
-                            <jsp:useBean id="itemLink" type="com.basejava.webapp.model.HyperLink"></jsp:useBean>
+                            <jsp:useBean id="company" type="com.basejava.webapp.model.Company"/>
+                            <c:set var="itemLink" value="${company.link}"/>
+                            <jsp:useBean id="itemLink" type="com.basejava.webapp.model.HyperLink"/>
+
                             <%--Display Company  name and HTTP (if exists)--%>
+
                             <table width="100%">
                                 <tr>
                                     <td class="company_personal_info" colspan="4">
@@ -133,13 +138,23 @@
 
                                 <c:forEach var="personalInfo" items="${company.companyPersonalInfoList}">
                                     <jsp:useBean id="personalInfo"
-                                                 type="com.basejava.webapp.model.CompanyPersonalInfo"></jsp:useBean>
+                                                 type="com.basejava.webapp.model.CompanyPersonalInfo"/>
                                     <tr>
-                                        <c:set var="end" value="${personalInfo.end}"></c:set>
-                                        <c:if test="${end eq '2050-12-01'}">
-                                            <c:set var="end" value="Сейчас"></c:set>
+                                        <c:if test="${personalInfo.end eq '2050-12-01'}">
+                                            <c:set var="end">Сейчас</c:set>
                                         </c:if>
-                                        <td class="align-top company_personal_info company_personal_info_date">${personalInfo.start}</td>
+                                        <c:if test="${personalInfo.end ne '2050-12-01'}">
+                                            <fmt:parseDate value="${personalInfo.end}" pattern="yyyy-MM-dd"
+                                                           var="parsedDate" type="date"/>
+                                            <fmt:formatDate value="${parsedDate}" var="end" type="date"
+                                                            pattern="dd.MM.yyyy"/>
+                                        </c:if>
+                                        <fmt:parseDate value="${personalInfo.start}" pattern="yyyy-MM-dd"
+                                                       var="parsedDate" type="date"/>
+                                        <fmt:formatDate value="${parsedDate}" var="start" type="date"
+                                                        pattern="dd.MM.yyyy"/>
+
+                                        <td class="align-top company_personal_info company_personal_info_date">${start}</td>
                                         <td class="align-top company_personal_info company_personal_info_comma">-</td>
                                         <td class="align-top company_personal_info">${end}</td>
                                         <td class="align-top company_personal_info company_position_bold">${personalInfo.text}</td>
@@ -154,18 +169,14 @@
                             </table>
                             <br>
                         </c:forEach>
-
-
                     </c:when>
-
                     <c:otherwise>
                     </c:otherwise>
                 </c:choose>
-
             </c:forEach>
         </div>
-
     </div>
+
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

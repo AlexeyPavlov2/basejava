@@ -16,11 +16,11 @@ public class TestData {
     public static final String UUID_4 = UUID.randomUUID().toString();
     public static final String UUID_5 = UUID.randomUUID().toString();
 
-    public static final Resume RESUME1 = new Resume(UUID_1, "Сергеева Мария");
-    public static final Resume RESUME2 = new Resume(UUID_2, "Петрова Ольга");
-    public static final Resume RESUME3 = new Resume(UUID_3, "Иванов Сергей");
-    public static final Resume RESUME4 = new Resume(UUID_4, "Королев Иван");
-    public static final Resume RESUME5 = new Resume(UUID_5, "Аверин Николай");
+    public static final Resume RESUME1 = new Resume(UUID_1, "Сергеева Мария Александровна");
+    public static final Resume RESUME2 = new Resume(UUID_2, "Петрова Ольга Владимировна");
+    public static final Resume RESUME3 = new Resume(UUID_3, "Иванов Сергей Петрович");
+    public static final Resume RESUME4 = new Resume(UUID_4, "Королев Иван Дмитриевич");
+    public static final Resume RESUME5 = new Resume(UUID_5, "Аверин Николай Алексеевич");
 
     public static void fillTestData() {
         RESUME1.setContacts(
@@ -94,6 +94,11 @@ public class TestData {
                                 CompanyPersonalInfo.FUTURE_DATE, "Java Development",
                                 "Занималась разработкой Web - приложений для различных систем учета данных(участие более чем в 15-ти проектах).\n" +
                                         "Использовались : Java(6,7,8), Javascript(базовый + библиотеки dojo, jQuery), HTML, CSS, Spring, Vaadin, iBatis, MyBatis, Hibernate, Apache Tomcat , Аpache fop(.pdf, .rtf), Аpache poi(.xls)"))),
+                new Company(new HyperLink("Рога и Копыта", "http://roga_i_kopita.ru/"),
+                        Arrays.asList(new CompanyPersonalInfo(LocalDate.of(2017, 8, 02),
+                                LocalDate.of(2017, 9, 17), "Java программист",
+                                "Ничо не делал"))),
+
 
                 new Company(new HyperLink("R2 Company1", "https://r2company2.ru/"),
                         Arrays.asList(new CompanyPersonalInfo(LocalDate.of(2016, 05, 1), LocalDate.of(2017, 10, 01),
@@ -157,7 +162,7 @@ public class TestData {
                     put(ContactType.LINKEDIN, "https://linckedin.com/" + cyrString2Lat(RESUME4.getFullName()));
                 }});
 
-        RESUME4.putSection(SectionType.PERSONAL, new TextSection(RESUME4.getFullName() + " Personal"));
+        RESUME4.putSection(SectionType.PERSONAL, new TextSection(RESUME4.getFullName() + " Personal\n" + "dasasdfadcdakdcasdklbc kjasdkj aljdfakldsfn kljkjndfad lkjskldfadsf laknjsdfkldf alkjdnfn lasjdf sdg trwrfrfwr rgsdg ererrwr rtertwyw wrwrtwrr wrwrtwrt"));
         RESUME4.putSection(SectionType.OBJECTIVE, new TextSection("C# Developer"));
         RESUME4.putSection(SectionType.ACHIEVEMENT, new ListSection<>(Arrays.asList(
                 RESUME4.getFullName() + " Achievement1"
@@ -200,6 +205,7 @@ public class TestData {
                                 "C#, Itil master, C++ Java Developer",
                                 "Работа 5 ")))
         )));
+
     }
 
 }

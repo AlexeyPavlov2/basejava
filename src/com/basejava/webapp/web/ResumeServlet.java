@@ -1,10 +1,9 @@
 package com.basejava.webapp.web;
 
 import com.basejava.webapp.Config;
-import com.basejava.webapp.model.ListSection;
-import com.basejava.webapp.model.Resume;
-import com.basejava.webapp.model.TextSection;
+import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.Storage;
+import com.basejava.webapp.util.TestData;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -30,6 +30,7 @@ public class ResumeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         LOG.info(CLASS_NAME + ": " + " doGet");
         String uuid = request.getParameter("uuid");
+        System.out.println("UUID: " + uuid);
         String action = request.getParameter("action");
         if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
@@ -42,9 +43,22 @@ public class ResumeServlet extends HttpServlet {
                 storage.delete(uuid);
                 response.sendRedirect("resume");
                 return;
+            case "generate":
+                populateDatabase();
+                response.sendRedirect("resume");
+                return;
+            case "download":
+            case "send":
+                response.sendRedirect("resume");
+                return;
             case "view":
             case "edit":
-                r = storage.get(uuid);
+                if (uuid.equals("'new'")) {
+                    System.out.println("YES");
+                    r = new Resume("", "");
+                } else {
+                    r = storage.get(uuid);
+                }
                 //System.out.println(r);
                 break;
             default:
@@ -58,81 +72,81 @@ public class ResumeServlet extends HttpServlet {
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String uuid = request.getParameter("uuid");
+        String fullName = request.getParameter("fullName");
+        Resume resume = "".equals(uuid) ? new Resume(UUID.randomUUID().toString(), "") : storage.get(uuid);
 
-    }
-
-
-    private String getPageHead() {
-        return "<!DOCTYPE html>" + "\n" +
-                "<html>" + "\n" +
-                "<head>" + "\n" +
-                "<meta charset=\"UTF-8\">" + "\n" +
-                "<meta charset=\"UTF-8\">" + "\n" +
-                "<link rel=\"stylesheet\" href=\"css/style.css\">" + "\n" +
-                "<title>Курс JavaSE + Web.</title>" + "\n" +
-                "</head>";
-    }
-
-    private String getPageHeader() {
-        return "<header>Приложение вебинара <a href=\"http://javawebinar.ru/basejava/\" target=\"_blank\">Практика Java. Разработка Web приложения.\"</a></header><br>";
-    }
-
-    private String getPageFooter() {
-        return "<footer>Приложение вебинара <a href=\"http://javawebinar.ru/basejava/\"" +
-                "target=\"_blank\">Практика Java. Разработка Web приложения.\"</a></footer>";
-    }
-
-    private String getTableHeader() {
-        return "<table>" + "\n" +
-                "<tr>" + "\n" +
-                "<th>Идентификатор</td>" + "\n" +
-                "<th>Полное имя</td>" + "\n" +
-                "<th>Контакты</td>" + "\n" +
-                "<th>Личные качества</td>" + "\n" +
-                "<th>Позиция</td>" + "\n" +
-                "<th>Достижения</td>" + "\n" +
-                "<th>Квалификация</td>" + "\n" +
-                "</tr>" + "\n";
-    }
-
-    private String getTableColumn(String value) {
-        return "<td>" + value + "</td>";
-    }
-
-    private String getResumeRow(Resume resume) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<tr>\n")
-                .append(getTableColumn(resume.getUuid()))
-                .append("\n")
-                .append(getTableColumn(resume.getFullName()));
-        sb.append(getTableColumn(resume.getContacts().entrySet().stream()
-                .map(e -> "<p>" + e.getKey().getTitle() + e.getValue() + "</p>").collect(Collectors.joining(""))));
-
-        resume.getSections().forEach((key, value) -> {
-            switch (key) {
-                case OBJECTIVE:
-                case PERSONAL:
-                    sb.append(getTableColumn(((TextSection) resume.getSection(key)).getText()));
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    sb.append(getTableColumn(((ListSection<String>) value).getItems().stream()
-                            .map(e -> "<p>" + e + "</p>").collect(Collectors.joining("\n"))));
-                    break;
-                case EDUCATION:
-                case EXPERIENCE:
-                    break;
-
+        // Read data from JSP
+        resume.setFullName(fullName);
+        for (ContactType type : ContactType.values()) {
+            String value = request.getParameter(type.name());
+            if (value != null && value.trim().length() != 0) {
+                resume.addContact(type, value);
+            } else {
+                resume.getContacts().remove(type);
             }
+        }
 
-        });
+        for (SectionType type : SectionType.values()) {
+            String value = request.getParameter(type.name());
+
+            switch (type.name()) {
+                case "OBJECTIVE":
+                case "PERSONAL":
+                    if (value !=null) {
+                        TextSection section = (TextSection) resume.getSection(type);
+                        section.setText(value);
+                        resume.putSection(type, section);
+                    }
+                    break;
+                case "ACHIEVEMENT":
+                case "QUALIFICATIONS":
+                    if (value !=null) {
+                        List<String> list = new ArrayList<>(Arrays.asList(value.split("\n")));
+                        ListSection<String> section = (ListSection<String>) resume.getSection(type);
+                        section.setItems(new ArrayList<>(list.stream().filter(el  -> el != null && !el.isEmpty() && el.trim().length() !=0 ).collect(Collectors.toList())));
+                        resume.putSection(type, section);
+                    }
+                    break;
+                default:
+                    break;
+            }  // on SectionType
+
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            parameterMap.entrySet().stream().forEach(el -> {
+                System.out.println("Key: " + el.getKey());
+                System.out.println("Value: ");
+                Arrays.stream(el.getValue()).forEach(obj -> System.out.print(obj + " "));
+                System.out.println();
+
+            });
 
 
-        //System.out.println("section " + resume.
-        //String sss = ((TextSection) section).getText();
-        /*sb.append(getTableColumn(sss));*/
-        sb.append("</tr>\n");
-        return sb.toString();
+
+        }
+
+
+        // Save data
+        if ("".equals(uuid)) {
+            storage.save(resume);
+        } else {
+            storage.update(resume);
+        }
+        response.sendRedirect("resume");
     }
+
+
+    private void populateDatabase() {
+        storage.clear();
+        TestData.fillTestData();
+
+        storage.save(TestData.RESUME1);
+        storage.save(TestData.RESUME2);
+        storage.save(TestData.RESUME3);
+        storage.save(TestData.RESUME4);
+        storage.save(TestData.RESUME5);
+    }
+
 
 }

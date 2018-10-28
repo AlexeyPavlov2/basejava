@@ -5,16 +5,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Список резюмеTitle</title>
+    <link rel="shortcut icon" href="img/favicon.png" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<%--//TODO Генерация данных--%>
 <jsp:include page="fragments/header.jsp"/>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-5">
+        <div class="col-8">
             <table class="table table-bordered table-hover">
                 <tr>
                     <th class="align-middle text-center">Имя</th>
@@ -38,8 +40,15 @@
                 </c:forEach>
             </table>
         </div>
-        <div class="col-7"></div>
+        <div class="col-2"></div>
+        <div class="col-2"><p><a href="resume?action=generate" title="Сгенерировать тестовые данные">Тестовые данные</a></p></div>
 
+
+    </div>
+    <div class="row">
+        <div class="col-2">
+        <p><a href="resume?uuid='new'&action=edit" title="Добавить резюме"><i class="fa fa-address-card-o icon_color" aria-hidden="true"></i>&nbsp;&nbsp;Добавить резюме</a></p>
+        </div>
     </div>
 </div>
 <jsp:include page="fragments/footer.jsp"/>
