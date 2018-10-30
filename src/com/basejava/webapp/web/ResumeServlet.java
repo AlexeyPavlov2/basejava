@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,6 @@ public class ResumeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         LOG.info(CLASS_NAME + ": " + " doGet");
         String uuid = request.getParameter("uuid");
-        //System.out.println("UUID: " + uuid);
         String action = request.getParameter("action");
         if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
@@ -89,7 +89,6 @@ public class ResumeServlet extends HttpServlet {
             resume.addAllEmptySection();
         }
 
-
         // Read data from JSP
         resume.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
@@ -100,8 +99,6 @@ public class ResumeServlet extends HttpServlet {
                 resume.getContacts().remove(type);
             }
         }
-
-        System.out.println("AFTER CONTACTS: " + resume);
 
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
@@ -118,53 +115,79 @@ public class ResumeServlet extends HttpServlet {
                 case "ACHIEVEMENT":
                 case "QUALIFICATIONS":
                     if (value != null) {
-                        System.out.println("VALUE: " + value);
                         List<String> list = new ArrayList<>(Arrays.asList(value.split("\n")));
                         ListSection<String> section = (ListSection<String>) resume.getSection(type);
                         section.setItems(new ArrayList<>(list.stream().filter(el -> el != null && !el.isEmpty() && el.trim().length() != 0).collect(Collectors.toList())));
                         resume.putSection(type, section);
                     }
-
                     break;
                 case "EXPERIENCE":
                 case "EDUCATION":
-                    List<Company> companies = new ArrayList<>();
-                    String[] urls = request.getParameterValues(type.name() + "companyURL");
-                    for (int i = 0; i < values.length; i++) {
-                        String name = values[i];
-                        List<CompanyPersonalInfo> positions = new ArrayList<>();
-                        String prefix = type.name() + i;
-                        String[] startDates = request.getParameterValues(prefix + "startDate");
-                        String[] endDates = request.getParameterValues(prefix + "endDate");
-                        for (int k = 0; k < endDates.length; k++) {
-                            if ("Сейчас".equals(endDates[k])) {
-                                endDates[k] = "01.12.2050";
-                            }
-                        }
-
-                        String[] titles = request.getParameterValues(prefix + "text");
-                        String[] descriptions = request.getParameterValues(prefix + "description");
-                        for (int j = 0; j < titles.length; j++) {
-                            LocalDate start = StringToLocalDate(startDates[j]);
-                            LocalDate end = StringToLocalDate(endDates[j]);
-                            String title = titles[j];
-                            String description;
-                            if (type == SectionType.EXPERIENCE) {
-                                description = descriptions[j] == null ? "" : descriptions[j];
-                            } else {
-                                description = "";
+                    if (values != null && values.length > 0) {
+                        List<Company> companies = new ArrayList<>();
+                        String[] urls = request.getParameterValues(type.name() + "companyURL");
+                        for (int i = 0; i < values.length; i++) {
+                            String name = values[i];
+                            List<CompanyPersonalInfo> positions = new ArrayList<>();
+                            String prefix = type.name() + i;
+                            String[] startDates = request.getParameterValues(prefix + "startDate");
+                            String[] endDates = request.getParameterValues(prefix + "endDate");
+                            for (int k = 0; k < endDates.length; k++) {
+                                if ("Сейчас".equals(endDates[k])) {
+                                    endDates[k] = "01.12.2050";
+                                }
                             }
 
-                            CompanyPersonalInfo info = new CompanyPersonalInfo(start, end, title, description);
-                            positions.add(info);
+                            String[] titles = request.getParameterValues(prefix + "text");
+                            String[] descriptions = request.getParameterValues(prefix + "description");
+                            for (int j = 0; j < titles.length; j++) {
+                                LocalDate start = StringToLocalDate(startDates[j]);
+                                LocalDate end = StringToLocalDate(endDates[j]);
+                                String title = titles[j];
+                                String description;
+                                if (type == SectionType.EXPERIENCE) {
+                                    description = descriptions[j] == null ? "" : descriptions[j];
+                                } else {
+                                    description = "";
+                                }
+
+                                CompanyPersonalInfo info = new CompanyPersonalInfo(start, end, title, description);
+                                positions.add(info);
+                            }
+                            companies.add(new Company(new HyperLink(name, urls[i]), positions));
                         }
-                        companies.add(new Company(new HyperLink(name, urls[i]), positions));
+                        resume.putSection(type, new CompanySection(companies));
                     }
-                    resume.putSection(type, new CompanySection(companies));
                     break;
                 default:
                     break;
             }  // on SectionType
+        }
+
+        // Processing new Company information
+        Map<String, String[]> map = request.getParameterMap();
+        if (map.containsKey("companyTitle1") &&
+                map.containsKey("companyURL1") &&
+                map.containsKey("startDate1") &&
+                map.containsKey("endDate1") &&
+                map.containsKey("text1") &&
+                map.containsKey("description1") &&
+                !map.get("companyTitle1")[0].isEmpty() &&
+                !map.get("startDate1")[0].isEmpty() &&
+                !map.get("endDate1")[0].isEmpty() &&
+                !map.get("text1")[0].isEmpty() &&
+                !map.get("description1")[0].isEmpty()
+        ) {
+
+            CompanyPersonalInfo position = new CompanyPersonalInfo(StringToLocalDate(map.get("startDate1")[0]),
+                    StringToLocalDate(map.get("endDate1")[0]), map.get("text1")[0],
+                    map.get("description1")[0]);
+            Company company = new Company(map.get("companyTitle1")[0],
+                    map.get("companyURL1")[0], position);
+            List<Company> companies = new ArrayList<>();
+            companies.add(company);
+            companies.addAll(((CompanySection) resume.getSection(SectionType.EXPERIENCE)).getItems());
+            resume.putSection(SectionType.EXPERIENCE, new CompanySection(companies));
         }
 
         //resume.print();

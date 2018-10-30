@@ -138,9 +138,8 @@
                     <c:when test="${sectionType eq 'EXPERIENCE' || sectionType eq 'EDUCATION'}">
                         <div class="form row">
                             <div class="form-group col-sm-2">
-                                <button class="form-control btn btn-primary" id="add_button" name="add_button"
-                                        title="Добавить компанию">Добавить
-                                </button>
+                                <button type="button" class="form-control btn btn-primary" id="add_button" name="add_button"
+                                        title="Добавить компанию">Добавить</button>
                             </div>
                         </div>
 
@@ -148,42 +147,43 @@
                         <div class="d-none new_div ">
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    <label for="1" class="col-form-label">Название:</label>
-                                    <input type="text" name="1" id="1" class="form-control"
+                                    <label for="companyTitle1" class="col-form-label">Название:</label>
+                                    <input type="text" name="companyTitle1" id="companyTitle1" class="form-control"
                                            value="" placeholder="Новая компания">
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="2companyURL" class="col-form-label">Сайт:</label>
-                                    <input type="text" name="2companyURL" id="2companyURL" class="form-control"
+                                    <label for="companyURL1" class="col-form-label">Сайт:</label>
+                                    <input type="text" name="companyURL1" id="companyURL1" class="form-control"
                                            value="" placeholder="https://google.com">
                                 </div>
+
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-2">
-                                    <label for="1startDate" class="col-form-label">Дата начала:</label>
-                                    <input type="text" name="1startDate" id="1startDate" class="form-control"
+                                    <label for="startDate1" class="col-form-label">Дата начала:</label>
+                                    <input type="text" name="startDate1" id="startDate1" class="form-control"
                                            value="" placeholder="10.11.2018">
                                 </div>
                                 <div class="col-md-2">
-                                    <label for="1endDate" class="col-form-label">Дата окончания:</label>
-                                    <input type="text" name="1endDate" id="1endDate" class="form-control"
+                                    <label for="endDate1" class="col-form-label">Дата окончания:</label>
+                                    <input type="text" name="endDate1" id="endDate1" class="form-control"
                                            value="" placeholder="10.11.2018">
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="1text" class="col-form-label">Позиция:</label>
-                                    <input type="text" name="1text" id="1text" class="form-control"
+                                    <label for="text1" class="col-form-label">Позиция:</label>
+                                    <input type="text" name="text1" id="text1" class="form-control"
                                            value="">
                                 </div>
                             </div>
 
                                 <div class="form-group row ">
                                     <div class="col-md-6">
-                                        <label for="1description"
+                                        <label for="description1"
                                                class="col-form-label">Описание:</label>
-                                        <textarea name="1description"
-                                                  id="1description"
+                                        <textarea name="description1"
+                                                  id="description1"
                                                   class="form-control" rows="8"></textarea>
                                     </div>
                                 </div>
@@ -206,6 +206,11 @@
                                            id="${sectionType}companyURL${theCounter.index}" class="form-control"
                                            value="${company.link.link}">
                                 </div>
+
+                                <div class="col-md-4">
+                                    <button type="button" class="delete_button btn btn-danger" id="delete_button">Удалить</button>
+                                </div>
+
                             </div>
                             <c:forEach var="info" items="${company.companyPersonalInfoList}">
                                 <jsp:useBean id="info" type="com.basejava.webapp.model.CompanyPersonalInfo"/>
@@ -281,10 +286,8 @@
 <script>
     $(function () {
         $("#add_button").click(function () {
-            //alert("button");
             $(".new_div").removeClass("d-none");
             $("#add_button").addClass("disabled")
-            //$(".new_div").toggleClass('d-none');
 
         });
     });
