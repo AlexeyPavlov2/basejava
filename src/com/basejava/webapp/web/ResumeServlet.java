@@ -11,9 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import static com.basejava.webapp.util.DateConverter.StringToLocalDate;
 
 public class ResumeServlet extends HttpServlet {
     private static final long serialVersionUID = 995497791471805151L;
@@ -30,14 +35,14 @@ public class ResumeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         LOG.info(CLASS_NAME + ": " + " doGet");
         String uuid = request.getParameter("uuid");
-        System.out.println("UUID: " + uuid);
+        //System.out.println("UUID: " + uuid);
         String action = request.getParameter("action");
         if (action == null) {
             request.setAttribute("resumes", storage.getAllSorted());
             request.getRequestDispatcher("/WEB-INF/jsp/list.jsp").forward(request, response);
             return;
         }
-        Resume r;
+        Resume resume;
         switch (action) {
             case "delete":
                 storage.delete(uuid);
@@ -51,20 +56,19 @@ public class ResumeServlet extends HttpServlet {
             case "send":
                 response.sendRedirect("resume");
                 return;
+            case "insert":
+                resume = new Resume("", "");
+                resume.addAllEmptySection();
+                break;
             case "view":
             case "edit":
-                if (uuid.equals("'new'")) {
-                    System.out.println("YES");
-                    r = new Resume("", "");
-                } else {
-                    r = storage.get(uuid);
-                }
-                //System.out.println(r);
+                resume = storage.get(uuid);
+                resume.addAllEmptySection();
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
         }
-        request.setAttribute("resume", r);
+        request.setAttribute("resume", resume);
         request.getRequestDispatcher(
                 ("view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp")
         ).forward(request, response);
@@ -75,7 +79,16 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume resume = "".equals(uuid) ? new Resume(UUID.randomUUID().toString(), "") : storage.get(uuid);
+        Resume resume;
+        boolean isNew = false;
+        if ("".equals(uuid)) {
+            resume = ResumeFactory.getNewResume();
+            isNew = true;
+        } else {
+            resume = storage.get(uuid);
+            resume.addAllEmptySection();
+        }
+
 
         // Read data from JSP
         resume.setFullName(fullName);
@@ -88,9 +101,11 @@ public class ResumeServlet extends HttpServlet {
             }
         }
 
+        System.out.println("AFTER CONTACTS: " + resume);
+
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
-
+            String[] values = request.getParameterValues(type.name());
             switch (type.name()) {
                 case "OBJECTIVE":
                 case "PERSONAL":
@@ -103,39 +118,59 @@ public class ResumeServlet extends HttpServlet {
                 case "ACHIEVEMENT":
                 case "QUALIFICATIONS":
                     if (value != null) {
+                        System.out.println("VALUE: " + value);
                         List<String> list = new ArrayList<>(Arrays.asList(value.split("\n")));
                         ListSection<String> section = (ListSection<String>) resume.getSection(type);
                         section.setItems(new ArrayList<>(list.stream().filter(el -> el != null && !el.isEmpty() && el.trim().length() != 0).collect(Collectors.toList())));
                         resume.putSection(type, section);
                     }
+
+                    break;
+                case "EXPERIENCE":
+                case "EDUCATION":
+                    List<Company> companies = new ArrayList<>();
+                    String[] urls = request.getParameterValues(type.name() + "companyURL");
+                    for (int i = 0; i < values.length; i++) {
+                        String name = values[i];
+                        List<CompanyPersonalInfo> positions = new ArrayList<>();
+                        String prefix = type.name() + i;
+                        String[] startDates = request.getParameterValues(prefix + "startDate");
+                        String[] endDates = request.getParameterValues(prefix + "endDate");
+                        for (int k = 0; k < endDates.length; k++) {
+                            if ("Сейчас".equals(endDates[k])) {
+                                endDates[k] = "01.12.2050";
+                            }
+                        }
+
+                        String[] titles = request.getParameterValues(prefix + "text");
+                        String[] descriptions = request.getParameterValues(prefix + "description");
+                        for (int j = 0; j < titles.length; j++) {
+                            LocalDate start = StringToLocalDate(startDates[j]);
+                            LocalDate end = StringToLocalDate(endDates[j]);
+                            String title = titles[j];
+                            String description;
+                            if (type == SectionType.EXPERIENCE) {
+                                description = descriptions[j] == null ? "" : descriptions[j];
+                            } else {
+                                description = "";
+                            }
+
+                            CompanyPersonalInfo info = new CompanyPersonalInfo(start, end, title, description);
+                            positions.add(info);
+                        }
+                        companies.add(new Company(new HyperLink(name, urls[i]), positions));
+                    }
+                    resume.putSection(type, new CompanySection(companies));
                     break;
                 default:
                     break;
             }  // on SectionType
         }
 
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        Map<String, String[]> paraMap = new LinkedHashMap<>();
-
-
-        parameterMap.forEach((key, value) -> {
-            if (key.equals("company_title") || key.equals("company_url") ||
-                    key.equals("startDate") || key.equals("endDate") || key.equals("position") ||
-                    key.equals("description")) {
-                paraMap.put(key, value);
-            }
-        });
-
-        paraMap.forEach((key, value) -> {
-            System.out.println("Key: " + key);
-            System.out.println("Value: ");
-            Arrays.stream(value).forEach(obj -> System.out.println(obj));
-            System.out.println();
-        });
-
+        //resume.print();
 
         // Save data
-        if ("".equals(uuid)) {
+        if (isNew) {
             storage.save(resume);
         } else {
             storage.update(resume);

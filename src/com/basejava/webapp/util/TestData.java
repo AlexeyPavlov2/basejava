@@ -109,7 +109,7 @@ public class TestData {
                                 "Java Developer",
                                 "Android application developer \n" +
                                         "IDE: Eclipse \n" +
-                                        "Project mgmt systems, VCS, bug-tracking etc: GIT, Redmine ")))
+                                        "Project mgmt systems, VCS, bug-tracking etc: GIT, Redmine")))
         )));
 
         RESUME2.putSection(SectionType.EDUCATION, new CompanySection(Arrays.asList(

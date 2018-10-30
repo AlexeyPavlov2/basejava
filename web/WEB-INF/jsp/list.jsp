@@ -47,7 +47,7 @@
     </div>
     <div class="row">
         <div class="col-2">
-        <p><a href="resume?uuid='new'&action=edit" title="Добавить резюме"><i class="fa fa-address-card-o icon_color" aria-hidden="true"></i>&nbsp;&nbsp;Добавить резюме</a></p>
+        <p><a href="resume?&action=insert" title="Добавить резюме"><i class="fa fa-address-card-o icon_color" aria-hidden="true"></i>&nbsp;&nbsp;Добавить резюме</a></p>
         </div>
     </div>
 </div>
