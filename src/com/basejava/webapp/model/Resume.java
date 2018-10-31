@@ -4,7 +4,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -110,34 +113,6 @@ public class Resume implements Comparable<Resume>, Serializable {
                 v.print();
             }
         });
-    }
-
-    public void addAllEmptySection() {
-        for (SectionType type : SectionType.values()) {
-            switch (type) {
-                case OBJECTIVE:
-                case PERSONAL:
-                    if (getSection(type) == null) {
-                        putSection(type, new TextSection(""));
-                    }
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS:
-                    if (getSection(type) == null) {
-                        putSection(type, new ListSection<String>(new ArrayList<>()));
-                    }
-                    break;
-                case EXPERIENCE:
-                case EDUCATION:
-                    if (getSection(type) == null) {
-                        CompanySection companySection = new CompanySection();
-                        //TODO здесь закончил
-                        companySection.setItems(new ArrayList<Company>());
-                        putSection(type, companySection);
-                    }
-                    break;
-            }
-        }
     }
 
     @Override

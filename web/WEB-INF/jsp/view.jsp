@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="shortcut icon" href="img/favicon.png" />
+    <link rel="shortcut icon" href="img/favicon.png"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -18,7 +18,7 @@
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
-<div class="container">
+<div class="container" id="printArea">
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
@@ -34,14 +34,21 @@
                                 class="icon_color fa fa-pencil"></i></a></h3>
                     </td>
                     <td class="align-bottom  view_table_name_td">
-                        <h3><a href="resume?uuid=${resume.uuid}&action=download" title="Скачать PDF - it's not supported yet"><i
+                        <h3><a href="resume?uuid=${resume.uuid}&action=download"
+                               title="Скачать PDF - it's not supported yet"><i
                                 class="icon_red fa fa-file-pdf-o"></i></a></h3>
                     </td>
 
                     <td class="align-bottom">
-                        <h3><a href="resume?uuid=${resume.uuid}&action=send" title="Отправить по электронной почте  - it's not supported yet"><i
+                        <h3><a href="resume?uuid=${resume.uuid}&action=send"
+                               title="Отправить по электронной почте  - it's not supported yet"><i
                                 class="icon_color fa fa-share"></i></a></h3>
                     </td>
+                    <td class="align-bottom">
+                        <h3><button type="button" class="btn btn-link" title="Печать резюме" onclick="printDiv('printArea')" ><i class="icon_color fa fa-print fa-lg"></i></button></h3>
+                    </td>
+
+
                 </tr>
             </table>
 
@@ -179,5 +186,21 @@
 
 </div>
 <jsp:include page="fragments/footer.jsp"/>
+
+<script>
+    function printDiv(id)
+    {
+        var html="<html>";
+        html+= document.getElementById(id).innerHTML;
+        html+="</html>";
+        var printWin = window.open("about:blank","Печать резюме",'left=0,top=0,width="250",height="80",menubar="no",toolbar="yes",scrollbars="yes",status=0');
+        printWin.document.write(html);
+        printWin.document.close();
+        printWin.focus();
+        printWin.print();
+        printWin.close();
+    }
+</script>
+
 </body>
 </html>

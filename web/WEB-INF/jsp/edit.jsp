@@ -136,132 +136,144 @@
                         </div>
                     </c:when>
                     <c:when test="${sectionType eq 'EXPERIENCE' || sectionType eq 'EDUCATION'}">
+                        <c:set var="sectionTypeVar" value="${sectionType}"/>
                         <div class="form row">
                             <div class="form-group col-sm-2">
-                                <button type="button" class="form-control btn btn-primary" id="add_button" name="add_button"
-                                        title="Добавить компанию">Добавить</button>
+                                <button type="button" class="${sectionType} form-control btn btn-primary"
+                                        id="${sectionType}add_company_button"
+                                        name="${sectionType}add_button"
+                                        title="Добавить компанию">Добавить
+                                </button>
                             </div>
                         </div>
 
                         <%--New Section--%>
-                        <div class="d-none new_div ">
+                        <div class="d-none ${sectionType}new_div ">
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    <label for="companyTitle1" class="col-form-label">Название:</label>
-                                    <input type="text" name="companyTitle1" id="companyTitle1" class="form-control"
+                                    <label for="${sectionType}companyTitle1" class="col-form-label">Название:</label>
+                                    <input type="text" name="${sectionType}companyTitle1" id="${sectionType}companyTitle1" class="form-control"
                                            value="" placeholder="Новая компания">
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="companyURL1" class="col-form-label">Сайт:</label>
-                                    <input type="text" name="companyURL1" id="companyURL1" class="form-control"
+                                    <label for="${sectionType}companyURL1" class="col-form-label">Сайт:</label>
+                                    <input type="text" name="${sectionType}companyURL1" id="${sectionType}companyURL1" class="form-control"
                                            value="" placeholder="https://google.com">
                                 </div>
 
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-2">
-                                    <label for="startDate1" class="col-form-label">Дата начала:</label>
-                                    <input type="text" name="startDate1" id="startDate1" class="form-control"
+                                    <label for="${sectionType}startDate1" class="col-form-label">Дата начала:</label>
+                                    <input type="text" name="${sectionType}startDate1" id="${sectionType}startDate1" class="form-control"
                                            value="" placeholder="10.11.2018">
                                 </div>
                                 <div class="col-md-2">
-                                    <label for="endDate1" class="col-form-label">Дата окончания:</label>
-                                    <input type="text" name="endDate1" id="endDate1" class="form-control"
-                                           value="" placeholder="10.11.2018">
+                                    <label for="${sectionType}endDate1" class="col-form-label">Дата окончания:</label>
+                                    <input type="text" name="${sectionType}endDate1" id="${sectionType}endDate1" class="form-control"
+                                           value="" placeholder="Сейчас">
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="text1" class="col-form-label">Позиция:</label>
-                                    <input type="text" name="text1" id="text1" class="form-control"
+                                    <label for="${sectionType}text1" class="col-form-label">Позиция:</label>
+                                    <input type="text" name="${sectionType}text1" id="${sectionType}text1" class="form-control"
                                            value="">
                                 </div>
                             </div>
 
+                            <c:if test="${sectionType eq 'EXPERIENCE'}">
                                 <div class="form-group row ">
                                     <div class="col-md-6">
-                                        <label for="description1"
+                                        <label for="${sectionType}description1"
                                                class="col-form-label">Описание:</label>
-                                        <textarea name="description1"
-                                                  id="description1"
+                                        <textarea name="${sectionType}description1"
+                                                  id="${sectionType}description1"
                                                   class="form-control" rows="8"></textarea>
                                     </div>
                                 </div>
+                            </c:if>
+
+
                         </div>
                         <hr>
-
                         <%--End New Section--%>
+
                         <c:forEach var="company" items="<%=((CompanySection) section).getItems()%>"
                                    varStatus="theCounter"> <%--On companies--%>
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <label for="${sectionType}" class="col-form-label">Название:</label>
-                                    <input type="text" name="${sectionType}" id="${sectionType}" class="form-control"
-                                           value="${company.link.title}" required>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label for="${sectionType}companyURL${theCounter.index}" class="col-form-label">Сайт:</label>
-                                    <input type="text" name="${sectionType}companyURL"
-                                           id="${sectionType}companyURL${theCounter.index}" class="form-control"
-                                           value="${company.link.link}">
-                                </div>
-
-                                <div class="col-md-4">
-                                    <button type="button" class="delete_button btn btn-danger" id="delete_button">Удалить</button>
-                                </div>
-
-                            </div>
-                            <c:forEach var="info" items="${company.companyPersonalInfoList}">
-                                <jsp:useBean id="info" type="com.basejava.webapp.model.CompanyPersonalInfo"/>
+                            <div id="companyDiv${theCounter.index}">
                                 <div class="form-group row">
-                                    <div class="col-md-2">
-                                        <label for="${sectionType}${theCounter.index}startDate" class="col-form-label">Дата
-                                            начала:</label>
-                                        <input type="text" name="${sectionType}${theCounter.index}startDate"
-                                               id="${sectionType}${theCounter.index}startDate" class="form-control"
-                                               value="<%=DateConverter.formatLocalDate(info.getStart(),"dd.MM.yyyy")%>"
-                                               required>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label for="${sectionType}${theCounter.index}endDate" class="col-form-label">Дата
-                                            окончания:</label>
-                                        <input type="text" name="${sectionType}${theCounter.index}endDate"
-                                               id="${sectionType}${theCounter.index}endDate" class="form-control"
-                                               value='<%=!DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy").equals("01.12.2050") ? DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy") : "Сейчас"%>'
-                                               required>
-                                    </div>
-
                                     <div class="col-md-4">
-                                        <label for="${sectionType}${theCounter.index}text" class="col-form-label">Позиция:</label>
-                                        <input type="text" name="${sectionType}${theCounter.index}text"
-                                               id="${sectionType}${theCounter.index}text" class="form-control"
-                                               value="${info.text}" required>
+                                        <label for="${sectionType}" class="col-form-label">Название:</label>
+                                        <input type="text" name="${sectionType}" id="${sectionType}"
+                                               class="form-control"
+                                               value="${company.link.title}" required>
                                     </div>
-                                </div>
+                                    <div class="col-md-4">
+                                        <label for="${sectionType}companyURL${theCounter.index}" class="col-form-label">Сайт:</label>
+                                        <input type="text" name="${sectionType}companyURL"
+                                               id="${sectionType}companyURL${theCounter.index}" class="form-control"
+                                               value="${company.link.link}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="delete_company_button btn btn-danger"
+                                                id="delete_company_button${theCounter.index}">Удалить
+                                        </button>
+                                    </div>
 
-                                <c:if test="${sectionType eq 'EXPERIENCE'}">
-                                    <div class="form-group row ">
-                                        <div class="col-md-6">
-                                            <label for="${sectionType}${theCounter.index}description"
-                                                   class="col-form-label">Описание:</label>
-                                            <textarea name="${sectionType}${theCounter.index}description"
-                                                      id="${sectionType}${theCounter.index}description"
-                                                      class="form-control" rows="8">${info.description}</textarea>
+                                </div>
+                                <c:forEach var="info" items="${company.companyPersonalInfoList}">
+                                    <jsp:useBean id="info" type="com.basejava.webapp.model.CompanyPersonalInfo"/>
+                                    <div class="form-group row">
+                                        <div class="col-md-2">
+                                            <label for="${sectionType}${theCounter.index}startDate"
+                                                   class="col-form-label">Дата
+                                                начала:</label>
+                                            <input type="text" name="${sectionType}${theCounter.index}startDate"
+                                                   id="${sectionType}${theCounter.index}startDate" class="form-control"
+                                                   value="<%=DateConverter.formatLocalDate(info.getStart(),"dd.MM.yyyy")%>"
+                                                   required>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="${sectionType}${theCounter.index}endDate"
+                                                   class="col-form-label">Дата
+                                                окончания:</label>
+                                            <input type="text" name="${sectionType}${theCounter.index}endDate"
+                                                   id="${sectionType}${theCounter.index}endDate" class="form-control"
+                                                   value='<%=!DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy").equals("01.12.2050") ? DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy") : "Сейчас"%>'
+                                                   required>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <label for="${sectionType}${theCounter.index}text" class="col-form-label">Позиция:</label>
+                                            <input type="text" name="${sectionType}${theCounter.index}text"
+                                                   id="${sectionType}${theCounter.index}text" class="form-control"
+                                                   value="${info.text}" required>
                                         </div>
                                     </div>
 
-                                </c:if>
-
-
-                            </c:forEach>
-                            <hr>
+                                    <c:if test="${sectionType eq 'EXPERIENCE'}">
+                                        <div class="form-group row ">
+                                            <div class="col-md-6">
+                                                <label for="${sectionType}${theCounter.index}description"
+                                                       class="col-form-label">Описание:</label>
+                                                <textarea name="${sectionType}${theCounter.index}description"
+                                                          id="${sectionType}${theCounter.index}description"
+                                                          class="form-control" rows="8">${info.description}</textarea>
+                                            </div>
+                                        </div>
+                                    </c:if>
+                                </c:forEach>
+                                <hr>
+                            </div> <%--CompanyDiv#--%>
                         </c:forEach>
+
 
                     </c:when>
                     <c:otherwise>
                     </c:otherwise>
                 </c:choose>
+
             </c:forEach>
 
         </div>
@@ -285,10 +297,20 @@
 
 <script>
     $(function () {
-        $("#add_button").click(function () {
-            $(".new_div").removeClass("d-none");
-            $("#add_button").addClass("disabled")
+        $("#EDUCATIONadd_company_button").click(function () {
+            $(".EDUCATIONnew_div").removeClass("d-none");
+            $("#EDUCATIONadd_company_button").addClass("disabled")
 
+        });
+        $("#EXPERIENCEadd_company_button").click(function () {
+            $(".EXPERIENCEnew_div").removeClass("d-none");
+            $("#EXPERIENCEadd_company_button").addClass("disabled")
+
+        });
+
+        $("button[class~='delete_company_button']").on("click", function () {
+            var id = $(this).attr("id");
+            alert(id);
         });
     });
 </script>

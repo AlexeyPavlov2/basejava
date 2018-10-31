@@ -2,3 +2,7 @@ Code review
 
 HW16
 #1
+- MainPopulateDB как-то используется? +++
+- addAllEmptySection, это лучше куда в утилиты, чтобы не перегружать модель +++
+- ResumeFactory.getNewResume тоже в утилиты, можно что-то вроде ResumeUtil сделать ++
+- Translit, это ж надо было так заморочиться :wink:, думаю можно нарыть готовую библиотеку

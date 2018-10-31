@@ -3,6 +3,7 @@ package com.basejava.webapp.web;
 import com.basejava.webapp.Config;
 import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.Storage;
+import com.basejava.webapp.util.ResumeUtil;
 import com.basejava.webapp.util.TestData;
 
 import javax.servlet.ServletConfig;
@@ -58,12 +59,12 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "insert":
                 resume = new Resume("", "");
-                resume.addAllEmptySection();
+                ResumeUtil.addAllEmptySection(resume);
                 break;
             case "view":
             case "edit":
                 resume = storage.get(uuid);
-                resume.addAllEmptySection();
+                ResumeUtil.addAllEmptySection(resume);
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
@@ -74,7 +75,6 @@ public class ResumeServlet extends HttpServlet {
         ).forward(request, response);
     }
 
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
@@ -82,11 +82,11 @@ public class ResumeServlet extends HttpServlet {
         Resume resume;
         boolean isNew = false;
         if ("".equals(uuid)) {
-            resume = ResumeFactory.getNewResume();
+            resume = ResumeUtil.getNewResume();
             isNew = true;
         } else {
             resume = storage.get(uuid);
-            resume.addAllEmptySection();
+            ResumeUtil.addAllEmptySection(resume);
         }
 
         // Read data from JSP
@@ -150,7 +150,6 @@ public class ResumeServlet extends HttpServlet {
                                 } else {
                                     description = "";
                                 }
-
                                 CompanyPersonalInfo info = new CompanyPersonalInfo(start, end, title, description);
                                 positions.add(info);
                             }
@@ -164,33 +163,9 @@ public class ResumeServlet extends HttpServlet {
             }  // on SectionType
         }
 
-        // Processing new Company information
-        Map<String, String[]> map = request.getParameterMap();
-        if (map.containsKey("companyTitle1") &&
-                map.containsKey("companyURL1") &&
-                map.containsKey("startDate1") &&
-                map.containsKey("endDate1") &&
-                map.containsKey("text1") &&
-                map.containsKey("description1") &&
-                !map.get("companyTitle1")[0].isEmpty() &&
-                !map.get("startDate1")[0].isEmpty() &&
-                !map.get("endDate1")[0].isEmpty() &&
-                !map.get("text1")[0].isEmpty() &&
-                !map.get("description1")[0].isEmpty()
-        ) {
-
-            CompanyPersonalInfo position = new CompanyPersonalInfo(StringToLocalDate(map.get("startDate1")[0]),
-                    StringToLocalDate(map.get("endDate1")[0]), map.get("text1")[0],
-                    map.get("description1")[0]);
-            Company company = new Company(map.get("companyTitle1")[0],
-                    map.get("companyURL1")[0], position);
-            List<Company> companies = new ArrayList<>();
-            companies.add(company);
-            companies.addAll(((CompanySection) resume.getSection(SectionType.EXPERIENCE)).getItems());
-            resume.putSection(SectionType.EXPERIENCE, new CompanySection(companies));
-        }
-
-        //resume.print();
+        // Processing new Company information if exists
+        addNewCompany(SectionType.EXPERIENCE, request, resume);
+        addNewCompany(SectionType.EDUCATION, request, resume);
 
         // Save data
         if (isNew) {
@@ -201,16 +176,50 @@ public class ResumeServlet extends HttpServlet {
         response.sendRedirect("resume");
     }
 
-
     private void populateDatabase() {
         storage.clear();
         TestData.fillTestData();
-
         storage.save(TestData.RESUME1);
         storage.save(TestData.RESUME2);
         storage.save(TestData.RESUME3);
         storage.save(TestData.RESUME4);
         storage.save(TestData.RESUME5);
+    }
+
+    private void addNewCompany(SectionType sectionType, HttpServletRequest request, Resume resume) {
+        String typeName = sectionType.name();
+        Map<String, String[]> map = request.getParameterMap();
+
+        if (map.containsKey(typeName + "companyTitle1") &&
+                map.containsKey(typeName + "companyURL1") &&
+                map.containsKey(typeName + "startDate1") &&
+                map.containsKey(typeName + "endDate1") &&
+                map.containsKey(typeName + "text1") &&
+                !map.get(typeName + "companyTitle1")[0].isEmpty() &&
+                !map.get(typeName + "startDate1")[0].isEmpty() &&
+                !map.get(typeName + "endDate1")[0].isEmpty() &&
+                !map.get(typeName + "text1")[0].isEmpty()
+        ) {
+            CompanyPersonalInfo position = new CompanyPersonalInfo(StringToLocalDate(map.get(typeName + "startDate1")[0]),
+                    StringToLocalDate(map.get(typeName + "endDate1")[0]), map.get(typeName + "text1")[0],
+                    sectionType.equals(SectionType.EXPERIENCE) ? map.get(typeName + "description1")[0] : "");
+            Company company = new Company(map.get(typeName + "companyTitle1")[0],
+                    map.get(typeName + "companyURL1")[0] != null ? map.get(typeName + "companyURL1")[0] : "", position);
+            List<Company> companies = new ArrayList<>();
+            companies.add(company);
+            companies.addAll(((CompanySection) resume.getSection(sectionType)).getItems());
+            resume.putSection(sectionType, new CompanySection(companies));
+        }
+    }
+
+    private void printParameterMap(HttpServletRequest request) {
+        request.getParameterMap().entrySet().forEach(o -> {
+            System.out.println();
+            System.out.println("Key: " + o.getKey());
+            System.out.println("Value: ");
+            Arrays.stream(o.getValue()).forEach(el -> System.out.print(el + " "));
+            System.out.println();
+        });
     }
 
 
