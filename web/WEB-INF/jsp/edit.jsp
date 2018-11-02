@@ -136,7 +136,7 @@
                         </div>
                     </c:when>
                     <c:when test="${sectionType eq 'EXPERIENCE' || sectionType eq 'EDUCATION'}">
-                        <c:set var="sectionTypeVar" value="${sectionType}"/>
+
                         <div class="form row">
                             <div class="form-group col-sm-2">
                                 <button type="button" class="${sectionType} form-control btn btn-primary"
@@ -152,13 +152,15 @@
                             <div class="form-group row">
                                 <div class="col-md-4">
                                     <label for="${sectionType}companyTitle1" class="col-form-label">Название:</label>
-                                    <input type="text" name="${sectionType}companyTitle1" id="${sectionType}companyTitle1" class="form-control"
+                                    <input type="text" name="${sectionType}companyTitle1"
+                                           id="${sectionType}companyTitle1" class="form-control"
                                            value="" placeholder="Новая компания">
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="${sectionType}companyURL1" class="col-form-label">Сайт:</label>
-                                    <input type="text" name="${sectionType}companyURL1" id="${sectionType}companyURL1" class="form-control"
+                                    <input type="text" name="${sectionType}companyURL1" id="${sectionType}companyURL1"
+                                           class="form-control"
                                            value="" placeholder="https://google.com">
                                 </div>
 
@@ -166,18 +168,21 @@
                             <div class="form-group row">
                                 <div class="col-md-2">
                                     <label for="${sectionType}startDate1" class="col-form-label">Дата начала:</label>
-                                    <input type="text" name="${sectionType}startDate1" id="${sectionType}startDate1" class="form-control"
+                                    <input type="text" name="${sectionType}startDate1" id="${sectionType}startDate1"
+                                           class="form-control"
                                            value="" placeholder="10.11.2018">
                                 </div>
                                 <div class="col-md-2">
                                     <label for="${sectionType}endDate1" class="col-form-label">Дата окончания:</label>
-                                    <input type="text" name="${sectionType}endDate1" id="${sectionType}endDate1" class="form-control"
+                                    <input type="text" name="${sectionType}endDate1" id="${sectionType}endDate1"
+                                           class="form-control"
                                            value="" placeholder="Сейчас">
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="${sectionType}text1" class="col-form-label">Позиция:</label>
-                                    <input type="text" name="${sectionType}text1" id="${sectionType}text1" class="form-control"
+                                    <input type="text" name="${sectionType}text1" id="${sectionType}text1"
+                                           class="form-control"
                                            value="">
                                 </div>
                             </div>
@@ -201,7 +206,7 @@
 
                         <c:forEach var="company" items="<%=((CompanySection) section).getItems()%>"
                                    varStatus="theCounter"> <%--On companies--%>
-                            <div id="companyDiv${theCounter.index}">
+                            <div id="${sectionType}companyDiv${theCounter.index}">
                                 <div class="form-group row">
                                     <div class="col-md-4">
                                         <label for="${sectionType}" class="col-form-label">Название:</label>
@@ -216,8 +221,9 @@
                                                value="${company.link.link}">
                                     </div>
                                     <div class="col-md-4">
-                                        <button type="button" class="delete_company_button btn btn-danger"
-                                                id="delete_company_button${theCounter.index}">Удалить
+                                        <button type="button" class="${sectionType}delete_company_button btn btn-danger"
+                                                id="${sectionType}delete_company_button${theCounter.index}"
+                                                data-company-div="${sectionType}companyDiv${theCounter.index}">Удалить
                                         </button>
                                     </div>
 
@@ -253,16 +259,22 @@
                                     </div>
 
                                     <c:if test="${sectionType eq 'EXPERIENCE'}">
-                                        <div class="form-group row ">
-                                            <div class="col-md-6">
-                                                <label for="${sectionType}${theCounter.index}description"
-                                                       class="col-form-label">Описание:</label>
-                                                <textarea name="${sectionType}${theCounter.index}description"
-                                                          id="${sectionType}${theCounter.index}description"
-                                                          class="form-control" rows="8">${info.description}</textarea>
-                                            </div>
-                                        </div>
+                                        <c:set var="isHidden" value=""/>
                                     </c:if>
+                                    <c:if test="${sectionType eq 'EDUCATION'}">
+                                        <c:set var="isHidden" value="d-none"/>
+                                    </c:if>
+
+                                    <div class="form-group row ${isHidden}">
+                                        <div class="col-md-6">
+                                            <label for="${sectionType}${theCounter.index}description"
+                                                   class="col-form-label">Описание:</label>
+                                            <textarea name="${sectionType}${theCounter.index}description"
+                                                      id="${sectionType}${theCounter.index}description"
+                                                      class="form-control" rows="8">${info.description}</textarea>
+                                        </div>
+                                    </div>
+
                                 </c:forEach>
                                 <hr>
                             </div> <%--CompanyDiv#--%>
@@ -295,24 +307,7 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 
-<script>
-    $(function () {
-        $("#EDUCATIONadd_company_button").click(function () {
-            $(".EDUCATIONnew_div").removeClass("d-none");
-            $("#EDUCATIONadd_company_button").addClass("disabled")
+<script src="js/edit_utils.js"></script>
 
-        });
-        $("#EXPERIENCEadd_company_button").click(function () {
-            $(".EXPERIENCEnew_div").removeClass("d-none");
-            $("#EXPERIENCEadd_company_button").addClass("disabled")
-
-        });
-
-        $("button[class~='delete_company_button']").on("click", function () {
-            var id = $(this).attr("id");
-            alert(id);
-        });
-    });
-</script>
 </body>
 </html>

@@ -100,6 +100,8 @@ public class ResumeServlet extends HttpServlet {
             }
         }
 
+        resume.putSection(SectionType.EXPERIENCE, new CompanySection());
+        resume.putSection(SectionType.EDUCATION, new CompanySection());
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
             String[] values = request.getParameterValues(type.name());
@@ -123,12 +125,15 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case "EXPERIENCE":
                 case "EDUCATION":
-                    if (values != null && values.length > 0) {
+                    if (value != null && values != null && values.length > 0) {
+
                         List<Company> companies = new ArrayList<>();
                         String[] urls = request.getParameterValues(type.name() + "companyURL");
+
                         for (int i = 0; i < values.length; i++) {
                             String name = values[i];
                             List<CompanyPersonalInfo> positions = new ArrayList<>();
+                            //String str =
                             String prefix = type.name() + i;
                             String[] startDates = request.getParameterValues(prefix + "startDate");
                             String[] endDates = request.getParameterValues(prefix + "endDate");
@@ -207,7 +212,9 @@ public class ResumeServlet extends HttpServlet {
                     map.get(typeName + "companyURL1")[0] != null ? map.get(typeName + "companyURL1")[0] : "", position);
             List<Company> companies = new ArrayList<>();
             companies.add(company);
-            companies.addAll(((CompanySection) resume.getSection(sectionType)).getItems());
+            if (((CompanySection) resume.getSection(sectionType)).getItems() != null) {
+                companies.addAll(((CompanySection) resume.getSection(sectionType)).getItems());
+            }
             resume.putSection(sectionType, new CompanySection(companies));
         }
     }
