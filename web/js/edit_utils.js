@@ -24,7 +24,7 @@ $(function () {
         list.each(function (index1) {
             var oldDiv = $(this);
             var idCompany = $(this).attr('id');
-            var str = 'div#' + idCompany + ' input, ' + 'div#' + idCompany + ' textarea' ;
+            var str = 'div#' + idCompany + ' input, ' + 'div#' + idCompany + ' textarea';
             var list1 = $(str);
             list1.each(function (index2) {
                 var name = $(this).attr('name');
@@ -86,7 +86,7 @@ $(function () {
         list.each(function (index1) {
             var oldDiv = $(this);
             var idCompany = $(this).attr('id');
-            var str = 'div#' + idCompany + ' input, ' + 'div#' + idCompany + ' textarea' ;
+            var str = 'div#' + idCompany + ' input, ' + 'div#' + idCompany + ' textarea';
             var list1 = $(str);
             list1.each(function (index2) {
                 var name = $(this).attr('name');
@@ -134,6 +134,135 @@ $(function () {
         console.log($('div.container-fluid').html());
 
     });
+
+
+    // Processing add period button
+    $("button[class~='EXPERIENCEadd_period_button']").click(function () {
+        var prefix = 'EXPERIENCE';
+        var id = $(this).attr('id');
+        var companyIndex = id.replace(prefix + "add_period_button", "");
+        var parent = $(this).parent().parent();
+        var divId = $(this).attr("data-company-div");
+
+        // Add period block
+        $(parent).after(getNewPeriod(prefix, companyIndex, '0'));
+
+        var selectorPeriods = 'div[id^=' + "'" + prefix + "_periodDiv" + "'" + ']';
+        var list1 = $('#' + divId).children(selectorPeriods);
+        list1.each(function (index1) {
+            var childId = $(this).attr('id');
+            var childName = $(this).attr('name');
+
+            var str = 'div#' + childId + ' input';
+            var list2 = $(str);
+            list2.each(function (index2) {
+                var inputName = $(this).attr('name');
+                if ($(this).attr("type") == "input") {
+                    $(this).attr("name", prefix + index1 + getInputName(inputName));
+                    $(this).attr("id", prefix + index1 + getInputName(inputName));
+                }
+                if ($(this).attr("type") == "label") {
+                    $(this).attr("for", prefix + index1 + getInputName(inputName));
+                }
+
+            });
+            $(this).attr('id', prefix + "_periodDiv" + index1);
+        });
+        //console.log($('div.container-fluid').html());
+    });
+
+    $("button[class~='EDUCATIONadd_period_button']").click(function () {
+        var prefix = 'EDUCATION';
+        var id = $(this).attr('id');
+        var companyIndex = id.replace(prefix + "add_period_button", "");
+        var parent = $(this).parent().parent();
+        var divId = $(this).attr("data-company-div");
+
+        // Add period block
+        $(parent).after(getNewPeriod(prefix, companyIndex, '0'));
+
+        var selectorPeriods = 'div[id^=' + "'" + prefix + "_periodDiv" + "'" + ']';
+        var list1 = $('#' + divId).children(selectorPeriods);
+        list1.each(function (index1) {
+            var childId = $(this).attr('id');
+            var childName = $(this).attr('name');
+
+            var str = 'div#' + childId + ' input';
+            var list2 = $(str);
+            list2.each(function (index2) {
+                var inputName = $(this).attr('name');
+                if ($(this).attr("type") == "input") {
+                    $(this).attr("name", prefix + index1 + getInputName(inputName));
+                    $(this).attr("id", prefix + index1 + getInputName(inputName));
+                }
+                if ($(this).attr("type") == "label") {
+                    $(this).attr("for", prefix + index1 + getInputName(inputName));
+                }
+
+            });
+            $(this).attr('id', prefix + "_periodDiv" + index1);
+        });
+        //console.log($('div.container-fluid').html());
+    });
+
+
+    // HTML block for new period
+    function getNewPeriod(sectionType, indexCompany, indexPeriod) {
+        var block =
+            "\n" + '<div id="' + sectionType + '_periodDiv' + indexPeriod + '">' + "\n" +
+            '<div class="form-group row">' + "\n" +
+            '<div class="col-md-2">' + "\n" +
+            '<label for="' + sectionType + indexCompany + 'startDate" ' + "\n" +
+            'class="col-form-label">Дата начала:</label>' + "\n" +
+            '<input type="text" name="' + sectionType + indexCompany + 'startDate" ' + "\n" +
+            'id="' + sectionType + indexCompany + 'startDate" ' + "\n" +
+            'class="form-control" ' + "\n" +
+            'value=""' + 'required> ' + "\n" +
+            '</div>' + "\n" +
+            '<div class="col-md-2">' + "\n" +
+            '<label for="' + sectionType + indexCompany + 'endDate" ' + "\n" +
+            'class="col-form-label">Дата окончания:</label>' + "\n" +
+            '<input type="text" name="' + sectionType + indexCompany + 'endDate" ' + "\n" +
+            'id="' + sectionType + indexCompany + 'endDate" ' + "\n" +
+            'class="form-control" ' + "\n" +
+            'value="Сейчас"' + ' required>' + "\n" +
+            '</div>' + "\n" +
+            '<div class="col-md-4">' + "\n" +
+            '<label for="' + sectionType + indexCompany + 'text" ' + "\n" +
+            'class="col-form-label">Позиция:</label>' + "\n" +
+            '<input type="text" name="' + sectionType + indexCompany + 'text" ' + "\n" +
+            'id="' + sectionType + indexCompany + 'text" ' + "\n" +
+            'class="form-control" ' + "\n" +
+            'value="" required>' + "\n" +
+            '</div>' + "\n";
+
+        if (sectionType === 'EXPERIENCE') {
+            block = block +
+                '<div class="col-md-6">' + "\n" +
+                '<label for="' + sectionType + indexCompany + 'description"' + "\n" +
+                'class="col-form-label">Описание:</label> ' + "\n" +
+                '<textarea name="' + sectionType + indexCompany + 'description" ' + "\n" +
+                'id="' + sectionType + indexCompany + 'description" ' + "\n" +
+                'class="form-control" rows="8"></textarea></div>' + "\n" +
+                '</div>' + "\n";
+        }
+        block += '</div>' + "\n";
+        return block;
+    }
+
+    function getInputName(str) {
+        switch (true) {
+            case str.indexOf("startDate") > 0:
+                return "startDate";
+            case str.indexOf("endDate") > 0:
+                return "endDate";
+            case str.indexOf("text") > 0:
+                return "text";
+            case str.indexOf("description") > 0:
+                return "description";
+        }
+
+    }
 
 
 });

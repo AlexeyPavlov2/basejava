@@ -99,6 +99,20 @@ textarea_lines {
     border-bottom: 1px solid lightgrey; /* Чёрная рамка */
 }
 
+.vbottom {
+    display: inline-block;
+    vertical-align: bottom;
+    float: none;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+    white-space: nowrap;
+}
 
 dl {
     background: none repeat scroll 0 0 #FAFAFA;
