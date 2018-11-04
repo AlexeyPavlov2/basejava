@@ -41,7 +41,7 @@ public class Config {
         return storage;
     }
 
-    private static File getHomeDir() {
+    public static File getHomeDir() {
         String prop = System.getProperty("homeDir");
         File homeDir = new File(prop == null ? "." : prop);
         if (!homeDir.isDirectory()) {

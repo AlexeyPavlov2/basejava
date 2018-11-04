@@ -107,12 +107,29 @@ textarea_lines {
     text-align: center;
 }
 
+.vtop {
+    display: inline-block;
+    vertical-align: top;
+    float: none;
+    white-space: nowrap;
+}
+
 .vcenter {
     display: inline-block;
     vertical-align: middle;
     float: none;
     white-space: nowrap;
 }
+
+#container-border {
+    padding: 3px;
+    margin: 3px;
+    border-width: 1px;
+    border-color: lightgrey;
+    border-style: dot-dash;
+
+}
+
 
 dl {
     background: none repeat scroll 0 0 #FAFAFA;

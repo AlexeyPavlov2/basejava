@@ -10,6 +10,10 @@ import com.basejava.webapp.model.SectionType;
 import com.basejava.webapp.sql.SqlHelper;
 import com.basejava.webapp.util.JsonParser;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -206,5 +210,56 @@ public class SqlStorage implements Storage {
             SectionType type = SectionType.valueOf(rs.getString("type"));
             resume.putSection(type, JsonParser.read(value, Section.class));
         }
+    }
+
+    public void setPhoto(String uuid, String fileName) {
+        sqlHelper.execute("INSERT INTO photo (resume_uuid, pic) VALUES (?,?)", ps -> {
+            File file = new File(fileName);
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            ps.setString(1, uuid);
+            ps.setBinaryStream(2, fis, (int) file.length());
+            System.out.println("COUNT: " + ps.executeUpdate());
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        });
+    }
+
+
+    public byte[] getPhoto(String uuid) {
+        return sqlHelper.execute("SELECT pic FROM photo WHERE resume_uuid = ?", ps -> {
+            ps.setString(1, uuid);
+            ResultSet rs = null;
+            byte[] buffer = null;
+            try {
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    //img = rs.getBlob("pic");
+                    //buffer = img.getBytes(1, (int) img.length());
+                    buffer = rs.getBytes("pic");
+
+
+
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                rs.close();
+            }
+         /*   byte[] buffer = null;
+            Blob img = null;
+         */
+
+            return buffer;
+        });
     }
 }

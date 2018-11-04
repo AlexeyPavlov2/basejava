@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS contact;
 DROP TABLE  IF EXISTS section;
+DROP TABLE IF EXISTS photo;
 DROP TABLE IF EXISTS resume;
+
 
 CREATE TABLE resume (
   uuid      CHAR(36) PRIMARY KEY NOT NULL,
@@ -24,3 +26,9 @@ CREATE TABLE section (
 );
 CREATE UNIQUE INDEX section_idx
   ON section (resume_uuid, type);
+
+CREATE TABLE photo (
+  id          SERIAL,
+  resume_uuid CHAR(36) NOT NULL REFERENCES resume (uuid) ON DELETE CASCADE,
+  pic       bytea
+);

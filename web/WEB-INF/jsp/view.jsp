@@ -21,7 +21,7 @@
 <div class="container" id="printArea">
     <div class="row">
         <div class="col-1"></div>
-        <div class="col-10">
+        <div class="col-8">
             <table>
                 <tr>
                     <%--Display name and contacts--%>
@@ -182,6 +182,15 @@
                 </c:choose>
             </c:forEach>
         </div>
+        <%--Фото--%>
+        <div class="col-3">
+            <div id="container-border">
+                <img src="<%=request.getContextPath()%>/ShowImage?index=${resume.uuid}" height="300" width="240" alt="Фото"/>
+            </div>
+
+
+        </div>
+
     </div>
 
 </div>

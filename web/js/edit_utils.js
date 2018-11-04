@@ -168,7 +168,7 @@ $(function () {
             });
             $(this).attr('id', prefix + "_periodDiv" + index1);
         });
-        //console.log($('div.container-fluid').html());
+        console.log($('div.container-fluid').html());
     });
 
     $("button[class~='EDUCATIONadd_period_button']").click(function () {
@@ -202,7 +202,7 @@ $(function () {
             });
             $(this).attr('id', prefix + "_periodDiv" + index1);
         });
-        //console.log($('div.container-fluid').html());
+        console.log($('div.container-fluid').html());
     });
 
 
@@ -261,8 +261,5 @@ $(function () {
             case str.indexOf("description") > 0:
                 return "description";
         }
-
     }
-
-
 });

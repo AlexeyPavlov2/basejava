@@ -2,6 +2,7 @@ package com.basejava.webapp.web;
 
 import com.basejava.webapp.Config;
 import com.basejava.webapp.model.*;
+import com.basejava.webapp.storage.SqlStorage;
 import com.basejava.webapp.storage.Storage;
 import com.basejava.webapp.util.ResumeUtil;
 import com.basejava.webapp.util.TestData;
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.basejava.webapp.util.DateConverter.StringToLocalDate;
+import static com.basejava.webapp.util.TestData.*;
 
 public class ResumeServlet extends HttpServlet {
     private static final long serialVersionUID = 995497791471805151L;
@@ -181,16 +183,6 @@ public class ResumeServlet extends HttpServlet {
         response.sendRedirect("resume");
     }
 
-    private void populateDatabase() {
-        storage.clear();
-        TestData.fillTestData();
-        storage.save(TestData.RESUME1);
-        storage.save(TestData.RESUME2);
-        storage.save(TestData.RESUME3);
-        storage.save(TestData.RESUME4);
-        storage.save(TestData.RESUME5);
-    }
-
     private void addNewCompany(SectionType sectionType, HttpServletRequest request, Resume resume) {
         String typeName = sectionType.name();
         Map<String, String[]> map = request.getParameterMap();
@@ -229,5 +221,22 @@ public class ResumeServlet extends HttpServlet {
         });
     }
 
+    private void populateDatabase() {
+        storage.clear();
+        TestData.fillTestData();
+        storage.save(RESUME1);
+        storage.save(RESUME2);
+        storage.save(RESUME3);
+        storage.save(RESUME4);
+        storage.save(RESUME5);
+
+
+        System.out.println(Config.getHomeDir() + "\\web\\img\\r1.png");
+        ((SqlStorage) storage).setPhoto(RESUME1.getUuid(), Config.getHomeDir() + "\\web\\img\\r1.png");
+        ((SqlStorage) storage).setPhoto(RESUME2.getUuid(), Config.getHomeDir() + "\\web\\img\\r2.png");
+        ((SqlStorage) storage).setPhoto(RESUME3.getUuid(), Config.getHomeDir() + "\\web\\img\\r3.png");
+        ((SqlStorage) storage).setPhoto(RESUME4.getUuid(), Config.getHomeDir() + "\\web\\img\\r4.png");
+        ((SqlStorage) storage).setPhoto(RESUME5.getUuid(), Config.getHomeDir() + "\\web\\img\\r5.png");
+    }
 
 }
