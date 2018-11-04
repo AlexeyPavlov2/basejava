@@ -25,12 +25,22 @@
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <div class="form-group row">
             <label for="fullName" class="col-sm-1 col-form-label">Имя:</label>
-            <div class="col-sm-4">
+            <div class="col-md-4">
                 <input type="text" class="form-control" id="fullName" name="fullName"
                        placeholder="Сидоров Иван Сергеевич" value="${resume.fullName != null ? resume.fullName : ""}"
                 <%--autofocus--%> required>
 
             </div>
+            <div class="col-md-2">
+                <button class="btn btn-info" disabled>Загрузить фото</button>
+            </div>
+            <div class="col-md-4">
+                <div id="container-border">
+                    <img src="<%=request.getContextPath()%>/ShowImage?index=${resume.uuid}" height="300" width="240" alt="Фото"/>
+                </div>
+            </div>
+
+
         </div>
         <h3>Контакты:</h3><br>
         <div class="form-group">
@@ -236,7 +246,7 @@
                                                 class="${sectionType}add_period_button btn btn-primary"
                                                 id="${sectionType}add_period_button${theCounter.index}"
                                                 data-company-div="${sectionType}companyDiv${theCounter.index}"
-                                                data-company-period="period">
+                                                data-company-period="${sectionType}_periodDiv${thePeriod.index}">
                                             Добавить период
                                         </button>
                                     </div>
@@ -279,9 +289,9 @@
 
                                                 <button type="button" title="Удалить период"
                                                         class="${sectionType}delete_period_button vbottom btn btn-link"
-                                                        id="${sectionType}add_period_button"
+                                                        id="${sectionType}delete_period_button"
                                                         data-company-div="${sectionType}companyDiv${theCounter.index}"
-                                                        data-company-period="period${thePeriod.index}">
+                                                        data-company-period="${sectionType}_periodDiv${thePeriod.index}">
                                                     <i class="icon_red fa fa-minus"></i></button>
                                             </div>
                                         </div>

@@ -136,6 +136,18 @@ $(function () {
     });
 
 
+    // Global processing whole HTML
+    $("button[class~='1EXPERIENCEadd_period_button']").click(function () {
+        //first EXPIERENCE
+        var prefix = 'EXPIERENCE';
+        var selectorCompanies = 'div[id^=' + "'" + prefix + 'companyDiv' + "_periodDiv" + "'" + ']';
+        var companyList = $('#' + divId).children(selectorPeriods);
+
+
+
+    });
+
+
     // Processing add period button
     $("button[class~='EXPERIENCEadd_period_button']").click(function () {
         var prefix = 'EXPERIENCE';
@@ -145,17 +157,28 @@ $(function () {
         var divId = $(this).attr("data-company-div");
 
         // Add period block
-        $(parent).after(getNewPeriod(prefix, companyIndex, '0'));
+        $(parent).after(getNewPeriod(prefix, companyIndex, '111'));
 
         var selectorPeriods = 'div[id^=' + "'" + prefix + "_periodDiv" + "'" + ']';
         var list1 = $('#' + divId).children(selectorPeriods);
         list1.each(function (index1) {
+            $(this).attr('id', prefix + "_periodDiv" + index1);
+        });
+
+        list1 = {};
+        list1 = $('#' + divId).children(selectorPeriods);
+        list1.each(function (index1) {
             var childId = $(this).attr('id');
             var childName = $(this).attr('name');
+            var childType = $(this).attr('type');
+            console.log("index: " + index1 + " " + childId + " " + childName + " " + childType);
 
-            var str = 'div#' + childId + ' input';
+            //var str = 'div#' + childId + ' input';
+            var str = 'div#' + childId + ' input' + ', div#' + childId + ' label' + ', div#' + childId + ' button';
             var list2 = $(str);
             list2.each(function (index2) {
+
+              //console.log($(this).attr('id') + " " + $(this).attr('name') + " " + $(this).attr('type') + " " + $(this).attr('class'));
                 var inputName = $(this).attr('name');
                 if ($(this).attr("type") == "input") {
                     $(this).attr("name", prefix + index1 + getInputName(inputName));
@@ -165,31 +188,48 @@ $(function () {
                     $(this).attr("for", prefix + index1 + getInputName(inputName));
                 }
 
+                if ($(this).attr("type") == "button"
+                    && $(this).attr("class").indexOf(prefix + "delete_period_button") >= 0) {
+                    $(this).attr("data-company-div", prefix + "companyDiv" + companyIndex);
+                    $(this).attr("data-company-period", prefix + "__periodDiv" + index1);
+                }
+
             });
-            $(this).attr('id', prefix + "_periodDiv" + index1);
+
         });
         console.log($('div.container-fluid').html());
     });
 
-    $("button[class~='EDUCATIONadd_period_button']").click(function () {
-        var prefix = 'EDUCATION';
+    $("button[class~='EUCATIONadd_period_button']").click(function () {
+        var prefix = 'EUCATION';
         var id = $(this).attr('id');
         var companyIndex = id.replace(prefix + "add_period_button", "");
         var parent = $(this).parent().parent();
         var divId = $(this).attr("data-company-div");
 
         // Add period block
-        $(parent).after(getNewPeriod(prefix, companyIndex, '0'));
+        $(parent).after(getNewPeriod(prefix, companyIndex, '111'));
 
         var selectorPeriods = 'div[id^=' + "'" + prefix + "_periodDiv" + "'" + ']';
         var list1 = $('#' + divId).children(selectorPeriods);
         list1.each(function (index1) {
+            $(this).attr('id', prefix + "_periodDiv" + index1);
+        });
+
+        list1 = {};
+        list1 = $('#' + divId).children(selectorPeriods);
+        list1.each(function (index1) {
             var childId = $(this).attr('id');
             var childName = $(this).attr('name');
+            var childType = $(this).attr('type');
+            console.log("index: " + index1 + " " + childId + " " + childName + " " + childType);
 
-            var str = 'div#' + childId + ' input';
+            //var str = 'div#' + childId + ' input';
+            var str = 'div#' + childId + ' input' + ', div#' + childId + ' label' + ', div#' + childId + ' button';
             var list2 = $(str);
             list2.each(function (index2) {
+
+                //console.log($(this).attr('id') + " " + $(this).attr('name') + " " + $(this).attr('type') + " " + $(this).attr('class'));
                 var inputName = $(this).attr('name');
                 if ($(this).attr("type") == "input") {
                     $(this).attr("name", prefix + index1 + getInputName(inputName));
@@ -199,10 +239,21 @@ $(function () {
                     $(this).attr("for", prefix + index1 + getInputName(inputName));
                 }
 
+                if ($(this).attr("type") == "button"
+                    && $(this).attr("class").indexOf(prefix + "delete_period_button") >= 0) {
+                    $(this).attr("data-company-div", prefix + "companyDiv" + companyIndex);
+                    $(this).attr("data-company-period", prefix + "__periodDiv" + index1);
+                }
+
             });
-            $(this).attr('id', prefix + "_periodDiv" + index1);
+
         });
         console.log($('div.container-fluid').html());
+    });
+
+    // Delete gerion habdler
+    $("button[class~='EXPERIENCEdelete_period_button']").click(function () {
+        alert($(this).attr('id'));
     });
 
 
@@ -234,7 +285,20 @@ $(function () {
             'id="' + sectionType + indexCompany + 'text" ' + "\n" +
             'class="form-control" ' + "\n" +
             'value="" required>' + "\n" +
-            '</div>' + "\n";
+            '</div>' + "\n" +
+            '<div class="col-md-4">' + "\n" +
+            '<button type="button" title="Удалить период" ' + "\n" +
+            'class="' + sectionType + 'delete_period_button vbottom btn btn-link"' + "\n" +
+            'id=" ' + sectionType + 'delete_period_button"' + "\n" +
+            'data-company-div="' + sectionType + 'EcompanyDiv' + indexCompany + '"' + "\n" +
+            'data-company-period="' + sectionType + '__periodDiv' + indexPeriod + '">' + "\n" +
+            '<i class="icon_red fa fa-minus"></i></button>' + "\n" +
+            '</div>' + "\n" +
+            '</div>';
+
+
+
+
 
         if (sectionType === 'EXPERIENCE') {
             block = block +

@@ -239,7 +239,7 @@ public class SqlStorage implements Storage {
         return sqlHelper.execute("SELECT pic FROM photo WHERE resume_uuid = ?", ps -> {
             ps.setString(1, uuid);
             ResultSet rs = null;
-            byte[] buffer = null;
+            byte[] buffer = {};
             try {
                 rs = ps.executeQuery();
                 while (rs.next()) {
