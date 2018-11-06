@@ -204,9 +204,10 @@
         html+="</html>";
         var printWin = window.open("about:blank","Печать резюме",'left=0,top=0,width="250",height="80",menubar="no",toolbar="yes",scrollbars="yes",status=0');
         printWin.document.write(html);
-        printWin.document.close();
+
         printWin.focus();
         printWin.print();
+        printWin.document.close();
         printWin.close();
     }
 </script>

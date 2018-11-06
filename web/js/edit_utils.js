@@ -1,329 +1,183 @@
 $(function () {
     // add company event
-    $("#EDUCATIONadd_company_button").click(function () {
-        $(".EDUCATIONnew_div").removeClass("d-none");
-        $("#EDUCATIONadd_company_button").addClass("disabled")
-
-    });
-    $("#EXPERIENCEadd_company_button").click(function () {
-        $(".EXPERIENCEnew_div").removeClass("d-none");
-        $("#EXPERIENCEadd_company_button").addClass("disabled")
-
-    });
-
-    // delete EXPERIENCE company event
-    $("button[class~='EXPERIENCEdelete_company_button']").click(function () {
-        var id = $(this).attr("id");
-        var button = $(this);
-        var divId = $(this).attr("data-company-div");
-
-        $("#" + divId).remove();
-
-        var list = $("div[id^='EXPERIENCEcompanyDiv']");
-
-        list.each(function (index1) {
-            var oldDiv = $(this);
-            var idCompany = $(this).attr('id');
-            var str = 'div#' + idCompany + ' input, ' + 'div#' + idCompany + ' textarea';
-            var list1 = $(str);
-            list1.each(function (index2) {
-                var name = $(this).attr('name');
-                var prefix = "";
-                switch (true) {
-                    case name.indexOf("startDate") > 0:
-                        prefix = name.substr(0, name.indexOf("startDate"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "startDate");
-                        $(this).attr("id", prefix + "startDate")
-                        break;
-                    case name.indexOf("endDate") > 0:
-                        prefix = name.substr(0, name.indexOf("endDate"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "endDate");
-                        $(this).attr("id", prefix + "endDate");
-                        break;
-                    case name.indexOf("text") > 0:
-                        prefix = name.substr(0, name.indexOf("text"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "text");
-                        $(this).attr("id", prefix + "text");
-                        break;
-                    case name.indexOf("description") > 0:
-                        prefix = name.substr(0, name.indexOf("description"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "description");
-                        $(this).attr("id", prefix + "description");
-                        break;
-                }
-
-            });
-
-            // New id for company div
-            var newDivId = "EXPERIENCEcompanyDiv" + index1;
-            $(oldDiv).attr("id", newDivId);
-
-            var buttonDeleteId = $(oldDiv).find('button.btn-danger');
-            $(buttonDeleteId).attr("data-company-div", "EXPERIENCEcompanyDiv" + index1);
-            $(buttonDeleteId).attr("id", "EXPERIENCEdelete_company_button" + index1);
-
-
-        });
-
-        console.log($('div.container-fluid').html());
-
-    });
-
-    // delete EDUCATION company event
-    $("button[class~='EDUCATIONdelete_company_button']").click(function () {
-        var id = $(this).attr("id");
-        var button = $(this);
-        var divId = $(this).attr("data-company-div");
-
-        $("#" + divId).remove();
-
-        var list = $("div[id^='EDUCATIONcompanyDiv']");
-
-        list.each(function (index1) {
-            var oldDiv = $(this);
-            var idCompany = $(this).attr('id');
-            var str = 'div#' + idCompany + ' input, ' + 'div#' + idCompany + ' textarea';
-            var list1 = $(str);
-            list1.each(function (index2) {
-                var name = $(this).attr('name');
-                var prefix = "";
-                switch (true) {
-                    case name.indexOf("startDate") > 0:
-                        prefix = name.substr(0, name.indexOf("startDate"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "startDate");
-                        $(this).attr("id", prefix + "startDate")
-                        break;
-                    case name.indexOf("endDate") > 0:
-                        prefix = name.substr(0, name.indexOf("endDate"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "endDate");
-                        $(this).attr("id", prefix + "endDate");
-                        break;
-                    case name.indexOf("text") > 0:
-                        prefix = name.substr(0, name.indexOf("text"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "text");
-                        $(this).attr("id", prefix + "text");
-                        break;
-                    case name.indexOf("description") > 0:
-                        prefix = name.substr(0, name.indexOf("description"));
-                        prefix = prefix.replace(/\d/g, '') + index1;
-                        $(this).attr("name", prefix + "description");
-                        $(this).attr("id", prefix + "description");
-                        break;
-                }
-
-            });
-
-            // New id for company div
-            var newDivId = "EDUCATIONcompanyDiv" + index1;
-            $(oldDiv).attr("id", newDivId);
-
-            var buttonDeleteId = $(oldDiv).find('button.btn-danger');
-            $(buttonDeleteId).attr("data-company-div", "EDUCATIONcompanyDiv" + index1);
-            $(buttonDeleteId).attr("id", "EDUCATIONdelete_company_button" + index1);
-
-
-        });
-
-        console.log($('div.container-fluid').html());
-
-    });
-
-
-    // Global processing whole HTML
-    $("button[class~='1EXPERIENCEadd_period_button']").click(function () {
-        //first EXPIERENCE
-        var prefix = 'EXPIERENCE';
-        var selectorCompanies = 'div[id^=' + "'" + prefix + 'companyDiv' + "_periodDiv" + "'" + ']';
-        var companyList = $('#' + divId).children(selectorPeriods);
-
-
-
-    });
-
-
-    // Processing add period button
-    $("button[class~='EXPERIENCEadd_period_button']").click(function () {
-        var prefix = 'EXPERIENCE';
-        var id = $(this).attr('id');
-        var companyIndex = id.replace(prefix + "add_period_button", "");
-        var parent = $(this).parent().parent();
-        var divId = $(this).attr("data-company-div");
-
-        // Add period block
-        $(parent).after(getNewPeriod(prefix, companyIndex, '111'));
-
-        var selectorPeriods = 'div[id^=' + "'" + prefix + "_periodDiv" + "'" + ']';
-        var list1 = $('#' + divId).children(selectorPeriods);
-        list1.each(function (index1) {
-            $(this).attr('id', prefix + "_periodDiv" + index1);
-        });
-
-        list1 = {};
-        list1 = $('#' + divId).children(selectorPeriods);
-        list1.each(function (index1) {
-            var childId = $(this).attr('id');
-            var childName = $(this).attr('name');
-            var childType = $(this).attr('type');
-            console.log("index: " + index1 + " " + childId + " " + childName + " " + childType);
-
-            //var str = 'div#' + childId + ' input';
-            var str = 'div#' + childId + ' input' + ', div#' + childId + ' label' + ', div#' + childId + ' button';
-            var list2 = $(str);
-            list2.each(function (index2) {
-
-              //console.log($(this).attr('id') + " " + $(this).attr('name') + " " + $(this).attr('type') + " " + $(this).attr('class'));
-                var inputName = $(this).attr('name');
-                if ($(this).attr("type") == "input") {
-                    $(this).attr("name", prefix + index1 + getInputName(inputName));
-                    $(this).attr("id", prefix + index1 + getInputName(inputName));
-                }
-                if ($(this).attr("type") == "label") {
-                    $(this).attr("for", prefix + index1 + getInputName(inputName));
-                }
-
-                if ($(this).attr("type") == "button"
-                    && $(this).attr("class").indexOf(prefix + "delete_period_button") >= 0) {
-                    $(this).attr("data-company-div", prefix + "companyDiv" + companyIndex);
-                    $(this).attr("data-company-period", prefix + "__periodDiv" + index1);
-                }
-
-            });
-
-        });
-        console.log($('div.container-fluid').html());
-    });
-
-    $("button[class~='EUCATIONadd_period_button']").click(function () {
-        var prefix = 'EUCATION';
-        var id = $(this).attr('id');
-        var companyIndex = id.replace(prefix + "add_period_button", "");
-        var parent = $(this).parent().parent();
-        var divId = $(this).attr("data-company-div");
-
-        // Add period block
-        $(parent).after(getNewPeriod(prefix, companyIndex, '111'));
-
-        var selectorPeriods = 'div[id^=' + "'" + prefix + "_periodDiv" + "'" + ']';
-        var list1 = $('#' + divId).children(selectorPeriods);
-        list1.each(function (index1) {
-            $(this).attr('id', prefix + "_periodDiv" + index1);
-        });
-
-        list1 = {};
-        list1 = $('#' + divId).children(selectorPeriods);
-        list1.each(function (index1) {
-            var childId = $(this).attr('id');
-            var childName = $(this).attr('name');
-            var childType = $(this).attr('type');
-            console.log("index: " + index1 + " " + childId + " " + childName + " " + childType);
-
-            //var str = 'div#' + childId + ' input';
-            var str = 'div#' + childId + ' input' + ', div#' + childId + ' label' + ', div#' + childId + ' button';
-            var list2 = $(str);
-            list2.each(function (index2) {
-
-                //console.log($(this).attr('id') + " " + $(this).attr('name') + " " + $(this).attr('type') + " " + $(this).attr('class'));
-                var inputName = $(this).attr('name');
-                if ($(this).attr("type") == "input") {
-                    $(this).attr("name", prefix + index1 + getInputName(inputName));
-                    $(this).attr("id", prefix + index1 + getInputName(inputName));
-                }
-                if ($(this).attr("type") == "label") {
-                    $(this).attr("for", prefix + index1 + getInputName(inputName));
-                }
-
-                if ($(this).attr("type") == "button"
-                    && $(this).attr("class").indexOf(prefix + "delete_period_button") >= 0) {
-                    $(this).attr("data-company-div", prefix + "companyDiv" + companyIndex);
-                    $(this).attr("data-company-period", prefix + "__periodDiv" + index1);
-                }
-
-            });
-
-        });
-        console.log($('div.container-fluid').html());
-    });
-
-    // Delete gerion habdler
-    $("button[class~='EXPERIENCEdelete_period_button']").click(function () {
-        alert($(this).attr('id'));
-    });
-
-
-    // HTML block for new period
-    function getNewPeriod(sectionType, indexCompany, indexPeriod) {
-        var block =
-            "\n" + '<div id="' + sectionType + '_periodDiv' + indexPeriod + '">' + "\n" +
-            '<div class="form-group row">' + "\n" +
-            '<div class="col-md-2">' + "\n" +
-            '<label for="' + sectionType + indexCompany + 'startDate" ' + "\n" +
-            'class="col-form-label">Дата начала:</label>' + "\n" +
-            '<input type="text" name="' + sectionType + indexCompany + 'startDate" ' + "\n" +
-            'id="' + sectionType + indexCompany + 'startDate" ' + "\n" +
-            'class="form-control" ' + "\n" +
-            'value=""' + 'required> ' + "\n" +
-            '</div>' + "\n" +
-            '<div class="col-md-2">' + "\n" +
-            '<label for="' + sectionType + indexCompany + 'endDate" ' + "\n" +
-            'class="col-form-label">Дата окончания:</label>' + "\n" +
-            '<input type="text" name="' + sectionType + indexCompany + 'endDate" ' + "\n" +
-            'id="' + sectionType + indexCompany + 'endDate" ' + "\n" +
-            'class="form-control" ' + "\n" +
-            'value="Сейчас"' + ' required>' + "\n" +
-            '</div>' + "\n" +
-            '<div class="col-md-4">' + "\n" +
-            '<label for="' + sectionType + indexCompany + 'text" ' + "\n" +
-            'class="col-form-label">Позиция:</label>' + "\n" +
-            '<input type="text" name="' + sectionType + indexCompany + 'text" ' + "\n" +
-            'id="' + sectionType + indexCompany + 'text" ' + "\n" +
-            'class="form-control" ' + "\n" +
-            'value="" required>' + "\n" +
-            '</div>' + "\n" +
-            '<div class="col-md-4">' + "\n" +
-            '<button type="button" title="Удалить период" ' + "\n" +
-            'class="' + sectionType + 'delete_period_button vbottom btn btn-link"' + "\n" +
-            'id=" ' + sectionType + 'delete_period_button"' + "\n" +
-            'data-company-div="' + sectionType + 'EcompanyDiv' + indexCompany + '"' + "\n" +
-            'data-company-period="' + sectionType + '__periodDiv' + indexPeriod + '">' + "\n" +
-            '<i class="icon_red fa fa-minus"></i></button>' + "\n" +
-            '</div>' + "\n" +
-            '</div>';
-
-
-
-
-
-        if (sectionType === 'EXPERIENCE') {
-            block = block +
-                '<div class="col-md-6">' + "\n" +
-                '<label for="' + sectionType + indexCompany + 'description"' + "\n" +
-                'class="col-form-label">Описание:</label> ' + "\n" +
-                '<textarea name="' + sectionType + indexCompany + 'description" ' + "\n" +
-                'id="' + sectionType + indexCompany + 'description" ' + "\n" +
-                'class="form-control" rows="8"></textarea></div>' + "\n" +
-                '</div>' + "\n";
+    $(".EXPERIENCEadd_company_button, .EDUCATIONadd_company_button").click(function () {
+        $(this).parent().parent().after(getNewCompanyDiv());
+        var first = $("#companyDivTemplate").first();
+        first.removeClass("template");
+        if ($(this).hasClass("EDUCATIONadd_company_button")) {
+            first.find(".description_row").addClass("d-none");
+            first.attr("id", "EDUCATIONcompanyDiv777")
+            recalcCompanyDiv("EDUCATION");
+        } else {
+            first.attr("id", "EXPERIENCEcompanyDiv777")
+            recalcCompanyDiv("EXPERIENCE");
         }
-        block += '</div>' + "\n";
-        return block;
+    });
+
+    // delete company event
+    $(".EXPERIENCEdelete_company_button, .EDUCATIONdelete_company_button").click(function () {
+        $("#" + $(this).attr("data-company-div")).remove();
+        recalcCompanyDiv('EXPERIENCE');
+        recalcCompanyDiv('EDUCATION');
+    });
+
+    // add period event
+    $(".EXPERIENCEadd_period_button, .EDUCATIONadd_period_button").click(function () {
+        var prefix = $(this).hasClass("EXPERIENCEadd_period_button") ? "EXPERIENCE" : "EDUCATION";
+        $(this).parent().parent().after(getNewPeriodDiv());
+        var first = $("#periodDivTemplate").first();
+        first.removeClass("template");
+        if (prefix === "EDUCATION") {
+            first.find(".description_row").remove();
+        }
+        first.attr("id", prefix + "_periodDiv2222");
+        recalcCompanyDiv(prefix);
+    });
+
+    // delete period event
+    $('body').on('click', ".EXPERIENCEdelete_period_button, .EDUCATIONdelete_period_button", function (e) {
+        var company = ("#" + $(this).attr("data-company-div"));
+        $(company).find("#" + $(this).attr("data-company-period")).remove();
+        recalcCompanyDiv('EXPERIENCE');
+        recalcCompanyDiv('EDUCATION');
+    });
+
+    // Re-calc EXPERIENCE or EDUCATION sections
+    function recalcCompanyDiv(type) {
+        var companyType = type;
+        var selectorCompanies = "div[id^=" + "'" + companyType + "companyDiv" + "']";
+        var companyDivList = $(selectorCompanies);
+        companyDivList.each(function (companyIndex) {
+            var company = $(this);
+            var companyId = companyType + "companyDiv" + companyIndex;
+            company.attr("id", companyId);
+
+            // Re-cal company title row
+            var titleRow = company.children().first();
+            var elementTitleRowList = titleRow.find("*");
+            elementTitleRowList.each(function (elementIndex0) {
+                var el = $(this);
+                if (el.attr("name") == "for_company_title") {
+                    el.attr("for", companyType);
+                }
+                if (el.attr("data-company-title-input-type") == "title") {
+                    el.attr("name", companyType);
+                    el.attr("id", companyType);
+                }
+                if (el.attr("name") == "for_company_url") {
+                    el.attr("for", companyType + "companyURL" + companyIndex);
+                }
+                if (el.attr("data-company-title-input-type") == "url") {
+                    el.attr("name", companyType + "companyURL");
+                    el.attr("id", companyType + "companyURL" + companyIndex);
+                }
+                if (el.attr("data-company-button-type") == "delete") {
+                    el.attr("class", companyType + "delete_company_button btn btn-danger vbottom");
+                    el.attr("id", companyType + "delete_company_button" + companyIndex);
+                    el.attr("data-company-div", companyType + "companyDiv" + companyIndex);
+                }
+            }); //elementTitleRowList
+
+            // Re-calc company periods
+            //add_period_button if exists
+            var elementPeriodButtonRow = company.find(".add_period_button");
+            var button = elementPeriodButtonRow.find("button");
+            if (button.length > 0) {
+                button.attr("class", companyType + "add_period_button btn btn-primary");
+                button.attr("id", companyType + "add_period_button" + companyIndex);
+                button.attr("data-company-div", companyType + "companyDiv" + companyIndex);
+                button.attr("data-company-period", companyType + "_periodDiv");
+            }
+
+            // Get periods for the company id
+            var periodsList = company.find(".period_div");
+
+            var totalPeriods = 0;
+            periodsList.each(function () {
+                totalPeriods++;
+            });
+
+            periodsList.each(function (periodIndex) {
+                var period = $(this);
+                period.attr("id", companyType + "_periodDiv" + periodIndex);
+                var periodRow = period.children().first();
+                var elementPeriodRowList = periodRow.find("*");
+                elementPeriodRowList.each(function (elementIndex1) {
+                    var el1 = $(this);
+                    if (el1.attr("name") == "for_start_date") {
+                        el1.attr("for", companyType + companyIndex + "startDate");
+                    }
+                    if (el1.attr("data-period-input-type") == "startDate") {
+                        el1.attr("name", companyType + companyIndex + "startDate");
+                        el1.attr("id", companyType + companyIndex + "startDate");
+                    }
+                    if (el1.attr("name") == "for_end_date") {
+                        el1.attr("for", companyType + companyIndex + "endDate");
+                    }
+                    if (el1.attr("data-period-input-type") == "endDate") {
+                        el1.attr("name", companyType + companyIndex + "endDate");
+                        el1.attr("id", companyType + companyIndex + "endDate");
+                    }
+                    if (el1.attr("name") == "for_text") {
+                        el1.attr("for", companyType + companyIndex + "text");
+                    }
+                    if (el1.attr("data-period-input-type") == "text") {
+                        el1.attr("name", companyType + companyIndex + "text");
+                        el1.attr("id", companyType + companyIndex + "text");
+                    }
+                    if (el1.attr("data-period-button-type") == "delete") {
+                        if (totalPeriods == 1 && periodIndex == 0) {
+                            el1.attr("title", "Нельзя удалить единственный период");
+                            el1.prop("disabled", true);
+
+                        } else {
+                            el1.attr("title", "Удалить период");
+                            el1.prop("disabled", false);
+
+                        }
+                        el1.attr("class", companyType + "delete_period_button vbottom btn btn-link");
+                        el1.attr("id", companyType + "delete_period_button");
+                        el1.attr("data-company-div", companyType + "companyDiv" + companyIndex);
+                        el1.attr("data-company-period", companyType + "_periodDiv" + periodIndex);
+                    }
+
+
+                }); //elementPeriodRowList
+
+                // Processing description
+                var descriptionRow = period.find(".description_row"); // Find description div
+                if (descriptionRow.length > 0) {
+                    var elementDescriptionRow = descriptionRow.find("*");
+                    elementDescriptionRow.each(function (elementIndex2) {
+                        var el2 = $(this);
+                        if (el2.attr("name") == "for_description") {
+                            el2.attr("for", companyType + companyIndex + "description");
+                        }
+                        if (el2.attr("data-period-input-type") == "description") {
+                            el2.attr("name", companyType + companyIndex + "description");
+                            el2.attr("id", companyType + companyIndex + "description");
+                        }
+                    });
+                }
+            });  // periodList
+        }); //companyDivList
     }
 
-    function getInputName(str) {
-        switch (true) {
-            case str.indexOf("startDate") > 0:
-                return "startDate";
-            case str.indexOf("endDate") > 0:
-                return "endDate";
-            case str.indexOf("text") > 0:
-                return "text";
-            case str.indexOf("description") > 0:
-                return "description";
-        }
+
+    function getNewCompanyDiv() {
+        return $(".company_template").html();
     }
+
+    function getNewPeriodDiv() {
+        return $(".period_template").html();
+    }
+
+    function printContent() {
+        console.log($('div.container-fluid').html());
+    }
+
+    function setStatusDeletePeriodButton(periodId) {
+
+    }
+
 });

@@ -24,9 +24,11 @@
     <form method="post" action="resume" name="form_edit" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="uuid" value="${resume.uuid}">
         <div class="form-group row">
-            <label for="fullName" class="col-sm-1 col-form-label">Имя:</label>
+            <div class="col-md-2">
+                <label for="fullName" accesskey="N" class="col-sm-1 col-form-label">Имя:</label>
+            </div>
             <div class="col-md-4">
-                <input type="text" class="form-control" id="fullName" name="fullName"
+                <input type="text" class="form-control" id="fullName" name="fullName" title="Полное имя (Alt-N)"
                        placeholder="Сидоров Иван Сергеевич" value="${resume.fullName != null ? resume.fullName : ""}"
                 <%--autofocus--%> required>
 
@@ -36,15 +38,18 @@
             </div>
             <div class="col-md-4">
                 <div id="container-border">
-                    <img src="<%=request.getContextPath()%>/ShowImage?index=${resume.uuid}" height="300" width="240" alt="Фото"/>
+                    <img src="<%=request.getContextPath()%>/ShowImage?index=${resume.uuid}" height="300" width="240"
+                         alt="Фото"/>
                 </div>
             </div>
 
 
         </div>
         <h3>Контакты:</h3><br>
-        <div class="form-group">
+        <div class="form-group" id="contacts">
             <c:set var="counter" value="${1}" scope="request"/>
+            <c:set var="counterItem" value="${0}" scope="request"/>
+            <c:set var="lengthValues" value="<%=ContactType.values().length%>" scope="request"/>
             <c:forEach var="type" items="<%=ContactType.values()%>">
                 <c:if test="${counter == 1}">
                     <div class="form-row">
@@ -59,7 +64,7 @@
                         <c:when test="${(type.name() eq 'MOBILE') || (type.name() eq 'PHONE') || (type.name() eq 'HOME_PHONE')}">
                             <c:set var="fieldType" value='"tel"'/>
                             <c:set var="fieldPattern"
-                                   value=" 'pattern='[\\+]\d{1}\\s[\\(]\\d{3}[\\)]\s\\d{3}[\\-]\\d{2}[\\-]\\d{2}' minlength='18' maxlength='18'"/>
+                                   value=" pattern='[\\+]\d{1}\\s[\\(]\\d{3}[\\)]\s\\d{3}[\\-]\\d{2}[\\-]\\d{2}' minlength='18' maxlength='18' title='Формат +7 (985) 567-45-78'"/>
                             <c:set var="fieldPlacholder" value="placeholder='+7 (985) 456-76-33'"/>
                         </c:when>
                         <c:when test="${type.name() eq 'MAIL'}">
@@ -99,237 +104,215 @@
                 </div>
 
                 <c:if test="${counter != 1}">
-                    </div>
-                    <br>
+                    <%--</div>
+                    <br>--%>
                 </c:if>
 
                 <c:if test="${(counter <= 2)}">
                     <c:set var="counter" value="${counter + 1}"/>
                 </c:if>
-                <c:if test="${counter == 3}">
+                <c:if test="${counter == 3 || counterItem == lengthValues - 1}">
+                    <%--COUNT ${counterItem} LENGTH ${lengthValues}--%>
                     <c:set var="counter" value="${1}"/>
+
+                    </div>
+                    <br>
                 </c:if>
+
+                <c:set var="counterItem" value="${counterItem + 1}"/>
+
+
             </c:forEach>
         </div>
         <br>
 
-        <div class="form-group">
+        <div class="form-group" id="sections">
+            <c:set var="flagCompanies" value="${0}" scope="page"/>
             <c:forEach var="sectionType" items="<%=SectionType.values()%>">
-                <c:set var="section"
-                       value='${resume.getSection(sectionType) != null ? resume.getSection(sectionType) : ""}'/>
-                <jsp:useBean id="section" type="com.basejava.webapp.model.Section"/>
-                <h4>${sectionType.title}</h4>
-                <c:choose>
-                    <c:when test="${sectionType eq 'OBJECTIVE'}">
-                        <div class="form row">
-                            <div class="form-group col-md-6">
-                                <input type="text" name="${sectionType}" class="form-control"
-                                       value='<%=section != null ? ((TextSection) section).getText() : "" %>' required>
-                            </div>
-                        </div>
-                    </c:when>
-                    <c:when test="${sectionType eq 'PERSONAL'}">
-                        <div class="form row">
-                            <div class="form-group col-md-6">
+            <c:set var="section"
+                   value='${resume.getSection(sectionType) != null ? resume.getSection(sectionType) : ""}'/>
+            <jsp:useBean id="section" type="com.basejava.webapp.model.Section"/>
+            <h4>${sectionType.title}</h4>
+            <c:choose>
+            <c:when test="${sectionType eq 'OBJECTIVE'}">
+                <div class="form row">
+                    <div class="form-group col-md-6">
+                        <input type="text" name="${sectionType}" class="form-control"
+                               value='<%=section != null ? ((TextSection) section).getText() : "" %>' required>
+                    </div>
+                </div>
+            </c:when>
+            <c:when test="${sectionType eq 'PERSONAL'}">
+                <div class="form row">
+                    <div class="form-group col-md-6">
                                 <textarea name="${sectionType}" class="form-control" rows="5"
                                           required><%=section != null ? ((TextSection) section).getText() : "" %></textarea>
-                            </div>
-                        </div>
-                    </c:when>
-                    <c:when test="${sectionType eq 'QUALIFICATIONS' || sectionType eq 'ACHIEVEMENT'}">
-                        <div class="form row">
-                            <div class="form-group col-md-6">
+                    </div>
+                </div>
+            </c:when>
+            <c:when test="${sectionType eq 'QUALIFICATIONS' || sectionType eq 'ACHIEVEMENT'}">
+                <div class="form row">
+                    <div class="form-group col-md-6">
                     <textarea name="${sectionType}" class="form-control" rows="5"
                               required><%=section != null ? String.join("\n", ((ListSection) section).getItems()) : ""%>
                     </textarea>
-                            </div>
-                        </div>
-                    </c:when>
-                    <c:when test="${sectionType eq 'EXPERIENCE' || sectionType eq 'EDUCATION'}">
+                    </div>
+                </div>
+            </c:when>
+            <c:when test="${sectionType eq 'EXPERIENCE' || sectionType eq 'EDUCATION'}">
+            <c:if test="${flagCompanies == 0}">
+            <div id="companies">
+                <c:set var="flagCompanies" value="${1}"/>
+                </c:if>
+                <div class="form row">
+                    <div class="form-group col-sm-2">
+                        <button type="button"
+                                class="${sectionType} form-control btn btn-primary ${sectionType}add_company_button"
+                                title="Добавить компанию">Добавить
+                        </button>
+                    </div>
+                </div>
 
-                        <div class="form row">
-                            <div class="form-group col-sm-2">
-                                <button type="button" class="${sectionType} form-control btn btn-primary"
-                                        id="${sectionType}add_company_button"
-                                        name="${sectionType}add_button"
-                                        title="Добавить компанию">Добавить
+                    <%--New Section--%>
+
+                    <%--End New Section--%>
+
+                <c:forEach var="company" items="<%=((CompanySection) section).getItems()%>"
+                           varStatus="theCounter"> <%--On companies--%>
+                    <div id="${sectionType}companyDiv${theCounter.index}">
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <label name="for_company_title" for="${sectionType}"
+                                       class="col-form-label">Название:</label>
+                                <input type="text" name="${sectionType}" id="${sectionType}"
+                                       class="form-control"
+                                       data-company-title-input-type="title"
+                                       value="${company.link.title}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label name="for_company_url" for="${sectionType}companyURL${theCounter.index}"
+                                       class="col-form-label">Сайт:</label>
+                                <input type="text" name="${sectionType}companyURL"
+                                       id="${sectionType}companyURL${theCounter.index}" class="form-control"
+                                       data-company-title-input-type="url"
+                                       value="${company.link.link}">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button"
+                                        class="${sectionType}delete_company_button btn btn-danger vbottom"
+                                        id="${sectionType}delete_company_button${theCounter.index}"
+                                        title="Удалить компанию"
+                                        data-company-button-type="delete"
+                                        data-company-div="${sectionType}companyDiv${theCounter.index}">Удалить
+                                </button>
+                            </div>
+
+                        </div>
+                            <%--add period button--%>
+                        <div class="form-group row add_period_button">
+                            <div class="col-md-4">
+                                <button type="button" title="Добавить период"
+                                        class="${sectionType}add_period_button btn btn-primary"
+                                        id="${sectionType}add_period_button${theCounter.index}"
+                                        data-company-div="${sectionType}companyDiv${theCounter.index}"
+                                        data-company-period="${sectionType}_periodDiv${thePeriod.index}">
+                                    Добавить период
                                 </button>
                             </div>
                         </div>
 
-                        <%--New Section--%>
-                        <div class="d-none ${sectionType}new_div ">
-                            <div class="form-group row">
-                                <div class="col-md-4">
-                                    <label for="${sectionType}companyTitle1" class="col-form-label">Название:</label>
-                                    <input type="text" name="${sectionType}companyTitle1"
-                                           id="${sectionType}companyTitle1" class="form-control"
-                                           value="" placeholder="Новая компания">
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label for="${sectionType}companyURL1" class="col-form-label">Сайт:</label>
-                                    <input type="text" name="${sectionType}companyURL1" id="${sectionType}companyURL1"
-                                           class="form-control"
-                                           value="" placeholder="https://google.com">
-                                </div>
-
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-2">
-                                    <label for="${sectionType}startDate1" class="col-form-label">Дата начала:</label>
-                                    <input type="text" name="${sectionType}startDate1" id="${sectionType}startDate1"
-                                           class="form-control"
-                                           value="" placeholder="10.11.2018">
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="${sectionType}endDate1" class="col-form-label">Дата окончания:</label>
-                                    <input type="text" name="${sectionType}endDate1" id="${sectionType}endDate1"
-                                           class="form-control"
-                                           value="" placeholder="Сейчас">
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label for="${sectionType}text1" class="col-form-label">Позиция:</label>
-                                    <input type="text" name="${sectionType}text1" id="${sectionType}text1"
-                                           class="form-control"
-                                           value="">
-                                </div>
-                            </div>
-
-                            <c:if test="${sectionType eq 'EXPERIENCE'}">
-                                <div class="form-group row ">
-                                    <div class="col-md-6">
-                                        <label for="${sectionType}description1"
-                                               class="col-form-label">Описание:</label>
-                                        <textarea name="${sectionType}description1"
-                                                  id="${sectionType}description1"
-                                                  class="form-control" rows="8"></textarea>
-                                    </div>
-                                </div>
-                            </c:if>
-
-
-                        </div>
-                        <hr>
-                        <%--End New Section--%>
-
-                        <c:forEach var="company" items="<%=((CompanySection) section).getItems()%>"
-                                   varStatus="theCounter"> <%--On companies--%>
-                            <div id="${sectionType}companyDiv${theCounter.index}">
+                        <c:set var="totalPeriods" value="${company.companyPersonalInfoList.size()}"/>
+                        <c:forEach var="info" items="${company.companyPersonalInfoList}" varStatus="thePeriod">
+                            <jsp:useBean id="info" type="com.basejava.webapp.model.CompanyPersonalInfo"/>
+                            <div id="${sectionType}_periodDiv${thePeriod.index}" class="period_div">
                                 <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <label for="${sectionType}" class="col-form-label">Название:</label>
-                                        <input type="text" name="${sectionType}" id="${sectionType}"
+                                    <div class="col-md-2">
+                                        <label name="for_start_date" for="${sectionType}${theCounter.index}startDate"
+                                               class="col-form-label">Дата
+                                            начала:</label>
+                                        <input type="text" name="${sectionType}${theCounter.index}startDate"
+                                               id="${sectionType}${theCounter.index}startDate"
                                                class="form-control"
-                                               value="${company.link.title}" required>
+                                               data-period-input-type="startDate"
+                                               value="<%=DateConverter.formatLocalDate(info.getStart(),"dd.MM.yyyy")%>"
+                                               required>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label for="${sectionType}companyURL${theCounter.index}" class="col-form-label">Сайт:</label>
-                                        <input type="text" name="${sectionType}companyURL"
-                                               id="${sectionType}companyURL${theCounter.index}" class="form-control"
-                                               value="${company.link.link}">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="button"
-                                                class="${sectionType}delete_company_button btn btn-danger vbottom"
-                                                id="${sectionType}delete_company_button${theCounter.index}"
-                                                data-company-div="${sectionType}companyDiv${theCounter.index}">Удалить
-                                        </button>
+                                    <div class="col-md-2">
+                                        <label name="for_end_date" for="${sectionType}${theCounter.index}endDate"
+                                               class="col-form-label">Дата
+                                            окончания:</label>
+                                        <input type="text" name="${sectionType}${theCounter.index}endDate"
+                                               id="${sectionType}${theCounter.index}endDate"
+                                               class="form-control"
+                                               data-period-input-type="endDate"
+                                               value='<%=!DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy").equals("01.12.2050") ? DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy") : "Сейчас"%>'
+                                               required>
                                     </div>
 
-                                </div>
-                                    <%--add period button--%>
-                                <div class="form-group row">
                                     <div class="col-md-4">
-                                        <button type="button" title="Добавить период"
-                                                class="${sectionType}add_period_button btn btn-primary"
-                                                id="${sectionType}add_period_button${theCounter.index}"
+                                        <label name="for_text" for="${sectionType}${theCounter.index}text"
+                                               class="col-form-label">Позиция:</label>
+                                        <input type="text" name="${sectionType}${theCounter.index}text"
+                                               id="${sectionType}${theCounter.index}text" class="form-control"
+                                               data-period-input-type="text"
+                                               value="${info.text}" required>
+                                    </div>
+
+                                    <c:if test="${totalPeriods eq 1 && thePeriod.index eq 0}">   <%--if the period is the only one you can not delete--%>
+                                        <c:set var="deletePeriodDisabled" value="disabled"/>
+                                    </c:if>
+                                    <c:if test="${not(totalPeriods eq 1 && thePeriod.index eq 0)}">   <%--if the period is the only one you can not delete--%>
+                                        <c:set var="deletePeriodDisabled" value=""/>
+                                    </c:if>
+
+                                    <div class="col-md-4">
+                                            <%--<label for="" class="col-form-label"></label> <br>--%>
+                                        <button type="button" title="Удалить период"
+                                                class="${sectionType}delete_period_button vbottom btn btn-link"
+                                                id="${sectionType}delete_period_button"
+                                                data-period-button-type="delete"
                                                 data-company-div="${sectionType}companyDiv${theCounter.index}"
-                                                data-company-period="${sectionType}_periodDiv${thePeriod.index}">
-                                            Добавить период
-                                        </button>
+                                                data-company-period="${sectionType}_periodDiv${thePeriod.index}" ${deletePeriodDisabled}>
+                                            <i class="icon_red fa fa-minus"></i></button>
                                     </div>
+
+
                                 </div>
 
-                                <c:forEach var="info" items="${company.companyPersonalInfoList}" varStatus="thePeriod">
-                                    <jsp:useBean id="info" type="com.basejava.webapp.model.CompanyPersonalInfo"/>
-                                    <div id="${sectionType}_periodDiv${thePeriod.index}">
-                                        <div class="form-group row">
-                                            <div class="col-md-2">
-                                                <label for="${sectionType}${theCounter.index}startDate"
-                                                       class="col-form-label">Дата
-                                                    начала:</label>
-                                                <input type="text" name="${sectionType}${theCounter.index}startDate"
-                                                       id="${sectionType}${theCounter.index}startDate"
-                                                       class="form-control"
-                                                       value="<%=DateConverter.formatLocalDate(info.getStart(),"dd.MM.yyyy")%>"
-                                                       required>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label for="${sectionType}${theCounter.index}endDate"
-                                                       class="col-form-label">Дата
-                                                    окончания:</label>
-                                                <input type="text" name="${sectionType}${theCounter.index}endDate"
-                                                       id="${sectionType}${theCounter.index}endDate"
-                                                       class="form-control"
-                                                       value='<%=!DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy").equals("01.12.2050") ? DateConverter.formatLocalDate(info.getEnd(),"dd.MM.yyyy") : "Сейчас"%>'
-                                                       required>
-                                            </div>
+                                <c:if test="${sectionType eq 'EXPERIENCE'}">
+                                    <c:set var="isHidden" value=""/>
+                                </c:if>
+                                <c:if test="${sectionType eq 'EDUCATION'}">
+                                    <c:set var="isHidden" value="d-none"/>
+                                </c:if>
 
-                                            <div class="col-md-4">
-                                                <label for="${sectionType}${theCounter.index}text"
-                                                       class="col-form-label">Позиция:</label>
-                                                <input type="text" name="${sectionType}${theCounter.index}text"
-                                                       id="${sectionType}${theCounter.index}text" class="form-control"
-                                                       value="${info.text}" required>
-                                            </div>
-                                            <div class="col-md-4">
-                                                    <%--<label for="" class="col-form-label"></label> <br>--%>
-
-                                                <button type="button" title="Удалить период"
-                                                        class="${sectionType}delete_period_button vbottom btn btn-link"
-                                                        id="${sectionType}delete_period_button"
-                                                        data-company-div="${sectionType}companyDiv${theCounter.index}"
-                                                        data-company-period="${sectionType}_periodDiv${thePeriod.index}">
-                                                    <i class="icon_red fa fa-minus"></i></button>
-                                            </div>
-                                        </div>
-
-                                        <c:if test="${sectionType eq 'EXPERIENCE'}">
-                                            <c:set var="isHidden" value=""/>
-                                        </c:if>
-                                        <c:if test="${sectionType eq 'EDUCATION'}">
-                                            <c:set var="isHidden" value="d-none"/>
-                                        </c:if>
-
-                                        <div class="form-group row ${isHidden}">
-                                            <div class="col-md-6">
-                                                <label for="${sectionType}${theCounter.index}description"
-                                                       class="col-form-label">Описание:</label>
-                                                <textarea name="${sectionType}${theCounter.index}description"
-                                                          id="${sectionType}${theCounter.index}description"
-                                                          class="form-control" rows="8">${info.description}</textarea>
-                                            </div>
-                                        </div>
+                                <div class="form-group row ${isHidden} description_row">
+                                    <div class="col-md-6">
+                                        <label name="for_description" for="${sectionType}${theCounter.index}description"
+                                               class="col-form-label">Описание:</label>
+                                        <textarea name="${sectionType}${theCounter.index}description"
+                                                  id="${sectionType}${theCounter.index}description"
+                                                  data-period-input-type="description"
+                                                  class="form-control" rows="8">${info.description}</textarea>
                                     </div>
-                                </c:forEach>
-
-                                <hr>
-                            </div> <%--CompanyDiv#--%>
+                                </div>
+                            </div>
                         </c:forEach>
 
+                        <hr>
+                    </div> <%--CompanyDiv#--%>
+                </c:forEach>
 
-                    </c:when>
-                    <c:otherwise>
-                    </c:otherwise>
+
+                </c:when>
+                <c:otherwise>
+                </c:otherwise>
                 </c:choose>
-
-            </c:forEach>
-
+                </c:forEach>
+            </div>
+            <%--companies--%>
         </div>
-        <%--Форм гроуп--%>
-
+        <%--sections--%>
         <%--Submit--%>
         <div class="form-group row">
             <div class="col-sm-1">
@@ -344,6 +327,189 @@
 
 
 </div>
+
+<%--Begin Company Header Template--%>
+<div class="company_template d-none">
+    <div id="companyDivTemplate" class="template">
+        <div class="form-group row">
+            <div class="col-md-4">
+                <label name="for_company_title" for="companyTitle2222" class="col-form-label">Название:</label>
+                <input type="text" name="companyTitle2222"
+                       id="companyTitle2222" class="form-control"
+                       data-company-title-input-type="title"
+                       value="" placeholder="Новая компания" required>
+            </div>
+
+            <div class="col-md-4">
+                <label name="for_company_url" for="companyURL2222"
+                       class="col-form-label">Сайт:</label>
+                <input type="text" name="companyURL2222" id="companyURL2222"
+                       class="form-control"
+                       data-company-title-input-type="url"
+                       value="" placeholder="https://google.com">
+            </div>
+            <div class="col-md-4">
+                <button type="button"
+                        class="${sectionType}delete_company_button btn btn-danger vbottom"
+                        id="${sectionType}delete_company_button${theCounter.index}"
+                        title="Удалить компанию"
+                        data-company-button-type="delete"
+                        data-company-div="${sectionType}companyDiv${theCounter.index}">Удалить
+                </button>
+            </div>
+
+        </div>
+        <div id="EXPERIENCE_periodDiv2222" class="period_div">
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <label name="for_start_date" for="startDate2222" class="col-form-label">Дата
+                        начала:</label>
+                    <input type="text" name="startDate2222" id="$startDate2222"
+                           class="form-control"
+                           data-period-input-type="startDate"
+                           value="" placeholder="10.11.2018" required>
+                </div>
+                <div class="col-md-2">
+                    <label name="for_end_date" for="endDate2222" class="col-form-label">Дата
+                        окончания:</label>
+                    <input type="text" name="endDate" id="endDate2222"
+                           class="form-control"
+                           data-period-input-type="endDate"
+                           value="" placeholder="Сейчас" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="text2222" class="col-form-label">Позиция:</label>
+                    <input type="text" name="text2222" id="text2222"
+                           class="form-control"
+                           data-period-input-type="text"
+                           value="" required>
+                </div>
+            </div>
+            <div class="form-group row description_row">
+                <div class="col-md-6">
+                    <label name="for_description" for="description2222"
+                           class="col-form-label">Описание:</label>
+                    <textarea name="description2222"
+                              id="description2222"
+                              data-period-input-type="description"
+                              class="form-control" rows="8"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+<%--End Company Header Template--%>
+
+<%--Begin Period Template--%>
+
+<%--
+<div class="d-none period_template">
+    <div id="periodDivTemplate" class="template period_div">
+        <div class="form-group row">
+            <div class="col-md-2">
+                <label name="for_start_date" for="startDate7777"
+                       class="col-form-label">Дата
+                    начала:</label>
+                <input type="text" name="startDate7777"
+                       id="startDate7777"
+                       class="form-control"
+                       data-period-input-type="startDate"
+                       value=""
+                       required>
+            </div>
+            <div class="col-md-2">
+                <label name="for_end_date" for="endDate7777"
+                       class="col-form-label">Дата
+                    окончания:</label>
+                <input type="text" name="endDate7777"
+                       id="endDate7777"
+                       class="form-control"
+                       data-period-input-type="endDate"
+                       value=""
+                       required>
+            </div>
+
+            <div class="col-md-4">
+                <label name="for_text" for=text7777"
+                       class="col-form-label">Позиция:</label>
+                <input type="text" name="text7777"
+                       id="text7777" class="form-control"
+                       data-period-input-type="text"
+                       value="" required>
+            </div>
+
+            <div class="col-md-4">
+                <button type="button" title="Удалить период"
+                        class="delete_period_button vbottom btn btn-link"
+                        id="delete_period_button"
+                        data-period-button-type="delete"
+                        data-company-div="companyDiv7777"
+                        data-company-period="_periodDiv7777">
+                    <i class="icon_red fa fa-minus"></i></button>
+            </div>
+            <div class="form-group row description_row">
+                <div class="col-md-6">
+                    <label name="for_description" for="description7777"
+                           class="col-form-label">Описание:</label>
+                    <textarea name="description7777"
+                              id="description7777"
+                              data-period-input-type="description"
+                              class="form-control" rows="8"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+--%>
+
+<div class="d-none period_template">
+    <div id="periodDivTemplate" class="template period_div">
+        <div class="form-group row">
+            <div class="col-md-2">
+                <label name="for_start_date" for="startDate2222" class="col-form-label">Дата начала:</label>
+                <input type="text" name="startDate2222" id="startDate2222" class="form-control" value=""
+                       data-period-input-type="startDate"
+                       placeholder="10.11.2018" required>
+            </div>
+            <div class="col-md-2">
+                <label name="for_end_date" for="endDate2222" class="col-form-label">Дата окончания:</label>
+                <input type="text" name="endDate" id="endDate2222" class="form-control"
+                       data-period-input-type="endDate"
+                       value="" placeholder="Сейчас" required>
+            </div>
+            <div class="col-md-4">
+                <label name="for_text" for="text2222" class="col-form-label">Позиция:</label>
+                <input type="text" name="text2222" id="text2222" class="form-control" data-period-input-type="text"
+                       value="" required>
+            </div>
+            <div class="col-md-4">
+                <%--<label for="" class="col-form-label"></label> <br>--%>
+                <button type="button" title="Удалить период"
+                        class="${sectionType}delete_period_button vbottom btn btn-link"
+                        id="delete_period_button"
+                        data-period-button-type="delete"
+                        data-company-div="${sectionType}companyDiv${theCounter.index}"
+                        data-company-period="periodDiv">
+                    <i class="icon_red fa fa-minus"></i></button>
+            </div>
+        </div>
+        <div class="form-group row description_row">
+            <div class="col-md-6">
+                <label name="for_description" for="description2222"
+                       class="col-form-label">Описание:</label>
+                <textarea name="description2222"
+                          id="description2222"
+                          data-period-input-type="description"
+                          class="form-control" rows="8"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<%--End Period Template--%>
+
+
 <jsp:include page="fragments/footer.jsp"/>
 
 <script src="js/edit_utils.js"></script>

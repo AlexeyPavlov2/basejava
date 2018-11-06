@@ -25,7 +25,7 @@ public class TestData {
     public static void fillTestData() {
         RESUME1.setContacts(
                 new HashMap<ContactType, String>() {{
-                    put(ContactType.PHONE, "+7(911) 123-4567");
+                    put(ContactType.PHONE, "+7 (911) 123-45-67");
                     put(ContactType.SKYPE, cyrString2Lat(RESUME1.getFullName()));
                     put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/" + cyrString2Lat(RESUME1.getFullName()));
                     put(ContactType.MAIL, cyrString2Lat(RESUME1.getFullName()) + "@gmail.com");
@@ -74,8 +74,8 @@ public class TestData {
 
         RESUME2.setContacts(
                 new HashMap<ContactType, String>() {{
-                    put(ContactType.PHONE, "+7(912) 456-234");
-                    put(ContactType.MOBILE, "+7(926) 85-392");
+                    put(ContactType.PHONE, "+7 (912) 456-23-44");
+                    put(ContactType.MOBILE, "+7 (926) 854-39-62");
                     put(ContactType.SKYPE, cyrString2Lat(RESUME2.getFullName()));
                     put(ContactType.MAIL, cyrString2Lat(RESUME2.getFullName()) + "@gmail.com");
                 }});
@@ -122,7 +122,7 @@ public class TestData {
 
         RESUME3.setContacts(
                 new HashMap<ContactType, String>() {{
-                    put(ContactType.PHONE, "+7(912) 234-458");
+                    put(ContactType.PHONE, "+7 (912) 234-45-58");
                     put(ContactType.MAIL, cyrString2Lat(RESUME3.getFullName()) + "@gmail.com");
                     put(ContactType.GITHUB, "http://github.com/" + cyrString2Lat(RESUME3.getFullName()));
                     put(ContactType.HOME_PAGE, "http://homepages.com/" + cyrString2Lat(RESUME3.getFullName()));
@@ -161,7 +161,7 @@ public class TestData {
 
         RESUME4.setContacts(
                 new HashMap<ContactType, String>() {{
-                    put(ContactType.PHONE, "+7(926) 990-308");
+                    put(ContactType.PHONE, "+7 (926) 990-30-78");
                     put(ContactType.MAIL, cyrString2Lat(RESUME4.getFullName()) + "@gmail.com");
                     put(ContactType.LINKEDIN, "https://linckedin.com/" + cyrString2Lat(RESUME4.getFullName()));
                 }});
@@ -190,8 +190,8 @@ public class TestData {
 
         RESUME5.setContacts(
                 new HashMap<ContactType, String>() {{
-                    put(ContactType.PHONE, "+7(945) 223-490");
-                    put(ContactType.MOBILE, "+7(925) 110-078");
+                    put(ContactType.PHONE, "+7 (945) 223-49-80");
+                    put(ContactType.MOBILE, "+7 (925) 110-07-08");
                     put(ContactType.STACKOVERFLOW, "https://stackoverflow.com/" + cyrString2Lat(RESUME5.getFullName()));
                     put(ContactType.MAIL, cyrString2Lat(RESUME5.getFullName()) + "@microsoft.com");
                     put(ContactType.LINKEDIN, "https://linckedin.com/" + cyrString2Lat(RESUME5.getFullName()));
