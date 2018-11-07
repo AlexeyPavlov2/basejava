@@ -1,7 +1,7 @@
 ## Учебное приложение "База данных резюме"
 Развернутое приложение  ["База данных резюме"](https://resumespavlov.herokuapp.com/ "Приложение") на  [heroku.com](http://heroku.com/ "")
 
-№№№№ Финальный исходный код - в ветке ["HW16"](https://github.com/AlexeyPavlov2/basejava/tree/HW16)
+#### Финальный исходный код - в ветке ["HW16"](https://github.com/AlexeyPavlov2/basejava/tree/HW16)
 
 Приложение написано в ходе обучения на курсе Basejava.
 Информация о курсе BaseJava,  и используемых технологиях - ниже.
