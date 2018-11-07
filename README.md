@@ -1,13 +1,13 @@
 ## Учебное приложение "База данных резюме"
 Развернутое приложение  ["База данных резюме"](https://resumespavlov.herokuapp.com/ "Приложение") на  [heroku.com](http://heroku.com/ "")
 
-Финальный исходный код - в ветке ["HW16"](https://github.com/AlexeyPavlov2/basejava/tree/HW16)
+#### Финальный исходный код - в ветке ["HW16"](https://github.com/AlexeyPavlov2/basejava/tree/HW16)
 
 Приложение написано в ходе обучения на курсе Basejava.
 Информация о курсе BaseJava,  и используемых технологиях - ниже.
 
 
-#### ["Курс BaseJava"](http://javaops.ru)
+#### ["Курс BaseJava на javaops.ru"](http://javaops.ru)
 
 #### Разработка Web приложения "База данных резюме"
   -  используем: Java 8, <a href="https://zeroturnaround.com/rebellabs/java-tools-and-technologies-landscape-2016-trends/#java-ides-adoption">IntelliJ IDEA</a>,
@@ -29,3 +29,5 @@
 > Любое знание стоит воспринимать как подобие семантического дерева: убедитесь в том, что понимаете фундаментальные принципы, то есть ствол и крупные ветки, прежде чем лезть в мелкие листья-детали. Иначе последним не на чем будет держаться.
 
 [*— Илон Маск](https://ru.wikipedia.org/wiki/Маск,_Илон)
+
+
