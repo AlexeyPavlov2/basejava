@@ -10,10 +10,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.logging.Logger;
 
 @WebServlet(name = "ShowImage", urlPatterns = {"/ShowImage"})
@@ -41,8 +40,12 @@ public class ShowImage extends HttpServlet {
                 response.setContentLength(((SqlStorage) storage).getPhoto(index).length);
                 out.write(((SqlStorage) storage).getPhoto(index));
             } else {
-                //FileInputStream fis = new FileInputStream(new File(Config.getHomeDir() + "\\web\\img\\undefined.png"));
-                byte[] buffer = Files.readAllBytes(new File(Config.getHomeDir() + "\\web\\img\\undefined.png").toPath());
+                InputStream is = Config.class.getResourceAsStream("/pic/undefined.png");
+                int len = (int) is.available();
+                byte[] buffer = new byte[(int) is.available()];
+                for (int i = 0; i < len; i++) {
+                    buffer[i] = (byte) is.read();
+                }
                 out.write(buffer);
             }
         } finally {
