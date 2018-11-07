@@ -231,12 +231,12 @@ public class ResumeServlet extends HttpServlet {
         storage.save(RESUME5);
 
 
-        System.out.println(Config.getHomeDir() + "\\web\\img\\r1.png");
-        ((SqlStorage) storage).setPhoto(RESUME1.getUuid(), Config.getHomeDir() + "\\web\\img\\r1.png");
-        ((SqlStorage) storage).setPhoto(RESUME2.getUuid(), Config.getHomeDir() + "\\web\\img\\r2.png");
-        ((SqlStorage) storage).setPhoto(RESUME3.getUuid(), Config.getHomeDir() + "\\web\\img\\r3.png");
-        ((SqlStorage) storage).setPhoto(RESUME4.getUuid(), Config.getHomeDir() + "\\web\\img\\r4.png");
-        ((SqlStorage) storage).setPhoto(RESUME5.getUuid(), Config.getHomeDir() + "\\web\\img\\r5.png");
+        ((SqlStorage) storage).setPhoto(RESUME1.getUuid(), Config.class.getResourceAsStream("/pic/r1.png"));
+        ((SqlStorage) storage).setPhoto(RESUME2.getUuid(), Config.class.getResourceAsStream("/pic/r2.png"));
+        ((SqlStorage) storage).setPhoto(RESUME3.getUuid(), Config.class.getResourceAsStream("/pic/r3.png"));
+        ((SqlStorage) storage).setPhoto(RESUME4.getUuid(), Config.class.getResourceAsStream("/pic/r4.png"));
+        ((SqlStorage) storage).setPhoto(RESUME5.getUuid(), Config.class.getResourceAsStream("/pic/r5.png"));
+
     }
 
 }

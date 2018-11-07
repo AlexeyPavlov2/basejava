@@ -10,10 +10,7 @@ import com.basejava.webapp.model.SectionType;
 import com.basejava.webapp.sql.SqlHelper;
 import com.basejava.webapp.util.JsonParser;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -212,6 +209,19 @@ public class SqlStorage implements Storage {
         }
     }
 
+    public void setPhoto(String uuid, InputStream is) {
+        sqlHelper.execute("INSERT INTO photo (resume_uuid, pic) VALUES (?,?)", ps -> {
+            try {
+                ps.setString(1, uuid);
+                ps.setBinaryStream(2, is, (int) is.available());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ps.executeUpdate();
+            return null;
+        });
+    }
+
     public void setPhoto(String uuid, String fileName) {
         sqlHelper.execute("INSERT INTO photo (resume_uuid, pic) VALUES (?,?)", ps -> {
             File file = new File(fileName);
@@ -223,7 +233,7 @@ public class SqlStorage implements Storage {
             }
             ps.setString(1, uuid);
             ps.setBinaryStream(2, fis, (int) file.length());
-            System.out.println("COUNT: " + ps.executeUpdate());
+            ps.executeUpdate();
             try {
                 fis.close();
             } catch (IOException e) {
@@ -248,16 +258,12 @@ public class SqlStorage implements Storage {
                     buffer = rs.getBytes("pic");
 
 
-
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
                 rs.close();
             }
-         /*   byte[] buffer = null;
-            Blob img = null;
-         */
 
             return buffer;
         });

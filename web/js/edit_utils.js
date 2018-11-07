@@ -176,8 +176,6 @@ $(function () {
         console.log($('div.container-fluid').html());
     }
 
-    function setStatusDeletePeriodButton(periodId) {
 
-    }
 
 });
