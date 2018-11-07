@@ -1,11 +1,13 @@
-## Учебное приложение, написанное в ходе обучения на курсе BaseJava 
+## Учебное приложение "База данных резюме"
 Развернутое приложение  ["База данных резюме"](https://resumespavlov.herokuapp.com/ "Приложение") на  [heroku.com](http://heroku.com/ "")
 
-Информация о курсе BaseJava и используемых технологиях - ниже.
+Информация о курсе BaseJava,  и используемых технологиях - ниже.
 
-## ["Курс BaseJava"](http://javaops.ru)
 
-## Разработка Web приложения "База данных резюме"
+
+### ["Курс BaseJava"](http://javaops.ru)
+
+### Разработка Web приложения "База данных резюме"
   -  используем: Java 8, <a href="https://zeroturnaround.com/rebellabs/java-tools-and-technologies-landscape-2016-trends/#java-ides-adoption">IntelliJ IDEA</a>,
     <a href="https://zeroturnaround.com/rebellabs/java-tools-and-technologies-landscape-2016-trends/#java-vcs-adoption">GitHib/Git</a>, Сервлеты, JSP, JSTL, Tomcat, JUnit, PostgreSQL, GSON, JAXB
   - хранение резюме
