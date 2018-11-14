@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b8ad4782db284eaab53a3e78ce0e4acc)](https://www.codacy.com/app/AlexeyPavlov2/basejava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AlexeyPavlov2/basejava&amp;utm_campaign=Badge_Grade)
+
 ## Учебное приложение "База данных резюме"
 Развернутое приложение  ["База данных резюме"](https://resumespavlov.herokuapp.com/ "Приложение") на  [heroku.com](http://heroku.com/ "")
 
