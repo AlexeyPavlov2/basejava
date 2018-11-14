@@ -1,5 +1,3 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b8ad4782db284eaab53a3e78ce0e4acc)](https://www.codacy.com/app/AlexeyPavlov2/basejava?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AlexeyPavlov2/basejava&amp;utm_campaign=Badge_Grade)
-
 ## Учебное приложение "База данных резюме"
 Развернутое приложение  ["База данных резюме"](https://resumespavlov.herokuapp.com/ "Приложение") на  [heroku.com](http://heroku.com/ "")
 
@@ -24,7 +22,7 @@
      - в контейнер сервлетов <a href="http://tomcat.apache.org/">Tomcat</a>
      - в облачный сервис <a href="https://www.heroku.com/">Heroku</a>
 
-Приложение будет разрабатываться начиная со первого занятия, основываясь на базовых темах курса:
+Приложение разрабатываться начиная со первого занятия, основываясь на базовых темах курса:
 **объектная модель, коллекции, система ввода-вывода, работа с файлами, сериализация, работа с XML, JSON, SQL, персистентность в базу данных (PostgreSQL), сервлеты, HTML/JSP/JSTL, веб-контейнер Tomcat, модульные тесты JUnit, java.util.Logging, система контроля версий Git.**
 
 > Любое знание стоит воспринимать как подобие семантического дерева: убедитесь в том, что понимаете фундаментальные принципы, то есть ствол и крупные ветки, прежде чем лезть в мелкие листья-детали. Иначе последним не на чем будет держаться.
