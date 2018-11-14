@@ -10,6 +10,9 @@ import java.util.UUID;
 import static com.basejava.webapp.util.Translit.cyrString2Lat;
 
 public class TestData {
+    private TestData() {
+    }
+
     public static final String UUID_1 = UUID.randomUUID().toString();
     public static final String UUID_2 = UUID.randomUUID().toString();
     public static final String UUID_3 = UUID.randomUUID().toString();

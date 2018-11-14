@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class ResumeUtil {
+    private ResumeUtil() {
+    }
+
     public static Resume getNewResume() {
         Resume resume = new Resume(UUID.randomUUID().toString(), "");
         addAllEmptySection(resume);
