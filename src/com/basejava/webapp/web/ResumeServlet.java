@@ -5,7 +5,6 @@ import com.basejava.webapp.model.*;
 import com.basejava.webapp.storage.SqlStorage;
 import com.basejava.webapp.storage.Storage;
 import com.basejava.webapp.util.ResumeUtil;
-import com.basejava.webapp.util.TestData;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,7 +20,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.basejava.webapp.util.DateConverter.StringToLocalDate;
+import static com.basejava.webapp.util.DateConverter.stringToLocalDate;
 import static com.basejava.webapp.util.TestData.*;
 
 public class ResumeServlet extends HttpServlet {
@@ -37,7 +36,7 @@ public class ResumeServlet extends HttpServlet {
         storage = Config.get().getStorage();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOG.info(CLASS_NAME + ": " + " doGet");
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
@@ -78,7 +77,7 @@ public class ResumeServlet extends HttpServlet {
         ).forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
@@ -149,8 +148,8 @@ public class ResumeServlet extends HttpServlet {
                             String[] titles = request.getParameterValues(prefix + "text");
                             String[] descriptions = request.getParameterValues(prefix + "description");
                             for (int j = 0; j < titles.length; j++) {
-                                LocalDate start = StringToLocalDate(startDates[j]);
-                                LocalDate end = StringToLocalDate(endDates[j]);
+                                LocalDate start = stringToLocalDate(startDates[j]);
+                                LocalDate end = stringToLocalDate(endDates[j]);
                                 String title = titles[j];
                                 String description;
                                 if (type == SectionType.EXPERIENCE) {
@@ -198,8 +197,8 @@ public class ResumeServlet extends HttpServlet {
                 !map.get(typeName + "endDate1")[0].isEmpty() &&
                 !map.get(typeName + "text1")[0].isEmpty()
         ) {
-            CompanyPersonalInfo position = new CompanyPersonalInfo(StringToLocalDate(map.get(typeName + "startDate1")[0]),
-                    StringToLocalDate(map.get(typeName + "endDate1")[0]), map.get(typeName + "text1")[0],
+            CompanyPersonalInfo position = new CompanyPersonalInfo(stringToLocalDate(map.get(typeName + "startDate1")[0]),
+                    stringToLocalDate(map.get(typeName + "endDate1")[0]), map.get(typeName + "text1")[0],
                     sectionType.equals(SectionType.EXPERIENCE) ? map.get(typeName + "description1")[0] : "");
             Company company = new Company(map.get(typeName + "companyTitle1")[0],
                     map.get(typeName + "companyURL1")[0] != null ? map.get(typeName + "companyURL1")[0] : "", position);
@@ -212,7 +211,7 @@ public class ResumeServlet extends HttpServlet {
         }
     }
 
-    private void printParameterMap(HttpServletRequest request) {
+    /*private void printParameterMap(HttpServletRequest request) {
         request.getParameterMap().entrySet().forEach(o -> {
             System.out.println();
             System.out.println("Key: " + o.getKey());
@@ -220,11 +219,11 @@ public class ResumeServlet extends HttpServlet {
             Arrays.stream(o.getValue()).forEach(el -> System.out.print(el + " "));
             System.out.println();
         });
-    }
+    }*/
 
     private void populateDatabase() {
         storage.clear();
-        TestData.fillTestData();
+        fillTestData();
         storage.save(RESUME1);
         storage.save(RESUME2);
         storage.save(RESUME3);

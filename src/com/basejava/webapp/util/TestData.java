@@ -10,8 +10,6 @@ import java.util.UUID;
 import static com.basejava.webapp.util.Translit.cyrString2Lat;
 
 public class TestData {
-    private TestData() {
-    }
 
     public static final String UUID_1 = UUID.randomUUID().toString();
     public static final String UUID_2 = UUID.randomUUID().toString();
@@ -24,6 +22,9 @@ public class TestData {
     public static final Resume RESUME3 = new Resume(UUID_3, "Иванов Сергей Петрович");
     public static final Resume RESUME4 = new Resume(UUID_4, "Королев Иван Дмитриевич");
     public static final Resume RESUME5 = new Resume(UUID_5, "Аверин Николай Алексеевич");
+
+    private TestData() {
+    }
 
     public static void fillTestData() {
         RESUME1.setContacts(

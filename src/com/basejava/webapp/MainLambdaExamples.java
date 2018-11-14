@@ -1,6 +1,5 @@
 package com.basejava.webapp;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -21,7 +20,7 @@ public class MainLambdaExamples {
 
         //HW12 - ii.
         int[] array = new Random().ints(1, 300).limit(count).toArray();
-        List<Integer> list = Arrays.stream(array).boxed().collect(toList());
+        List<Integer> list = stream(array).boxed().collect(toList());
         int sum = list.stream().mapToInt(Integer::intValue).sum();
         System.out.println(list.stream().map(String::valueOf)
                 .collect(Collectors.joining(", ", "Original int list: {", "} , sum of the elements " + sum + " is " + (sum % 2 == 0 ? "even" : "odd"))));

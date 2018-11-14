@@ -17,8 +17,8 @@ $(function () {
     // delete company event
     $(".EXPERIENCEdelete_company_button, .EDUCATIONdelete_company_button").click(function () {
         $("#" + $(this).attr("data-company-div")).remove();
-        recalcCompanyDiv('EXPERIENCE');
-        recalcCompanyDiv('EDUCATION');
+        recalcCompanyDiv("EXPERIENCE");
+        recalcCompanyDiv("EDUCATION");
     });
 
     // add period event
@@ -35,7 +35,7 @@ $(function () {
     });
 
     // delete period event
-    $('body').on('click', ".EXPERIENCEdelete_period_button, .EDUCATIONdelete_period_button", function (e) {
+    $("body").on("click", ".EXPERIENCEdelete_period_button, .EDUCATIONdelete_period_button", function (e) {
         var company = ("#" + $(this).attr("data-company-div"));
         $(company).find("#" + $(this).attr("data-company-period")).remove();
         recalcCompanyDiv('EXPERIENCE');
@@ -57,21 +57,21 @@ $(function () {
             var elementTitleRowList = titleRow.find("*");
             elementTitleRowList.each(function (elementIndex0) {
                 var el = $(this);
-                if (el.attr("name") == "for_company_title") {
+                if (el.attr("name") === "for_company_title") {
                     el.attr("for", companyType);
                 }
-                if (el.attr("data-company-title-input-type") == "title") {
+                if (el.attr("data-company-title-input-type") === "title") {
                     el.attr("name", companyType);
                     el.attr("id", companyType);
                 }
-                if (el.attr("name") == "for_company_url") {
+                if (el.attr("name") === "for_company_url") {
                     el.attr("for", companyType + "companyURL" + companyIndex);
                 }
-                if (el.attr("data-company-title-input-type") == "url") {
+                if (el.attr("data-company-title-input-type") === "url") {
                     el.attr("name", companyType + "companyURL");
                     el.attr("id", companyType + "companyURL" + companyIndex);
                 }
-                if (el.attr("data-company-button-type") == "delete") {
+                if (el.attr("data-company-button-type") === "delete") {
                     el.attr("class", companyType + "delete_company_button btn btn-danger vbottom");
                     el.attr("id", companyType + "delete_company_button" + companyIndex);
                     el.attr("data-company-div", companyType + "companyDiv" + companyIndex);
@@ -104,29 +104,29 @@ $(function () {
                 var elementPeriodRowList = periodRow.find("*");
                 elementPeriodRowList.each(function (elementIndex1) {
                     var el1 = $(this);
-                    if (el1.attr("name") == "for_start_date") {
+                    if (el1.attr("name") === "for_start_date") {
                         el1.attr("for", companyType + companyIndex + "startDate");
                     }
-                    if (el1.attr("data-period-input-type") == "startDate") {
+                    if (el1.attr("data-period-input-type") === "startDate") {
                         el1.attr("name", companyType + companyIndex + "startDate");
                         el1.attr("id", companyType + companyIndex + "startDate");
                     }
-                    if (el1.attr("name") == "for_end_date") {
+                    if (el1.attr("name") === "for_end_date") {
                         el1.attr("for", companyType + companyIndex + "endDate");
                     }
-                    if (el1.attr("data-period-input-type") == "endDate") {
+                    if (el1.attr("data-period-input-type") === "endDate") {
                         el1.attr("name", companyType + companyIndex + "endDate");
                         el1.attr("id", companyType + companyIndex + "endDate");
                     }
-                    if (el1.attr("name") == "for_text") {
+                    if (el1.attr("name") === "for_text") {
                         el1.attr("for", companyType + companyIndex + "text");
                     }
-                    if (el1.attr("data-period-input-type") == "text") {
+                    if (el1.attr("data-period-input-type") === "text") {
                         el1.attr("name", companyType + companyIndex + "text");
                         el1.attr("id", companyType + companyIndex + "text");
                     }
-                    if (el1.attr("data-period-button-type") == "delete") {
-                        if (totalPeriods == 1 && periodIndex == 0) {
+                    if (el1.attr("data-period-button-type") === "delete") {
+                        if (totalPeriods === 1 && periodIndex === 0) {
                             el1.attr("title", "Нельзя удалить единственный период");
                             el1.prop("disabled", true);
 
@@ -150,10 +150,10 @@ $(function () {
                     var elementDescriptionRow = descriptionRow.find("*");
                     elementDescriptionRow.each(function (elementIndex2) {
                         var el2 = $(this);
-                        if (el2.attr("name") == "for_description") {
+                        if (el2.attr("name") === "for_description") {
                             el2.attr("for", companyType + companyIndex + "description");
                         }
-                        if (el2.attr("data-period-input-type") == "description") {
+                        if (el2.attr("data-period-input-type") === "description") {
                             el2.attr("name", companyType + companyIndex + "description");
                             el2.attr("id", companyType + companyIndex + "description");
                         }
@@ -172,9 +172,9 @@ $(function () {
         return $(".period_template").html();
     }
 
-    function printContent() {
+    /*function printContent() {
         console.log($('div.container-fluid').html());
-    }
+    }*/
 
 
 

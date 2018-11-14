@@ -39,6 +39,9 @@ public class ResumeUtil {
                         resume.putSection(type, companySection);
                     }
                     break;
+                default:
+                    throw new IllegalStateException("Unknown section type");
+
             }
         }
     }

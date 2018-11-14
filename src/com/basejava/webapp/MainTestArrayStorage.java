@@ -5,7 +5,7 @@ import com.basejava.webapp.storage.ArrayStorage;
 import com.basejava.webapp.storage.Storage;
 
 public class MainTestArrayStorage {
-    static final Storage ARRAY_STORAGE = new ArrayStorage();
+    public static final Storage ARRAY_STORAGE = new ArrayStorage();
 
     public static void main(String[] args) {
         Resume r1 = new Resume("uuid1", "Сергеева Мария");
@@ -28,7 +28,7 @@ public class MainTestArrayStorage {
         System.out.println("Size: " + ARRAY_STORAGE.size());
     }
 
-    static void printAll() {
+    public static void printAll() {
         System.out.println("\nGet All");
         if (ARRAY_STORAGE.size() > 0) {
             for (Resume r : ARRAY_STORAGE.getAllSorted()) {
