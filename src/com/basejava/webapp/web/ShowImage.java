@@ -33,6 +33,7 @@ public class ShowImage extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException {
         response.setContentType("image/jpeg");
         OutputStream out = response.getOutputStream();
+        InputStream is = null;
         try {
             String index = request.getParameter("index");
             int length = ((SqlStorage)storage).getPhoto(index).length;
@@ -40,7 +41,7 @@ public class ShowImage extends HttpServlet {
                 response.setContentLength(((SqlStorage) storage).getPhoto(index).length);
                 out.write(((SqlStorage) storage).getPhoto(index));
             } else {
-                InputStream is = Config.class.getResourceAsStream("/pic/undefined.png");
+                is = Config.class.getResourceAsStream("/pic/undefined.png");
                 int len = (int) is.available();
                 byte[] buffer = new byte[(int) is.available()];
                 for (int i = 0; i < len; i++) {
@@ -51,6 +52,9 @@ public class ShowImage extends HttpServlet {
         } finally {
             out.flush();
             out.close();
+            if (is != null) {
+                is.close();
+            }
         }
     }
 

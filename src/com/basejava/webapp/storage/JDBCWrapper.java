@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class JDBCWrapper {
+    private JDBCWrapper() {
+    }
 
     // for  INSERT, UPDATE or DELETE
     public static int executeUpdate(Connection conn, String sql, Object... params) throws SQLException {

@@ -26,6 +26,7 @@ import static com.basejava.webapp.util.TestData.*;
 
 public class ResumeServlet extends HttpServlet {
     private static final long serialVersionUID = 995497791471805151L;
+    public static final String RESUME = "resume";
     private final String CLASS_NAME = getClass().getName();
     private final Logger LOG = Logger.getLogger(CLASS_NAME);
     private Storage storage;
@@ -49,15 +50,15 @@ public class ResumeServlet extends HttpServlet {
         switch (action) {
             case "delete":
                 storage.delete(uuid);
-                response.sendRedirect("resume");
+                response.sendRedirect(RESUME);
                 return;
             case "generate":
                 populateDatabase();
-                response.sendRedirect("resume");
+                response.sendRedirect(RESUME);
                 return;
             case "download":
             case "send":
-                response.sendRedirect("resume");
+                response.sendRedirect(RESUME);
                 return;
             case "insert":
                 resume = new Resume("", "");
@@ -180,7 +181,7 @@ public class ResumeServlet extends HttpServlet {
         } else {
             storage.update(resume);
         }
-        response.sendRedirect("resume");
+        response.sendRedirect(RESUME);
     }
 
     private void addNewCompany(SectionType sectionType, HttpServletRequest request, Resume resume) {
